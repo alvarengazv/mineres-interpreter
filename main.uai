@@ -1,0 +1,34 @@
+causo
+  Programa de teste pro interpretador em Minerês.
+  Lê um número do usuário, faz uma contagem e testa uma condição.
+fim_do_causo
+
+bora cumpade ( )
+simbora
+    // Preparando os trem
+    trem_di_numeru limite uai
+    trem_di_numeru contador fica_assim_entao 0 uai
+    trem_discrita mensagem fica_assim_entao "Fim da contagem" uai
+
+    oia_proce_ve ( "Digita ate quantu ce quer contar:" ) uai
+    xove ( limite ) uai
+
+    enquanto_tiver_trem ( contador < limite )
+    simbora
+        oia_proce_ve ( contador ) uai
+        contador fica_assim_entao contador + 1 uai
+    cabo
+
+    oia_proce_ve ( mensagem ) uai
+
+    uai_se ( contador mema_coisa limite )
+    simbora
+        oia_proce_ve ( "Chegou no limite certim!" ) uai
+    cabo
+    uai_senão
+    simbora
+        oia_proce_ve ( "Deu algum trem errado na logica..." ) uai
+    cabo
+
+    ta_bao uai
+cabo

@@ -1,0 +1,11 @@
+Módulo: Parte 1 [] Parte 2 [] Parte 3 [] Parte 4
+Categoria: Correção [] Mudança [] Evolução [] Correção []
+Mensagem: string
+Data: dd/mm/yyyy
+Desenvolvedor string
+
+Parte 1 - Mudança  - Refatorando arquivos para uma arquitera básica - 21/03/2026 - Luan Santos
+Parte 1 - Evolução - Criando util para trabalhar com arquivos - 21/03/2026 - Luan Santos
+Parte 1 - Evolução - Criando util para trabalhar com erros - 21/03/2026 - Luan Santos
+Parte 1 - Evolução - Criando os tipos do sistema (Tupla e Tokens) - - 19/03/2023 - Guilherme Alvarenga
+Parte 1 - Evolução - Criando repositorio do projeto - 18/03/2023 - Guilherme Alvarenga

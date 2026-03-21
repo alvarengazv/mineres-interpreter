@@ -1,5 +1,5 @@
 Módulo: Parte 1 [] Parte 2 [] Parte 3 [] Parte 4
-Categoria: Correção [] Mudança [] Evolução [] Correção []
+Categoria: Remoção [] Mudança [] Evolução [] Correção []
 Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string

@@ -26,7 +26,7 @@ const (
 	cabo                                      // 20
 	abre_chave                                // 21
 	fecha_chave                               // 22
-	abre_aspas                                // 23
+	abre_aspas                                // 23z
 	fecha_aspas                               // 24
 	virgula                                   // 25
 	uai                                       // 26
@@ -58,4 +58,56 @@ const (
 	conteudo_octal                            // 52
 	conteudo_float                            // 53
 	variavel                                  // 54
-)
+	)
+
+	var PalavrasReservadas = map[string]TabelaPalavras{
+	"trem_di_numeru":      trem_di_numeru,
+	"trem_cum_virgula":     trem_cum_virgula,
+	"trem_discrita":        trem_discrita,
+	"trem_discolhe":        trem_discolhe,
+	"trosso":               trosso,
+	"uai_se":               uai_se,
+	"uai_senao":            uai_senao,
+	"roda_esse_trem":       roda_esse_trem,
+	"enquanto_tiver_trem":  enquanto_tiver_trem,
+	"dependenu":            dependenu,
+	"du_casu":              du_casu,
+	"ta_bao":               ta_bao,
+	"para_o_trem":          para_o_trem,
+	"toca_o_trem":          toca_o_trem,
+	"bora_cumpade":         bora_cumpade,
+	"abre_parentese":       abre_parentese,
+	"fecha_parentese":      fecha_parentese,
+	"eh":                   eh,
+	"num_eh":               num_eh,
+	"simbora":              simbora,
+	"cabo":                 cabo,
+	"abre_chave":           abre_chave,
+	"fecha_chave":          fecha_chave,
+	"abre_aspas":           abre_aspas,
+	"fecha_aspas":          fecha_aspas,
+	"virgula":              virgula,
+	"uai":                  uai,
+	"<":                   	menor_que,
+	">":                   	maior_que,
+	"<=":                  	menor_igual_que,
+	">=":                   maior_igual_que,
+	"fica_assim_entao":     fica_assim_entao,
+	"neh_nada":             neh_nada,
+	"mema_coisa":           mema_coisa,
+	"quarque_um":           quarque_um,
+	"vam_marca":            vam_marca,
+	"tamem":                tamem,
+	"um_o_oto":             um_o_oto,
+	"+":                    soma,
+	"-":                    subtracao,
+	"veiz":                 veiz,
+	"sob":                  sob,
+	"%":               		modulo,
+	"/":      				divisao_inteira,
+	"xove":                 xove,
+	"oia_proce_ve":         oia_proce_ve,
+    
+	"causo":                causo,
+	"fim_do_causo":         fim_do_causo,
+	}

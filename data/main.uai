@@ -3,7 +3,7 @@ causo
   Lê um número do usuário, faz uma contagem e testa uma condição.
 fim_do_causo
 
-bora cumpade ( )
+bora_cumpade ( )
 simbora
     // Preparando os trem
     trem_di_numeru limite uai

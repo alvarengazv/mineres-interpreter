@@ -5,7 +5,7 @@ Data: dd/mm/yyyy
 Desenvolvedor string
 
 Parte 1 - Evolução - Determinação dos tipos de número/variável por regex & Categorização de Erros Léxicos - 22/03/2026 - Guilherme Alvarenga
-Parte 1 - Evolução - Criando funções para cada tratamento léxico - 22/03/2026 - Guilherme Alvarenga
+Parte 1 - Evolução - Criando funções para cada tratamento léxico & Struct para armazenar o estado do lexer - 22/03/2026 - Guilherme Alvarenga
 Parte 1 - Mudança  - Refatorando o lexer principal para tratar espaços, delimitações, strings e comentários linha única e multinhas - 22/03/2026 - Joaquim Cruz
 Parte 1 - Evolução - Criando o mapa de tokens para otimizar as buscas - 22/03/2026 - Joaquim Cruz
 Parte 1 - Mudança  - Refatorando arquivos para uma arquitera básica - 21/03/2026 - Luan Santos

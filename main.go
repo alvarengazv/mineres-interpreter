@@ -8,8 +8,13 @@ import (
 
 func main() {
 	fmt.Println("Interpretador de Mineirês em GO!")
-	conteudo:= utils.LerArquivo("data/main.uai")
-	listTupla:= lexer.AnalisarArquivo(conteudo);
+	conteudo := utils.LerArquivo("data/main.uai")
+	listTupla, erro := lexer.AnalisarArquivo(conteudo)
 
-	lexer.ListTuplaToString(listTupla);
+	if erro {
+		lexer.ListTuplaToString(listTupla)
+		fmt.Println("Erro léxico encontrado!")
+		return
+	}
+
 }

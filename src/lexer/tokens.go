@@ -3,112 +3,166 @@ package lexer
 type TabelaPalavras int
 
 const (
-	trem_di_numeru      TabelaPalavras = iota // 0
-	trem_cum_virgula                          // 1
-	trem_discrita                             // 2
-	trem_discolhe                             // 3
-	trosso                                    // 4
-	uai_se                                    // 5
-	uai_senao                                 // 6
-	roda_esse_trem                            // 7
-	enquanto_tiver_trem                       // 8
-	dependenu                                 // 9
-	du_casu                                   // 10
-	ta_bao                                    // 11
-	para_o_trem                               // 12
-	toca_o_trem                               // 13
-	bora_cumpade                              // 14
-	abre_parentese                            // 15
-	fecha_parentese                           // 16
-	eh                                        // 17
-	num_eh                                    // 18
-	simbora                                   // 19
-	cabo                                      // 20
-	abre_chave                                // 21
-	fecha_chave                               // 22
-	abre_aspas                                // 23
-	fecha_aspas                               // 24
-	virgula                                   // 25
-	uai                                       // 26
-	menor_que                                 // 27
-	maior_que                                 // 28
-	menor_igual_que                           // 29
-	maior_igual_que                           // 30
-	fica_assim_entao                          // 31
-	neh_nada                                  // 32
-	mema_coisa                                // 33
-	quarque_um                                // 34
-	vam_marca                                 // 35
-	tamem                                     // 36
-	um_o_oto                                  // 37
-	soma                                      // 38
-	subtracao                                 // 39
-	veiz                                      // 40
-	sob                                       // 41
-	modulo                                    // 42
-	divisao_inteira                           // 43
-	xove                                      // 44
-	oia_proce_ve                              // 45
-	conteudo_string                           // 46
-	comentario_linha                          // 47
-	causo                                     // 48
-	fim_do_causo                              // 49
-	conteudo_inteiro                          // 50
-	conteudo_hexa                             // 51
-	conteudo_octal                            // 52
-	conteudo_float                            // 53
-	variavel                                  // 54
-	erro_lexico                               // 55
+	// Data types
+	type_int    TabelaPalavras = iota // 0  - trem_di_numeru   → int
+	type_float                        // 1  - trem_cum_virgula → float
+	type_string                       // 2  - trem_discrita    → string
+	type_bool                         // 3  - trem_discolhe    → boolean
+	type_char                         // 4  - trosso           → char
+
+	// Conditionals
+	conditional_if     // 5  - uai_se    → if
+	conditional_else   // 6  - uai_senao → else
+	loop_for           // 7  - roda_esse_trem      → for
+	loop_while         // 8  - enquanto_tiver_trem → while
+	conditional_switch // 9  - dependenu → switch
+	conditional_case   // 10 - du_casu   → case
+
+	// Functions & return
+	func_return   // 11 - ta_bao       → return
+	loop_break    // 12 - para_o_trem  → break
+	loop_continue // 13 - toca_o_trem  → continue
+	func_decl     // 14 - bora_cumpade → function / main
+
+	// Symbols
+	open_paren  // 15 - abre_parentese  → (
+	close_paren // 16 - fecha_parentese → )
+
+	// Boolean literals
+	literal_true  // 17 - eh     → true
+	literal_false // 18 - num_eh → false
+
+	// Block delimiters
+	block_open  // 19 - simbora → começo de bloco  { }
+	block_close // 20 - cabo    → fim de bloco    { }
+	open_brace  // 21 - abre_chave  → {
+	close_brace // 22 - fecha_chave → }
+	open_quote  // 23 - abre_aspas  → "
+	close_quote // 24 - fecha_aspas → "
+
+	// Punctuation
+	comma    // 25 - virgula → ,
+	stmt_end // 26 - uai     → ; (fim da instrução)
+
+	// Relational operators
+	op_lt  // 27 - <  → menor que
+	op_gt  // 28 - >  → maior que
+	op_lte // 29 - <= → menor ou igual
+	op_gte // 30 - >= → maior ou igual
+
+	// Assignment & equality
+	op_assign // 31 - fica_assim_entao → = (atribuição)
+	op_neq    // 32 - neh_nada         → != (diferente de)
+	op_eq     // 33 - mema_coisa       → == (igual a)
+
+	// Logical operators
+	op_or  // 34 - quarque_um → or
+	op_not // 35 - vam_marca  → not
+	op_and // 36 - tamem      → and
+	op_xor // 37 - um_o_oto   → xor
+
+	// Arithmetic operators
+	op_add     // 38 - +    → adição
+	op_sub     // 39 - -    → subtração
+	op_mul     // 40 - veiz → multiplicação  (*)
+	op_div     // 41 - sob  → divisão        (/)
+	op_mod     // 42 - %    → módulo
+	op_int_div // 43 - /    → divisão inteira (//)
+
+	// I/O
+	io_scan  // 44 - xove        → scan  / input
+	io_print // 45 - oia_proce_ve → print / output
+
+	// Literals & tokens
+	literal_string // 46 - conteúdo string
+	comment_line   // 47 - // comentário de linha
+
+	comment_block_open  // 48 - causo       → /* comentário de bloco
+	comment_block_close // 49 - fim_do_causo → */ comentário de bloco
+
+	literal_int   // 50 - conteúdo inteiro
+	literal_hex   // 51 - conteúdo hexadecimal (0x...)
+	literal_oct   // 52 - conteúdo octal (0...)
+	literal_float // 53 - conteúdo float
+
+	identifier    // 54 - variável / identificador
+	lexical_error // 55 - token inválido
 )
 
 var PalavrasReservadas = map[string]TabelaPalavras{
-	"trem_di_numeru":      trem_di_numeru,
-	"trem_cum_virgula":    trem_cum_virgula,
-	"trem_discrita":       trem_discrita,
-	"trem_discolhe":       trem_discolhe,
-	"trosso":              trosso,
-	"uai_se":              uai_se,
-	"uai_senao":           uai_senao,
-	"roda_esse_trem":      roda_esse_trem,
-	"enquanto_tiver_trem": enquanto_tiver_trem,
-	"dependenu":           dependenu,
-	"du_casu":             du_casu,
-	"ta_bao":              ta_bao,
-	"para_o_trem":         para_o_trem,
-	"toca_o_trem":         toca_o_trem,
-	"bora_cumpade":        bora_cumpade,
-	"abre_parentese":      abre_parentese,
-	"fecha_parentese":     fecha_parentese,
-	"eh":                  eh,
-	"num_eh":              num_eh,
-	"simbora":             simbora,
-	"cabo":                cabo,
-	"abre_chave":          abre_chave,
-	"fecha_chave":         fecha_chave,
-	"abre_aspas":          abre_aspas,
-	"fecha_aspas":         fecha_aspas,
-	"virgula":             virgula,
-	"uai":                 uai,
-	"<":                   menor_que,
-	">":                   maior_que,
-	"<=":                  menor_igual_que,
-	">=":                  maior_igual_que,
-	"fica_assim_entao":    fica_assim_entao,
-	"neh_nada":            neh_nada,
-	"mema_coisa":          mema_coisa,
-	"quarque_um":          quarque_um,
-	"vam_marca":           vam_marca,
-	"tamem":               tamem,
-	"um_o_oto":            um_o_oto,
-	"+":                   soma,
-	"-":                   subtracao,
-	"veiz":                veiz,
-	"sob":                 sob,
-	"%":                   modulo,
-	"/":                   divisao_inteira,
-	"xove":                xove,
-	"oia_proce_ve":        oia_proce_ve,
+	// Data types
+	"trem_di_numeru":   type_int,
+	"trem_cum_virgula": type_float,
+	"trem_discrita":    type_string,
+	"trem_discolhe":    type_bool,
+	"trosso":           type_char,
 
-	"causo":        causo,
-	"fim_do_causo": fim_do_causo,
+	// Conditionals
+	"uai_se":    conditional_if,
+	"uai_senao": conditional_else,
+	"dependenu": conditional_switch,
+	"du_casu":   conditional_case,
+
+	// Loops
+	"roda_esse_trem":      loop_for,
+	"enquanto_tiver_trem": loop_while,
+	"para_o_trem":         loop_break,
+	"toca_o_trem":         loop_continue,
+
+	// Functions & return
+	"bora_cumpade": func_decl,
+	"ta_bao":       func_return,
+
+	// Symbols
+	"abre_parentese":  open_paren,
+	"fecha_parentese": close_paren,
+
+	// Boolean literals
+	"eh":     literal_true,
+	"num_eh": literal_false,
+
+	// Block delimiters
+	"simbora":     block_open,
+	"cabo":        block_close,
+	"abre_chave":  open_brace,
+	"fecha_chave": close_brace,
+	"abre_aspas":  open_quote,
+	"fecha_aspas": close_quote,
+
+	// Punctuation
+	"virgula": comma,
+	"uai":     stmt_end,
+
+	// Relational operators
+	"<":  op_lt,
+	">":  op_gt,
+	"<=": op_lte,
+	">=": op_gte,
+
+	// Assignment & equality
+	"fica_assim_entao": op_assign,
+	"neh_nada":         op_neq,
+	"mema_coisa":       op_eq,
+
+	// Logical operators
+	"quarque_um": op_or,
+	"vam_marca":  op_not,
+	"tamem":      op_and,
+	"um_o_oto":   op_xor,
+
+	// Arithmetic operators
+	"+":    op_add,
+	"-":    op_sub,
+	"veiz": op_mul,
+	"sob":  op_div,
+	"%":    op_mod,
+	"/":    op_int_div,
+
+	// I/O
+	"xove":         io_scan,
+	"oia_proce_ve": io_print,
+
+	// Comments
+	"causo":        comment_block_open,
+	"fim_do_causo": comment_block_close,
 }

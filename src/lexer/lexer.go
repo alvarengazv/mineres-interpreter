@@ -52,18 +52,18 @@ func (e *estadoLexer) classificarLexema(lexema string) TabelaPalavras {
 	regexVariavel := regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)
 	switch {
 	case regexHexa.MatchString(lexema):
-		return conteudo_hexa
+		return literal_hex
 	case regexOctal.MatchString(lexema):
-		return conteudo_octal
+		return literal_oct
 	case regexFloat.MatchString(lexema):
-		return conteudo_float
+		return literal_float
 	case regexInteiro.MatchString(lexema):
-		return conteudo_inteiro
+		return literal_int
 	case regexVariavel.MatchString(lexema):
-		return variavel
+		return identifier
 	default:
 		e.erro_lexico = true
-		return erro_lexico
+		return lexical_error
 	}
 }
 
@@ -79,7 +79,7 @@ func (e *estadoLexer) processarBuffer() {
 
 	if t, existe := PalavrasReservadas[lexema]; existe {
 		token = t
-		if token == causo {
+		if token == comment_block_open {
 			e.lendoComentarioBloco = true
 		}
 	} else {
@@ -111,7 +111,7 @@ func (e *estadoLexer) tratarComentarioBloco(i int) int {
 	if char == 'f' && i+e.tamanhoFimCauso < len(e.runes) && string(e.runes[i:i+e.tamanhoFimCauso]) == e.FimCauso {
 		e.tabela_lexica = append(e.tabela_lexica, Tupla{
 			lexema: "fim_do_causo",
-			token:  fim_do_causo,
+			token:  comment_block_close,
 			linha:  e.linha,
 			coluna: e.coluna,
 		})
@@ -145,13 +145,13 @@ func (e *estadoLexer) tratarString(char rune) {
 	if char == '"' {
 		e.tabela_lexica = append(e.tabela_lexica, Tupla{
 			lexema: string(e.buffer),
-			token:  conteudo_string,
+			token:  literal_string,
 			linha:  e.linha_inicio,
 			coluna: e.coluna_inicio,
 		})
 		e.buffer = []rune{}
 		e.lendoString = false
-		e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "\"", token: fecha_aspas, linha: e.linha, coluna: e.coluna})
+		e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "\"", token: close_quote, linha: e.linha, coluna: e.coluna})
 	} else {
 		e.buffer = append(e.buffer, char)
 	}
@@ -171,7 +171,7 @@ func (e *estadoLexer) detectarInicioComentarioLinha(i int) int {
 // detectarInicioString trata o início de uma string literal (aspas duplas).
 func (e *estadoLexer) detectarInicioString() {
 	e.processarBuffer()
-	e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "\"", token: abre_aspas, linha: e.linha, coluna: e.coluna})
+	e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "\"", token: open_quote, linha: e.linha, coluna: e.coluna})
 	e.lendoString = true
 	e.linha_inicio = e.linha
 	e.coluna_inicio = e.coluna + 1
@@ -194,13 +194,20 @@ func (e *estadoLexer) tratarSimbolosEspeciais(char rune) {
 	e.processarBuffer()
 	var token TabelaPalavras
 	switch char {
-	case '(': token = abre_parentese
-	case ')': token = fecha_parentese
-	case ',': token = virgula
-	case '{': token = abre_chave
-	case '}': token = fecha_chave
-	case '+': token = soma
-	case '<': token = menor_que
+	case '(':
+		token = open_paren
+	case ')':
+		token = close_paren
+	case ',':
+		token = comma
+	case '{':
+		token = open_brace
+	case '}':
+		token = close_brace
+	case '+':
+		token = op_add
+	case '<':
+		token = op_lt
 	}
 	e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: string(char), token: token, linha: e.linha, coluna: e.coluna})
 	e.coluna++

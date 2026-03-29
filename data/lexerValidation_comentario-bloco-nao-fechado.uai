@@ -1,0 +1,13 @@
+causo
+  Programa de teste pro interpretador em Minerês.
+  Lê um número do usuário, faz uma contagem e testa uma condição.
+fim_do_causo
+
+bora_cumpade ( )
+simbora
+    causo
+        Programa de teste pro interpretador em Minerês.
+        Lê um número do usuário, faz uma contagem e testa uma condição.
+
+    ta_bao uai
+cabo

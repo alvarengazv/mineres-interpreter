@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"mineres-interpreter/src/utils"
 	"regexp"
 	"unicode"
 )
@@ -40,7 +41,7 @@ func novoEstadoLexer(conteudo string) *estadoLexer {
 
 // classificarLexema classifica um lexema que não é palavra reservada,
 // verificando se é um literal numérico (hexa, octal, float, inteiro) ou variável.
-func (e *estadoLexer) classificarLexema(lexema string) TabelaPalavras {
+func (e *estadoLexer) classificarLexema	(lexema string) TabelaPalavras {
 	// 0x seguido de um ou mais números hexadecimais
 	regexHexa := regexp.MustCompile(`^0x[0-9A-F]+$`)
 	// 0 seguido de um ou mais números octais, não podendo ter 0 como segundo caractere
@@ -63,6 +64,15 @@ func (e *estadoLexer) classificarLexema(lexema string) TabelaPalavras {
 	case regexVariavel.MatchString(lexema):
 		return identifier
 	default:
+		if e.lendoChar {
+			utils.ThrowLexerException("Unterminated char literal", e.linha_inicio, e.coluna_inicio)
+		} else if e.lendoString {
+			utils.ThrowLexerException("Untermineted string literal", e.linha_inicio, e.coluna_inicio)
+		} else if len(e.tabela_lexica) > 0 && e.tabela_lexica[len(e.tabela_lexica)-1].token == op_assign {
+			utils.ThrowLexerException("Invalid variable value", e.linha_inicio, e.coluna_inicio)
+    	}
+		utils.ThrowLexerException("Invalid character", e.linha_inicio, e.coluna_inicio)
+
 		e.erro_lexico = true
 		return lexical_error
 	}
@@ -195,7 +205,9 @@ func (e *estadoLexer) tratarSequenciaEscape(i int) (bool, int) {
 
 // tratarString trata caracteres enquanto estiver lendo o conteúdo de uma string.
 func (e *estadoLexer) tratarString(char rune, i int) int {
-	if char == '"' {
+	if char == '\n' || char == '\r' {
+    	utils.ThrowLexerException("Unterminated string literal", e.linha_inicio, e.coluna_inicio)
+	} else if char == '"' {
 		if len(e.buffer) > 0 {
 			e.tabela_lexica = append(e.tabela_lexica, Tupla{
 				lexema: string(e.buffer),
@@ -223,7 +235,9 @@ func (e *estadoLexer) tratarString(char rune, i int) int {
 
 // tratarChar trata caracteres enquanto estiver lendo o conteúdo de um char literal.
 func (e *estadoLexer) tratarChar(char rune, i int) int {
-	if char == '\'' {
+	if char == '\n' || char == '\r' {
+    	utils.ThrowLexerException("Unterminated char literal", e.linha_inicio, e.coluna_inicio)
+	} else if char == '\'' {
 		if len(e.buffer) > 0 {
 			e.tabela_lexica = append(e.tabela_lexica, Tupla{
 				lexema: string(e.buffer),
@@ -325,7 +339,7 @@ func (e *estadoLexer) acumularBuffer(char rune) {
 	e.coluna++
 }
 
-func AnalisarArquivo(conteudo string) ([]Tupla, bool) {
+func AnalisarArquivo(conteudo string) ([]Tupla) {
 	e := novoEstadoLexer(conteudo)
 
 	for i := 0; i < len(e.runes); i++ {
@@ -337,6 +351,9 @@ func AnalisarArquivo(conteudo string) ([]Tupla, bool) {
 		if e.lendoComentarioBloco {
 			// Tratamento de Comentário de Bloco (causo ... fim_do_causo)
 			i = e.tratarComentarioBloco(i)
+			if(i+(len("fim_do_causo")) > len(e.runes)){
+				utils.ThrowLexerException("'fim_do_causo' required after using 'causo'", e.linha_inicio, e.coluna_inicio)
+			}
 		} else if e.lendoComentarioLinha {
 			// Tratamento de Comentário de Linha (//)
 			e.tratarComentarioLinha(char)
@@ -372,5 +389,10 @@ func AnalisarArquivo(conteudo string) ([]Tupla, bool) {
 
 	// Processa o que sobrou no buffer
 	e.processarBuffer()
-	return e.tabela_lexica, e.erro_lexico
+
+	if e.erro_lexico {
+		utils.ThrowException("lexor.go", "AnalisarArquivo", "Erro desconhecido encontrado")
+	}
+	
+	return e.tabela_lexica
 }

@@ -36,11 +36,9 @@ simbora
     trem_di_numeru teste_hexa fica_assim_entao 0x1A uai
     trem_di_numeru teste_octal fica_assim_entao 012 uai
     trem_di_numeru teste_inteiro fica_assim_entao 12 uai
-    // trem_di_numeru teste_inteiro fica_assim_entao 0012 uai
     trem_di_numeru teste_inteiro fica_assim_entao 0000 uai
     trem_di_numeru teste_inteiro fica_assim_entao 0x0 uai
     trem_di_numeru teste_inteiro fica_assim_entao 0x00 uai
-    @
-
+    #
     ta_bao uai
 cabo

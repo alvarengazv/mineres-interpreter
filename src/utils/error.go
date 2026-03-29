@@ -2,7 +2,37 @@ package utils
 
 import (
 	"fmt"
+	"os"
 )
+
+/**
+ * ThrowException(Resumo = "Criar e mostrar erros do lexer",
+ *		Parâmetros = {
+ *			mensagem(
+ *				description = "Erro no qual o sistema deve apresentar",
+ *				example = "Arquivo não encontrado"
+ *			),
+ *			line(
+ *				description = "Linha na qual o erro aconteceu"
+ *				example = 6
+ *			),
+ *			column(
+ *				description = "Coluna na qual o erro aconteceu"
+ *				example = 35
+ *			)
+ *		},
+ *		Retorno = {}
+ * )
+ */
+func ThrowLexerException(mensagem string, line, column int) {
+	executeException(fmt.Errorf(`
+Lexer parsed error on (%d::%d) => %s
+`,
+	line,
+	column,
+	mensagem,
+))
+}
 
 /**
  * ThrowException(Resumo = "Criar e mostrar erros gerais",
@@ -15,10 +45,10 @@ import (
  *				description = "função que lançou o erro",
  *				example = "LerArquivo"
  *			),
- *			erro(
+ *			mensagem(
  *				description = "Erro no qual o sistema deve apresentar",
  *				example = "Arquivo não encontrado"
- *			),
+ *			)
  *		},
  *		Retorno = {}
  * )
@@ -47,6 +77,6 @@ ThrowException::%s (%s) => %s
 func executeException(err error) {
 	if err != nil {
 		fmt.Println(err.Error())
-		return
+		os.Exit(0)
 	}
 }

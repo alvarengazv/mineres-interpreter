@@ -19,6 +19,7 @@ type estadoLexer struct {
 
 	// Estados de modo do Lexer
 	lendoString          bool
+	lendoChar            bool
 	lendoComentarioLinha bool
 	lendoComentarioBloco bool
 
@@ -140,22 +141,112 @@ func (e *estadoLexer) tratarComentarioLinha(char rune) {
 	}
 }
 
+// tratarSequenciaEscape verifica se o caractere atual e o próximo formam uma
+// sequência de escape válida (ex: \n, \t). Se sim, processa o buffer e adiciona o token.
+// tem só /n e /t, mas a gente vai adicionando mais se precisar
+func (e *estadoLexer) tratarSequenciaEscape(i int) (bool, int) {
+	if i < len(e.runes) && e.runes[i] == '\\' && i+1 < len(e.runes) {
+		prox := e.runes[i+1]
+		lexemaEscape := "\\" + string(prox)
+		if tokenEscape, existe := PalavrasReservadas[lexemaEscape]; existe {
+			if e.lendoString || e.lendoChar {
+				// Dentro de string ou char, o buffer acumulado é um literal correspondente
+				if len(e.buffer) > 0 {
+					var token TabelaPalavras
+					if e.lendoString {
+						token = literal_string
+					} else {
+						token = literal_char
+					}
+					e.tabela_lexica = append(e.tabela_lexica, Tupla{
+						lexema: string(e.buffer),
+						token:  token,
+						linha:  e.linha_inicio,
+						coluna: e.coluna_inicio,
+					})
+					e.buffer = []rune{}
+				}
+			} else {
+				// Fora de string/char, processa o buffer normalmente (identificadores, etc)
+				e.processarBuffer()
+			}
+
+			// Adiciona a sequência de escape como token individual
+			e.tabela_lexica = append(e.tabela_lexica, Tupla{
+				lexema: lexemaEscape,
+				token:  tokenEscape,
+				linha:  e.linha,
+				coluna: e.coluna,
+			})
+
+			i++ // Pula o próximo caractere (n, t, etc)
+			e.coluna += 2
+
+			if e.lendoString || e.lendoChar {
+				// Atualiza o início para o próximo trecho
+				e.linha_inicio = e.linha
+				e.coluna_inicio = e.coluna
+			}
+			return true, i
+		}
+	}
+	return false, i
+}
+
 // tratarString trata caracteres enquanto estiver lendo o conteúdo de uma string.
-func (e *estadoLexer) tratarString(char rune) {
+func (e *estadoLexer) tratarString(char rune, i int) int {
 	if char == '"' {
-		e.tabela_lexica = append(e.tabela_lexica, Tupla{
-			lexema: string(e.buffer),
-			token:  literal_string,
-			linha:  e.linha_inicio,
-			coluna: e.coluna_inicio,
-		})
-		e.buffer = []rune{}
+		if len(e.buffer) > 0 {
+			e.tabela_lexica = append(e.tabela_lexica, Tupla{
+				lexema: string(e.buffer),
+				token:  literal_string,
+				linha:  e.linha_inicio,
+				coluna: e.coluna_inicio,
+			})
+			e.buffer = []rune{}
+		}
 		e.lendoString = false
 		e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "\"", token: close_quote, linha: e.linha, coluna: e.coluna})
+		e.coluna++
+	} else if detectado, novoI := e.tratarSequenciaEscape(i); detectado {
+		return novoI
 	} else {
+		if len(e.buffer) == 0 {
+			e.linha_inicio = e.linha
+			e.coluna_inicio = e.coluna
+		}
 		e.buffer = append(e.buffer, char)
+		e.coluna++
 	}
-	e.coluna++
+	return i
+}
+
+// tratarChar trata caracteres enquanto estiver lendo o conteúdo de um char literal.
+func (e *estadoLexer) tratarChar(char rune, i int) int {
+	if char == '\'' {
+		if len(e.buffer) > 0 {
+			e.tabela_lexica = append(e.tabela_lexica, Tupla{
+				lexema: string(e.buffer),
+				token:  literal_char,
+				linha:  e.linha_inicio,
+				coluna: e.coluna_inicio,
+			})
+			e.buffer = []rune{}
+		}
+		e.lendoChar = false
+		e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "'", token: close_squote, linha: e.linha, coluna: e.coluna})
+		e.coluna++
+	} else if detectado, novoI := e.tratarSequenciaEscape(i); detectado {
+		return novoI
+	} else {
+		if len(e.buffer) == 0 {
+			e.linha_inicio = e.linha
+			e.coluna_inicio = e.coluna
+		}
+		e.buffer = append(e.buffer, char)
+		e.coluna++
+	}
+	return i
 }
 
 // detectarInicioComentarioLinha detecta o início de um comentário de linha (//).
@@ -173,6 +264,16 @@ func (e *estadoLexer) detectarInicioString() {
 	e.processarBuffer()
 	e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "\"", token: open_quote, linha: e.linha, coluna: e.coluna})
 	e.lendoString = true
+	e.linha_inicio = e.linha
+	e.coluna_inicio = e.coluna + 1
+	e.coluna++
+}
+
+// detectarInicioChar trata o início de um char (aspas simples).
+func (e *estadoLexer) detectarInicioChar() {
+	e.processarBuffer()
+	e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "'", token: open_squote, linha: e.linha, coluna: e.coluna})
+	e.lendoChar = true
 	e.linha_inicio = e.linha
 	e.coluna_inicio = e.coluna + 1
 	e.coluna++
@@ -241,13 +342,22 @@ func AnalisarArquivo(conteudo string) ([]Tupla, bool) {
 			e.tratarComentarioLinha(char)
 		} else if e.lendoString {
 			// Tratamento de Strings
-			e.tratarString(char)
+			i = e.tratarString(char, i)
+		} else if e.lendoChar {
+			// Tratamento de Caracteres
+			i = e.tratarChar(char, i)
 		} else if char == '/' && i+1 < len(e.runes) && e.runes[i+1] == '/' {
 			// Detectar início de comentário de linha //
 			i = e.detectarInicioComentarioLinha(i)
 		} else if char == '"' {
 			// Detectar início de string "
 			e.detectarInicioString()
+		} else if char == '\'' {
+			// Detectar início de caractere '
+			e.detectarInicioChar()
+		} else if detectado, novoI := e.tratarSequenciaEscape(i); detectado {
+			// Tratamento de sequências de escape fora de strings/chars
+			i = novoI
 		} else if unicode.IsSpace(char) {
 			// Delimitadores e Espaços
 			e.tratarEspacosDelimitadores(char)

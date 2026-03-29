@@ -4,6 +4,8 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 1 - Evolução - Criando tratamento de strings/char para suporte a \n \t - Joaquim Cruz 
+Parte 1 - Evolução - Criando tratamento de string simples "'" para leitura de char - Joaquim Cruz 
 Parte 1 - Mudança  - Melhorando descrições dos enums dos tokens - 25/03/2026 - Guilherme Alvarenga
 Parte 1 - Evolução - Determinação dos tipos de número/variável por regex & Categorização de Erros Léxicos - 22/03/2026 - Guilherme Alvarenga
 Parte 1 - Evolução - Criando funções para cada tratamento léxico & Struct para armazenar o estado do lexer - 22/03/2026 - Guilherme Alvarenga

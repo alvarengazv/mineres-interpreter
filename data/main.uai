@@ -9,6 +9,7 @@ simbora
     trem_di_numeru limite uai
     trem_di_numeru contador fica_assim_entao 0 uai
     trem_discrita mensagem fica_assim_entao "Fim da contagem" uai
+    trosso letra fica_assim_entao 'A' uai
 
     oia_proce_ve ( "Digita ate quantu ce quer contar:" ) uai
     xove ( limite ) uai
@@ -27,7 +28,7 @@ simbora
     cabo
     uai_senao
     simbora
-        oia_proce_ve ( "Deu algum trem errado na logica..." ) uai
+        oia_proce_ve ( "Deu algum trem \t errado na logica..." ) uai
     cabo
 
     trem_di_numeru teste_float fica_assim_entao 0.5 uai

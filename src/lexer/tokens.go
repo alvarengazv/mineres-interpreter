@@ -39,54 +39,59 @@ const (
 	close_brace // 22 - fecha_chave → }
 	open_quote  // 23 - abre_aspas  → "
 	close_quote // 24 - fecha_aspas → "
+	open_squote // 25 - abre_aspas_simples → '
+	close_squote // 26 - fecha_aspas_simples → '
 
 	// Punctuation
-	comma    // 25 - virgula → ,
-	stmt_end // 26 - uai     → ; (fim da instrução)
+	comma    // 27 - virgula → ,
+	stmt_end // 28 - uai     → ; (fim da instrução)
 
 	// Relational operators
-	op_lt  // 27 - <  → menor que
-	op_gt  // 28 - >  → maior que
-	op_lte // 29 - <= → menor ou igual
-	op_gte // 30 - >= → maior ou igual
+	op_lt  // 29 - <  → menor que
+	op_gt  // 30 - >  → maior que
+	op_lte // 31 - <= → menor ou igual
+	op_gte // 32 - >= → maior ou igual
 
 	// Assignment & equality
-	op_assign // 31 - fica_assim_entao → = (atribuição)
-	op_neq    // 32 - neh_nada         → != (diferente de)
-	op_eq     // 33 - mema_coisa       → == (igual a)
+	op_assign // 33 - fica_assim_entao → = (atribuição)
+	op_neq    // 34 - neh_nada         → != (diferente de)
+	op_eq     // 35 - mema_coisa       → == (igual a)
 
 	// Logical operators
-	op_or  // 34 - quarque_um → or
-	op_not // 35 - vam_marca  → not
-	op_and // 36 - tamem      → and
-	op_xor // 37 - um_o_oto   → xor
+	op_or  // 36 - quarque_um → or
+	op_not // 37 - vam_marca  → not
+	op_and // 38 - tamem      → and
+	op_xor // 39 - um_o_oto   → xor
 
 	// Arithmetic operators
-	op_add     // 38 - +    → adição
-	op_sub     // 39 - -    → subtração
-	op_mul     // 40 - veiz → multiplicação  (*)
-	op_div     // 41 - sob  → divisão        (/)
-	op_mod     // 42 - %    → módulo
-	op_int_div // 43 - /    → divisão inteira (//)
+	op_add     // 40 - +    → adição
+	op_sub     // 41 - -    → subtração
+	op_mul     // 42 - veiz → multiplicação  (*)
+	op_div     // 43 - sob  → divisão        (/)
+	op_mod     // 44 - %    → módulo
+	op_int_div // 45 - /    → divisão inteira (//)
 
 	// I/O
-	io_scan  // 44 - xove        → scan  / input
-	io_print // 45 - oia_proce_ve → print / output
+	io_scan  // 46 - xove        → scan  / input
+	io_print // 47 - oia_proce_ve → print / output
 
 	// Literals & tokens
-	literal_string // 46 - conteúdo string
-	comment_line   // 47 - // comentário de linha
+	literal_string // 48 - conteúdo string
+	literal_char   // 49 - conteúdo char
+	comment_line   // 50 - // comentário de linha
 
-	comment_block_open  // 48 - causo       → /* comentário de bloco
-	comment_block_close // 49 - fim_do_causo → */ comentário de bloco
+	comment_block_open  // 51 - causo       → /* comentário de bloco
+	comment_block_close // 52 - fim_do_causo → */ comentário de bloco
 
-	literal_int   // 50 - conteúdo inteiro
-	literal_hex   // 51 - conteúdo hexadecimal (0x...)
-	literal_oct   // 52 - conteúdo octal (0...)
-	literal_float // 53 - conteúdo float
+	literal_int   // 53 - conteúdo inteiro
+	literal_hex   // 54 - conteúdo hexadecimal (0x...)
+	literal_oct   // 55 - conteúdo octal (0...)
+	literal_float // 56 - conteúdo float
 
-	identifier    // 54 - variável / identificador
-	lexical_error // 55 - token inválido
+	identifier    // 57 - variável / identificador
+	char_newline  // 58 - \n
+	char_tab      // 59 - \t
+	lexical_error // 60 - token inválido
 )
 
 var PalavrasReservadas = map[string]TabelaPalavras{
@@ -96,6 +101,10 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 	"trem_discrita":    type_string,
 	"trem_discolhe":    type_bool,
 	"trosso":           type_char,
+
+	// Escape sequences
+	"\\n": char_newline,
+	"\\t": char_tab,
 
 	// Conditionals
 	"uai_se":    conditional_if,
@@ -122,12 +131,14 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 	"num_eh": literal_false,
 
 	// Block delimiters
-	"simbora":     block_open,
-	"cabo":        block_close,
-	"abre_chave":  open_brace,
-	"fecha_chave": close_brace,
-	"abre_aspas":  open_quote,
-	"fecha_aspas": close_quote,
+	"simbora":            block_open,
+	"cabo":               block_close,
+	"abre_chave":         open_brace,
+	"fecha_chave":        close_brace,
+	"abre_aspas":         open_quote,
+	"fecha_aspas":        close_quote,
+	"abre_aspas_simples": open_squote,
+	"fecha_aspas_simples": close_squote,
 
 	// Punctuation
 	"virgula": comma,

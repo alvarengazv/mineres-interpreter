@@ -4,6 +4,9 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 1 - Correção - Tratamento do final de comentários de bloco & Tratamento de símbolos antes faltantes - 30/03/2026 - Guilherme Alvarenga
+Parte 1 - Evolução - Otimização do lexer: Compilação Única de Regex & Salto de espaços 'de uma vez' - 30/03/2026 - Guilherme Alvarenga
+Parte 1 - Correção - Removendo entradas da Hash que não são palavras reservadas - 30/03/2026 - Guilherme Alvarenga
 Parte 1 - Evolução - Tratando os erros do lexer - 29/03/2026 - Luan Santos
 Parte 1 - Evolução - Criando tratamento de strings/char para suporte a \n \t - 29/03/2026 - Joaquim Cruz 
 Parte 1 - Evolução - Criando tratamento de string simples "'" para leitura de char - 29/03/2026 -  Joaquim Cruz 

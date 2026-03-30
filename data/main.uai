@@ -30,8 +30,16 @@ simbora
     simbora
         oia_proce_ve ( "Deu algum trem \t errado na logica..." ) uai
     cabo
+    
+    " \aa \n \t "
 
+    trem_di_numero teste_if fica_assim_entao .5 uai
+    trem_di_numero teste_if fica_assim_entao .5          /                  2 uai
+
+
+    trem_di_numeru teste_float fica_assim_entao '0.5' uai
     trem_di_numeru teste_float fica_assim_entao 0.5 uai
+    trem_di_numeru teste_float fica_assim_entao 3.14 uai
     trem_cum_virgula teste_float_dois fica_assim_entao .5 uai
     trem_di_numeru teste_hexa fica_assim_entao 0x1A uai
     trem_di_numeru teste_octal fica_assim_entao 012 uai
@@ -39,6 +47,6 @@ simbora
     trem_di_numeru teste_inteiro fica_assim_entao 0000 uai
     trem_di_numeru teste_inteiro fica_assim_entao 0x0 uai
     trem_di_numeru teste_inteiro fica_assim_entao 0x00 uai
-    #
+    
     ta_bao uai
 cabo

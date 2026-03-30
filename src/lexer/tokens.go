@@ -33,13 +33,13 @@ const (
 	literal_false // 18 - num_eh → false
 
 	// Block delimiters
-	block_open  // 19 - simbora → começo de bloco  { }
-	block_close // 20 - cabo    → fim de bloco    { }
-	open_brace  // 21 - abre_chave  → {
-	close_brace // 22 - fecha_chave → }
-	open_quote  // 23 - abre_aspas  → "
-	close_quote // 24 - fecha_aspas → "
-	open_squote // 25 - abre_aspas_simples → '
+	block_open   // 19 - simbora → começo de bloco  { }
+	block_close  // 20 - cabo    → fim de bloco    { }
+	open_brace   // 21 - abre_chave  → {
+	close_brace  // 22 - fecha_chave → }
+	open_quote   // 23 - abre_aspas  → "
+	close_quote  // 24 - fecha_aspas → "
+	open_squote  // 25 - abre_aspas_simples → '
 	close_squote // 26 - fecha_aspas_simples → '
 
 	// Punctuation
@@ -122,33 +122,31 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 	"bora_cumpade": func_decl,
 	"ta_bao":       func_return,
 
-	// Symbols
-	"abre_parentese":  open_paren,
-	"fecha_parentese": close_paren,
+	// Symbols — COMENTADOS: tratados diretamente em tratarSimbolosEspeciais, nunca chegam ao buffer.
+	// Se descomentadas, nomes de variáveis como "abre_parentese" seriam confundidos com tokens.
+	// "abre_parentese":  open_paren,
+	// "fecha_parentese": close_paren,
 
 	// Boolean literals
 	"eh":     literal_true,
 	"num_eh": literal_false,
 
 	// Block delimiters
-	"simbora":            block_open,
-	"cabo":               block_close,
-	"abre_chave":         open_brace,
-	"fecha_chave":        close_brace,
-	"abre_aspas":         open_quote,
-	"fecha_aspas":        close_quote,
-	"abre_aspas_simples": open_squote,
-	"fecha_aspas_simples": close_squote,
+	"simbora": block_open,
+	"cabo":    block_close,
+	// COMENTADOS: tratados diretamente pelo lexer (chars '{', '}', '"', etc.)
+	// Se descomentadas, variáveis com esses nomes seriam mascaradas.
+	// "abre_chave":          open_brace,
+	// "fecha_chave":         close_brace,
+	// "abre_aspas":          open_quote,
+	// "fecha_aspas":         close_quote,
+	// "abre_aspas_simples":  open_squote,
+	// "fecha_aspas_simples": close_squote,
 
 	// Punctuation
-	"virgula": comma,
-	"uai":     stmt_end,
-
-	// Relational operators
-	"<":  op_lt,
-	">":  op_gt,
-	"<=": op_lte,
-	">=": op_gte,
+	// COMENTADO: ',' é tratado em tratarSimbolosEspeciais. Uma variável "virgula" seria mascarada.
+	// "virgula": comma,
+	"uai": stmt_end,
 
 	// Assignment & equality
 	"fica_assim_entao": op_assign,
@@ -161,13 +159,20 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 	"tamem":      op_and,
 	"um_o_oto":   op_xor,
 
-	// Arithmetic operators
-	"+":    op_add,
-	"-":    op_sub,
+	// Arithmetic operators (only words, not symbols)
+	// COMENTADOS: tratados em tratarSimbolosEspeciais, nunca chegam ao buffer.
+	// "+":  op_add,
+	// "-":  op_sub,
 	"veiz": op_mul,
 	"sob":  op_div,
-	"%":    op_mod,
-	"/":    op_int_div,
+	// "%":  op_mod,
+	// "/":  op_int_div,
+
+	// COMENTADOS: '<' e '>' são tratados em tratarSimbolosEspeciais (inclui <= e >=).
+	// "<":  op_lt,
+	// ">":  op_gt,
+	// "<=": op_lte,
+	// ">=": op_gte,
 
 	// I/O
 	"xove":         io_scan,

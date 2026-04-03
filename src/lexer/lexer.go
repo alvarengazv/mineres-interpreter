@@ -6,6 +6,19 @@ import (
 	"unicode"
 )
 
+var (
+	// 0x seguido de um ou mais números hexadecimais
+	regexHexa = regexp.MustCompile(`^0x[0-9A-F]+$`)
+	// 0 seguido de um ou mais números octais, não podendo ter 0 como segundo caractere
+	regexOctal = regexp.MustCompile(`^0[1-7][0-7]+$`)
+	// Um ou mais números seguidos de ponto e um ou mais números, ou ponto seguido de um ou mais números
+	regexFloat = regexp.MustCompile(`^[0-9]*\.[0-9]+$|^[0-9]+\.[0-9]+$`)
+	// Um ou mais zeros seguidos, OU um número diferente de 0 seguido de qualquer número
+	regexInteiro = regexp.MustCompile(`^[0]+$|^[1-9][0-9]*$`)
+	// Começa com letra, seguido de letras, números ou underscore
+	regexVariavel = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)
+)
+
 // estadoLexer mantém todo o estado mutável do analisador léxico,
 // permitindo que as funções auxiliares compartilhem e modifiquem o estado.
 type estadoLexer struct {
@@ -27,13 +40,6 @@ type estadoLexer struct {
 	// Constantes para comentário de bloco
 	FimCauso        string
 	tamanhoFimCauso int
-
-	// Compiles dos Regex
-	regexHexa     *regexp.Regexp
-	regexOctal    *regexp.Regexp
-	regexFloat    *regexp.Regexp
-	regexInteiro  *regexp.Regexp
-	regexVariavel *regexp.Regexp
 }
 
 func novoEstadoLexer(conteudo string) *estadoLexer {
@@ -43,31 +49,22 @@ func novoEstadoLexer(conteudo string) *estadoLexer {
 		coluna:          1,
 		FimCauso:        "fim_do_causo",
 		tamanhoFimCauso: len("fim_do_causo"),
-		// 0x seguido de um ou mais números hexadecimais
-		regexHexa: regexp.MustCompile(`^0x[0-9A-F]+$`),
-		// 0 seguido de um ou mais números octais, não podendo ter 0 como segundo caractere
-		regexOctal: regexp.MustCompile(`^0[1-7][0-7]+$`),
-		// Um ou mais números seguidos de ponto e um ou mais números, ou ponto seguido de um ou mais números
-		regexFloat: regexp.MustCompile(`^[0-9]*\.[0-9]+$|^[0-9]+\.[0-9]+$`),
-		// Um ou mais zeros seguidos, OU um número diferente de 0 seguido de qualquer número
-		regexInteiro: regexp.MustCompile(`^[0]+$|^[1-9][0-9]*$`),
-		// Começa com letra, seguido de letras, números ou underscore
-		regexVariavel: regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)}
+	}
 }
 
 // classificarLexema classifica um lexema que não é palavra reservada,
 // verificando se é um literal numérico (hexa, octal, float, inteiro) ou variável.
 func (e *estadoLexer) classificarLexema(lexema string) TabelaPalavras {
 	switch {
-	case e.regexHexa.MatchString(lexema):
+	case regexHexa.MatchString(lexema):
 		return literal_hex
-	case e.regexOctal.MatchString(lexema):
+	case regexOctal.MatchString(lexema):
 		return literal_oct
-	case e.regexFloat.MatchString(lexema):
+	case regexFloat.MatchString(lexema):
 		return literal_float
-	case e.regexInteiro.MatchString(lexema):
+	case regexInteiro.MatchString(lexema):
 		return literal_int
-	case e.regexVariavel.MatchString(lexema):
+	case regexVariavel.MatchString(lexema):
 		return identifier
 	default:
 		if e.lendoChar {
@@ -126,9 +123,8 @@ func (e *estadoLexer) tratarComentarioBloco(i int) int {
 			coluna: e.coluna,
 		})
 		/*
-		 * Esse i + len([]rune(e.FimCauso)) aqui é para ele saltar o restante do "fim_do_causo" depois de reconhecer ele,
+		 * Esse i + e.tamanhoFimCauso aqui é para ele saltar o restante do "fim_do_causo" depois de reconhecer ele,
 		 * para não ficar lendo ele como parte do comentário de bloco.
-		 * O número len([]rune(e.FimCauso)) é o tamanho da string "fim_do_causo".
 		 */
 
 		/*
@@ -136,8 +132,8 @@ func (e *estadoLexer) tratarComentarioBloco(i int) int {
 		 * Então, se houver algum comando logo após o "fim_do_causo", ele será lido corretamente.
 		 * Como, por exemplo, fim_do_causouai, o 'u' será lido corretamente.
 		 */
-		avanco := len([]rune(e.FimCauso)) - 1
-		e.coluna += len([]rune(e.FimCauso))
+		avanco := e.tamanhoFimCauso - 1
+		e.coluna += e.tamanhoFimCauso
 		e.lendoComentarioBloco = false
 		return i + avanco
 	}
@@ -166,42 +162,45 @@ func (e *estadoLexer) tratarComentarioLinha(char rune) {
 }
 
 // tratarSequenciaEscape verifica se o caractere atual e o próximo formam uma
-// sequência de escape válida (ex: \n, \t). Se sim, trata de acordo com o contexto:
+// sequência de escape válida (ex: \n, \t, \', \", \\). Se sim, trata de acordo com o contexto:
 // - Dentro de string/char: converte para o caractere real e acumula no buffer.
-// - Fora de string/char: processa o buffer e adiciona como token individual.
+// - Fora de string/char: retorna false para que a barra seja tratada como caractere normal.
 func (e *estadoLexer) tratarSequenciaEscape(i int) (bool, int) {
 	if i < len(e.runes) && e.runes[i] == '\\' && i+1 < len(e.runes) {
+		// Só processa sequências de escape se estivermos dentro de uma string ou char
+		if !e.lendoString && !e.lendoChar {
+			return false, i
+		}
+
 		prox := e.runes[i+1]
-		lexemaEscape := "\\" + string(prox)
-		if tokenEscape, existe := PalavrasReservadas[lexemaEscape]; existe {
-			// Mapeia a sequência de escape para o rune real
-			var runeReal rune
-			switch prox {
-			case 'n':
-				runeReal = '\n'
-			case 't':
-				runeReal = '\t'
-			}
 
-			if e.lendoString || e.lendoChar {
-				// Dentro de string ou char: acumula o caractere real no buffer
-				if len(e.buffer) == 0 {
-					e.linha_inicio = e.linha
-					e.coluna_inicio = e.coluna
-				}
-				e.buffer = append(e.buffer, runeReal)
-			} else {
-				// Fora de string/char, processa o buffer normalmente e adiciona como token
-				e.processarBuffer()
-				e.tabela_lexica = append(e.tabela_lexica, Tupla{
-					lexema: string(runeReal),
-					token:  tokenEscape,
-					linha:  e.linha,
-					coluna: e.coluna,
-				})
-			}
+		// Verifica se é uma sequência de escape conhecida e qual o seu caractere real
+		var runeReal rune
+		var ehEscapeValido bool
 
-			i++ // Pula o próximo caractere (n, t, etc)
+		switch prox {
+		case 'n':
+			runeReal = '\n'
+			ehEscapeValido = true
+		case 't':
+			runeReal = '\t'
+			ehEscapeValido = true
+		case '\'', '"', '\\':
+			runeReal = prox
+			ehEscapeValido = true
+		default:
+			ehEscapeValido = false
+		}
+
+		if ehEscapeValido {
+			// Acumula o caractere real no buffer
+			if len(e.buffer) == 0 {
+				e.linha_inicio = e.linha
+				e.coluna_inicio = e.coluna
+			}
+			e.buffer = append(e.buffer, runeReal)
+
+			i++ // Pula o próximo caractere (n, t, ', ", \)
 			e.coluna += 2
 			return true, i
 		}
@@ -214,17 +213,14 @@ func (e *estadoLexer) tratarString(char rune, i int) int {
 	if char == '\n' || char == '\r' {
 		utils.ThrowLexerException("Unterminated string literal", e.linha_inicio, e.coluna_inicio)
 	} else if char == '"' {
-		if len(e.buffer) > 0 {
-			e.tabela_lexica = append(e.tabela_lexica, Tupla{
-				lexema: string(e.buffer),
-				token:  literal_string,
-				linha:  e.linha_inicio,
-				coluna: e.coluna_inicio,
-			})
-			e.buffer = []rune{}
-		}
+		e.tabela_lexica = append(e.tabela_lexica, Tupla{
+			lexema: string(e.buffer),
+			token:  literal_string,
+			linha:  e.linha_inicio,
+			coluna: e.coluna_inicio,
+		})
+		e.buffer = []rune{}
 		e.lendoString = false
-		e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "\"", token: close_quote, linha: e.linha, coluna: e.coluna})
 		e.coluna++
 	} else if detectado, novoI := e.tratarSequenciaEscape(i); detectado {
 		return novoI
@@ -244,17 +240,14 @@ func (e *estadoLexer) tratarChar(char rune, i int) int {
 	if char == '\n' || char == '\r' {
 		utils.ThrowLexerException("Unterminated char literal", e.linha_inicio, e.coluna_inicio)
 	} else if char == '\'' {
-		if len(e.buffer) > 0 {
-			e.tabela_lexica = append(e.tabela_lexica, Tupla{
-				lexema: string(e.buffer),
-				token:  literal_char,
-				linha:  e.linha_inicio,
-				coluna: e.coluna_inicio,
-			})
-			e.buffer = []rune{}
-		}
+		e.tabela_lexica = append(e.tabela_lexica, Tupla{
+			lexema: string(e.buffer),
+			token:  literal_char,
+			linha:  e.linha_inicio,
+			coluna: e.coluna_inicio,
+		})
+		e.buffer = []rune{}
 		e.lendoChar = false
-		e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "'", token: close_squote, linha: e.linha, coluna: e.coluna})
 		e.coluna++
 	} else if detectado, novoI := e.tratarSequenciaEscape(i); detectado {
 		return novoI
@@ -282,7 +275,6 @@ func (e *estadoLexer) detectarInicioComentarioLinha(i int) int {
 // detectarInicioString trata o início de uma string literal (aspas duplas).
 func (e *estadoLexer) detectarInicioString() {
 	e.processarBuffer()
-	e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "\"", token: open_quote, linha: e.linha, coluna: e.coluna})
 	e.lendoString = true
 	e.linha_inicio = e.linha
 	e.coluna_inicio = e.coluna + 1
@@ -292,7 +284,6 @@ func (e *estadoLexer) detectarInicioString() {
 // detectarInicioChar trata o início de um char (aspas simples).
 func (e *estadoLexer) detectarInicioChar() {
 	e.processarBuffer()
-	e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: "'", token: open_squote, linha: e.linha, coluna: e.coluna})
 	e.lendoChar = true
 	e.linha_inicio = e.linha
 	e.coluna_inicio = e.coluna + 1

@@ -2,7 +2,7 @@ trem_discrita mensagem1 fica_assim_entao "Fim \n da contagem" ; uai
 
 bora_cumpade main ( )
 simbora
-    trem_discrita mensagem2 fica_assim_entao "Fim da contagem" uai
+    trem_discrita mensagem2 fica_assim_entao " uai
 
     ta_bao uai
 cabo

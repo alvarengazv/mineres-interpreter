@@ -11,7 +11,7 @@ simbora
     trem_discrita mensagem fica_assim_entao "Fim da contagem" uai
     trosso letra fica_assim_entao 'A' uai
 
-    oia_proce_ve ( "Digita ate quantu ce quer contar:" ) uai
+    oia_proce_ve ( "Digita ate quantu  \' \" ce quer \t contar: ") uai
     xove ( limite ) uai
 
     enquanto_tiver_trem ( contador < limite )

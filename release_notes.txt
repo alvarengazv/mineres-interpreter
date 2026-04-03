@@ -4,6 +4,9 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 1 - Mudança - Otimização do regex por meio de variável global - 03/04/2026 - Joaquim Cruz
+Parte 1 - Evolução - Tratamento de \' e \" dentro de strings e chars - 03/04/2026 - Joaquim Cruz 
+Parte 1 - Correção - Tratamento de caracteres de escape fora da string agora da erro léxico - 03/04/2026 - Joaquim Cruz
 Parte 1 - Correção - Tratamento correto dos caracteres de Escape & Erro de número inválido & token ';' - 03/04/2026 - Guilherme Alvarenga
 Parte 1 - Correção - Tratamento do final de comentários de bloco & Tratamento de símbolos antes faltantes - 30/03/2026 - Guilherme Alvarenga
 Parte 1 - Evolução - Otimização do lexer: Compilação Única de Regex & Salto de espaços 'de uma vez' - 30/03/2026 - Guilherme Alvarenga

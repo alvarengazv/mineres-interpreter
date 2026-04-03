@@ -37,63 +37,57 @@ const (
 	block_close  // 20 - cabo    → fim de bloco    { }
 	open_brace   // 21 - abre_chave  → {
 	close_brace  // 22 - fecha_chave → }
-	open_quote   // 23 - abre_aspas  → "
-	close_quote  // 24 - fecha_aspas → "
-	open_squote  // 25 - abre_aspas_simples → '
-	close_squote // 26 - fecha_aspas_simples → '
 
 	// Punctuation
-	comma    // 27 - virgula → ,
-	stmt_end // 28 - uai     → ; (fim da instrução)
+	comma    // 23 - virgula → ,
+	stmt_end // 24 - uai     → ; (fim da instrução)
 
 	// Relational operators
-	op_lt  // 29 - <  → menor que
-	op_gt  // 30 - >  → maior que
-	op_lte // 31 - <= → menor ou igual
-	op_gte // 32 - >= → maior ou igual
+	op_lt  // 25 - <  → menor que
+	op_gt  // 26 - >  → maior que
+	op_lte // 27 - <= → menor ou igual
+	op_gte // 28 - >= → maior ou igual
 
 	// Assignment & equality
-	op_assign // 33 - fica_assim_entao → = (atribuição)
-	op_neq    // 34 - neh_nada         → != (diferente de)
-	op_eq     // 35 - mema_coisa       → == (igual a)
+	op_assign // 29 - fica_assim_entao → = (atribuição)
+	op_neq    // 30 - neh_nada         → != (diferente de)
+	op_eq     // 31 - mema_coisa       → == (igual a)
 
 	// Logical operators
-	op_or  // 36 - quarque_um → or
-	op_not // 37 - vam_marca  → not
-	op_and // 38 - tamem      → and
-	op_xor // 39 - um_o_oto   → xor
+	op_or  // 32 - quarque_um → or
+	op_not // 33 - vam_marca  → not
+	op_and // 34 - tamem      → and
+	op_xor // 35 - um_o_oto   → xor
 
 	// Arithmetic operators
-	op_add     // 40 - +    → adição
-	op_sub     // 41 - -    → subtração
-	op_mul     // 42 - veiz → multiplicação  (*)
-	op_div     // 43 - sob  → divisão        (/)
-	op_mod     // 44 - %    → módulo
-	op_int_div // 45 - /    → divisão inteira (//)
+	op_add     // 36 - +    → adição
+	op_sub     // 37 - -    → subtração
+	op_mul     // 38 - veiz → multiplicação  (*)
+	op_div     // 39 - sob  → divisão        (/)
+	op_mod     // 40 - %    → módulo
+	op_int_div // 41 - /    → divisão inteira (//)
 
 	// I/O
-	io_scan  // 46 - xove        → scan  / input
-	io_print // 47 - oia_proce_ve → print / output
+	io_scan  // 42 - xove        → scan  / input
+	io_print // 43 - oia_proce_ve → print / output
 
 	// Literals & tokens
-	literal_string // 48 - conteúdo string
-	literal_char   // 49 - conteúdo char
-	comment_line   // 50 - // comentário de linha
+	literal_string // 44 - conteúdo string
+	literal_char   // 45 - conteúdo char
+	comment_line   // 46 - // comentário de linha
 
-	comment_block_open  // 51 - causo       → /* comentário de bloco
-	comment_block_close // 52 - fim_do_causo → */ comentário de bloco
+	comment_block_open  // 47 - causo       → /* comentário de bloco
+	comment_block_close // 48 - fim_do_causo → */ comentário de bloco
 
-	literal_int   // 53 - conteúdo inteiro
-	literal_hex   // 54 - conteúdo hexadecimal (0x...)
-	literal_oct   // 55 - conteúdo octal (0...)
-	literal_float // 56 - conteúdo float
+	literal_int   // 49 - conteúdo inteiro
+	literal_hex   // 50 - conteúdo hexadecimal (0x...)
+	literal_oct   // 51 - conteúdo octal (0...)
+	literal_float // 52 - conteúdo float
 
-	identifier    // 57 - variável / identificador
-	char_newline  // 58 - \n
-	char_tab      // 59 - \t
-	lexical_error // 60 - token inválido
+	identifier    // 53 - variável / identificador
+	lexical_error // 54 - token inválido
 
-	stmt_end_for // 61 - ; → fim de statement no for
+	stmt_end_for // 55 - ; → fim de statement no for
 )
 
 var PalavrasReservadas = map[string]TabelaPalavras{
@@ -103,10 +97,6 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 	"trem_discrita":    type_string,
 	"trem_discolhe":    type_bool,
 	"trosso":           type_char,
-
-	// Escape sequences
-	"\\n": char_newline,
-	"\\t": char_tab,
 
 	// Conditionals
 	"uai_se":    conditional_if,

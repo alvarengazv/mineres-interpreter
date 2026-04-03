@@ -92,6 +92,8 @@ const (
 	char_newline  // 58 - \n
 	char_tab      // 59 - \t
 	lexical_error // 60 - token inválido
+
+	stmt_end_for // 61 - ; → fim de statement no for
 )
 
 var PalavrasReservadas = map[string]TabelaPalavras{
@@ -147,6 +149,7 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 	// COMENTADO: ',' é tratado em tratarSimbolosEspeciais. Uma variável "virgula" seria mascarada.
 	// "virgula": comma,
 	"uai": stmt_end,
+	";":   stmt_end_for,
 
 	// Assignment & equality
 	"fica_assim_entao": op_assign,

@@ -29,10 +29,10 @@ type estadoLexer struct {
 	tamanhoFimCauso int
 
 	// Compiles dos Regex
-	regexHexa *regexp.Regexp
-	regexOctal *regexp.Regexp
-	regexFloat *regexp.Regexp
-	regexInteiro *regexp.Regexp
+	regexHexa     *regexp.Regexp
+	regexOctal    *regexp.Regexp
+	regexFloat    *regexp.Regexp
+	regexInteiro  *regexp.Regexp
 	regexVariavel *regexp.Regexp
 }
 
@@ -57,7 +57,7 @@ func novoEstadoLexer(conteudo string) *estadoLexer {
 
 // classificarLexema classifica um lexema que não é palavra reservada,
 // verificando se é um literal numérico (hexa, octal, float, inteiro) ou variável.
-func (e *estadoLexer) classificarLexema	(lexema string) TabelaPalavras {
+func (e *estadoLexer) classificarLexema(lexema string) TabelaPalavras {
 	switch {
 	case e.regexHexa.MatchString(lexema):
 		return literal_hex
@@ -74,9 +74,9 @@ func (e *estadoLexer) classificarLexema	(lexema string) TabelaPalavras {
 			utils.ThrowLexerException("Unterminated char literal", e.linha_inicio, e.coluna_inicio)
 		} else if e.lendoString {
 			utils.ThrowLexerException("Unterminated string literal", e.linha_inicio, e.coluna_inicio)
-		} else if len(e.tabela_lexica) > 0 && e.tabela_lexica[len(e.tabela_lexica)-1].token == op_assign {
-			utils.ThrowLexerException("Invalid variable value", e.linha_inicio, e.coluna_inicio)
-    	}
+		} else if lexema[0] >= '0' && lexema[0] <= '9' {
+			utils.ThrowLexerException("Invalid number value", e.linha_inicio, e.coluna_inicio)
+		}
 		utils.ThrowLexerException("Invalid character", e.linha_inicio, e.coluna_inicio)
 
 		e.erro_lexico = true
@@ -118,8 +118,6 @@ func (e *estadoLexer) processarBuffer() {
 func (e *estadoLexer) tratarComentarioBloco(i int) int {
 	char := e.runes[i]
 
-	
-
 	if char == 'f' && i+e.tamanhoFimCauso <= len(e.runes) && string(e.runes[i:i+e.tamanhoFimCauso]) == e.FimCauso {
 		e.tabela_lexica = append(e.tabela_lexica, Tupla{
 			lexema: "fim_do_causo",
@@ -132,7 +130,7 @@ func (e *estadoLexer) tratarComentarioBloco(i int) int {
 		 * para não ficar lendo ele como parte do comentário de bloco.
 		 * O número len([]rune(e.FimCauso)) é o tamanho da string "fim_do_causo".
 		 */
-		
+
 		/*
 		 * O -1 é para não pular o último caractere do "fim_do_causo", que é o 'o'.
 		 * Então, se houver algum comando logo após o "fim_do_causo", ele será lido corretamente.
@@ -168,51 +166,43 @@ func (e *estadoLexer) tratarComentarioLinha(char rune) {
 }
 
 // tratarSequenciaEscape verifica se o caractere atual e o próximo formam uma
-// sequência de escape válida (ex: \n, \t). Se sim, processa o buffer e adiciona o token.
-// tem só /n e /t, mas a gente vai adicionando mais se precisar
+// sequência de escape válida (ex: \n, \t). Se sim, trata de acordo com o contexto:
+// - Dentro de string/char: converte para o caractere real e acumula no buffer.
+// - Fora de string/char: processa o buffer e adiciona como token individual.
 func (e *estadoLexer) tratarSequenciaEscape(i int) (bool, int) {
 	if i < len(e.runes) && e.runes[i] == '\\' && i+1 < len(e.runes) {
 		prox := e.runes[i+1]
 		lexemaEscape := "\\" + string(prox)
 		if tokenEscape, existe := PalavrasReservadas[lexemaEscape]; existe {
-			if e.lendoString || e.lendoChar {
-				// Dentro de string ou char, o buffer acumulado é um literal correspondente
-				if len(e.buffer) > 0 {
-					var token TabelaPalavras
-					if e.lendoString {
-						token = literal_string
-					} else {
-						token = literal_char
-					}
-					e.tabela_lexica = append(e.tabela_lexica, Tupla{
-						lexema: string(e.buffer),
-						token:  token,
-						linha:  e.linha_inicio,
-						coluna: e.coluna_inicio,
-					})
-					e.buffer = []rune{}
-				}
-			} else {
-				// Fora de string/char, processa o buffer normalmente (identificadores, etc)
-				e.processarBuffer()
+			// Mapeia a sequência de escape para o rune real
+			var runeReal rune
+			switch prox {
+			case 'n':
+				runeReal = '\n'
+			case 't':
+				runeReal = '\t'
 			}
 
-			// Adiciona a sequência de escape como token individual
-			e.tabela_lexica = append(e.tabela_lexica, Tupla{
-				lexema: lexemaEscape,
-				token:  tokenEscape,
-				linha:  e.linha,
-				coluna: e.coluna,
-			})
+			if e.lendoString || e.lendoChar {
+				// Dentro de string ou char: acumula o caractere real no buffer
+				if len(e.buffer) == 0 {
+					e.linha_inicio = e.linha
+					e.coluna_inicio = e.coluna
+				}
+				e.buffer = append(e.buffer, runeReal)
+			} else {
+				// Fora de string/char, processa o buffer normalmente e adiciona como token
+				e.processarBuffer()
+				e.tabela_lexica = append(e.tabela_lexica, Tupla{
+					lexema: string(runeReal),
+					token:  tokenEscape,
+					linha:  e.linha,
+					coluna: e.coluna,
+				})
+			}
 
 			i++ // Pula o próximo caractere (n, t, etc)
 			e.coluna += 2
-
-			if e.lendoString || e.lendoChar {
-				// Atualiza o início para o próximo trecho
-				e.linha_inicio = e.linha
-				e.coluna_inicio = e.coluna
-			}
 			return true, i
 		}
 	}
@@ -222,7 +212,7 @@ func (e *estadoLexer) tratarSequenciaEscape(i int) (bool, int) {
 // tratarString trata caracteres enquanto estiver lendo o conteúdo de uma string.
 func (e *estadoLexer) tratarString(char rune, i int) int {
 	if char == '\n' || char == '\r' {
-    	utils.ThrowLexerException("Unterminated string literal", e.linha_inicio, e.coluna_inicio)
+		utils.ThrowLexerException("Unterminated string literal", e.linha_inicio, e.coluna_inicio)
 	} else if char == '"' {
 		if len(e.buffer) > 0 {
 			e.tabela_lexica = append(e.tabela_lexica, Tupla{
@@ -252,7 +242,7 @@ func (e *estadoLexer) tratarString(char rune, i int) int {
 // tratarChar trata caracteres enquanto estiver lendo o conteúdo de um char literal.
 func (e *estadoLexer) tratarChar(char rune, i int) int {
 	if char == '\n' || char == '\r' {
-    	utils.ThrowLexerException("Unterminated char literal", e.linha_inicio, e.coluna_inicio)
+		utils.ThrowLexerException("Unterminated char literal", e.linha_inicio, e.coluna_inicio)
 	} else if char == '\'' {
 		if len(e.buffer) > 0 {
 			e.tabela_lexica = append(e.tabela_lexica, Tupla{
@@ -312,21 +302,21 @@ func (e *estadoLexer) detectarInicioChar() {
 // tratarEspacosDelimitadores trata espaços em branco e quebras de linha.
 func (e *estadoLexer) tratarEspacosDelimitadores(i int) int {
 	e.processarBuffer()
-	
+
 	// Enquanto o próximo também for espaço, a gente só vai incrementando
-    for i < len(e.runes) && unicode.IsSpace(e.runes[i]) {
-        if e.runes[i] == '\n' {
-            e.linha++
-            e.coluna = 1
-        } else {
-            e.coluna++
-        }
-        if i+1 < len(e.runes) && unicode.IsSpace(e.runes[i+1]) {
-            i++ // Pula pro próximo espaço
-        } else {
-            break // Sai se o próximo não for mais espaço
-        }
-    }
+	for i < len(e.runes) && unicode.IsSpace(e.runes[i]) {
+		if e.runes[i] == '\n' {
+			e.linha++
+			e.coluna = 1
+		} else {
+			e.coluna++
+		}
+		if i+1 < len(e.runes) && unicode.IsSpace(e.runes[i+1]) {
+			i++ // Pula pro próximo espaço
+		} else {
+			break // Sai se o próximo não for mais espaço
+		}
+	}
 	return i
 }
 
@@ -371,6 +361,8 @@ func (e *estadoLexer) tratarSimbolosEspeciais(char rune, i int) int {
 		token = op_mod
 	case '/':
 		token = op_int_div
+	case ';':
+		token = stmt_end_for
 	}
 
 	e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: lexema, token: token, linha: e.linha, coluna: e.coluna})
@@ -389,7 +381,7 @@ func (e *estadoLexer) acumularBuffer(char rune) {
 	e.coluna++
 }
 
-func AnalisarArquivo(conteudo string) ([]Tupla) {
+func AnalisarArquivo(conteudo string) []Tupla {
 	e := novoEstadoLexer(conteudo)
 
 	for i := 0; i < len(e.runes); i++ {
@@ -447,6 +439,6 @@ func AnalisarArquivo(conteudo string) ([]Tupla) {
 	if e.lendoComentarioBloco {
 		utils.ThrowLexerException("'fim_do_causo' required after using 'causo'", e.linha_inicio, e.coluna_inicio)
 	}
-	
+
 	return e.tabela_lexica
 }

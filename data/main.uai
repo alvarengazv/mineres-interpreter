@@ -31,10 +31,11 @@ simbora
         oia_proce_ve ( "Deu algum trem \t errado na logica..." ) uai
     cabo
     
-    " \aa \n \t "
+    "TESTE \aa \n \ testesaa "
 
     trem_di_numero teste_if fica_assim_entao .5 uai
     trem_di_numero teste_if fica_assim_entao .5          /                  2 uai
+    trem_di_numero teste_if fica_assim_entao contador + 5 uai
 
 
     trem_di_numeru teste_float fica_assim_entao '0.5' uai

@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	conteudo := utils.LerArquivo("data/lexerValidation_numero-invalido.uai")
+	conteudo := utils.LerArquivo("data/main.uai")
 	listTupla := lexer.AnalisarArquivo(conteudo)
 
 	lexer.ListTuplaToString(listTupla)

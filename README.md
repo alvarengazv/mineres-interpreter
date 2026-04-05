@@ -171,7 +171,7 @@ Para instalar o projeto, siga os passos abaixo:
 
 [linkedin-autor2]: https://www.linkedin.com/in/joaquim-cruz-b760bb350/
 [telegram-autor2]: https://
-[gmail-autor2]: mailto:
+[gmail-autor2]: mailto:joaquimcezar930@gmail.com
 
 [linkedin-autor3]: https://www.linkedin.com/in/luan-santos-9bb01920b/
 [telegram-autor3]: https://t.me/LuanLuL_SO7

@@ -3,7 +3,7 @@ causo
   Lê um número do usuário, faz uma contagem e testa uma condição.
 fim_do_causo
 
-bora_cumpade ( )
+bora_cumpade main ( )
 simbora
     // Preparando os trem
     trem_di_numeru limite uai
@@ -28,17 +28,19 @@ simbora
     cabo
     uai_senao
     simbora
-        oia_proce_ve ( "Deu algum trem \t errado na logica..." ) uai
+        oia_proce_ve ( "Deu algum trem \t errado na logica...", .5, 1, 0xFF, "teste" ) uai
     cabo
     
     "TESTE \aa \n \ testesaa "
 
-    trem_di_numero teste_if fica_assim_entao .5 uai
+    "teste \" de string";
+
+    trem_di_numero teste_if fica_assim_entao ".5" uai
     trem_di_numero teste_if fica_assim_entao .5          /                  2 uai
     trem_di_numero teste_if fica_assim_entao contador + 5 uai
 
 
-    trem_di_numeru teste_float fica_assim_entao '0.5' uai
+    trem_di_numeru teste_float fica_assim_entao '\\' und
     trem_di_numeru teste_float fica_assim_entao 0.5 uai
     trem_di_numeru teste_float fica_assim_entao 3.14 uai
     trem_cum_virgula teste_float_dois fica_assim_entao .5 uai

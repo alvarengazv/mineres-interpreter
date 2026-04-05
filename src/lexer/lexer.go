@@ -68,13 +68,13 @@ func (e *estadoLexer) classificarLexema(lexema string) TabelaPalavras {
 		return identifier
 	default:
 		if e.lendoChar {
-			utils.ThrowLexerException("Unterminated char literal", e.linha_inicio, e.coluna_inicio)
+			utils.ThrowLexerException("Unknown token: Unterminated char literal", e.linha_inicio, e.coluna_inicio)
 		} else if e.lendoString {
-			utils.ThrowLexerException("Unterminated string literal", e.linha_inicio, e.coluna_inicio)
+			utils.ThrowLexerException("Unknown token: Unterminated string literal", e.linha_inicio, e.coluna_inicio)
 		} else if lexema[0] >= '0' && lexema[0] <= '9' {
-			utils.ThrowLexerException("Invalid number value", e.linha_inicio, e.coluna_inicio)
+			utils.ThrowLexerException("Unknown token: Invalid number value", e.linha_inicio, e.coluna_inicio)
 		}
-		utils.ThrowLexerException("Invalid character", e.linha_inicio, e.coluna_inicio)
+		utils.ThrowLexerException("Unknown token: Invalid character", e.linha_inicio, e.coluna_inicio)
 
 		e.erro_lexico = true
 		return lexical_error
@@ -95,6 +95,13 @@ func (e *estadoLexer) processarBuffer() {
 		token = t
 		if token == comment_block_open {
 			e.lendoComentarioBloco = true
+			e.buffer = []rune{}
+			return
+		}
+		if token == comment_block_close && !e.lendoComentarioBloco {
+			utils.ThrowLexerException("Malformed comment block: 'causo' is required before 'fim_do_causo'", e.linha_inicio, e.coluna_inicio)
+			e.erro_lexico = true
+			return
 		}
 	} else {
 		token = e.classificarLexema(lexema)
@@ -116,17 +123,6 @@ func (e *estadoLexer) tratarComentarioBloco(i int) int {
 	char := e.runes[i]
 
 	if char == 'f' && i+e.tamanhoFimCauso <= len(e.runes) && string(e.runes[i:i+e.tamanhoFimCauso]) == e.FimCauso {
-		e.tabela_lexica = append(e.tabela_lexica, Tupla{
-			lexema: "fim_do_causo",
-			token:  comment_block_close,
-			linha:  e.linha,
-			coluna: e.coluna,
-		})
-		/*
-		 * Esse i + e.tamanhoFimCauso aqui é para ele saltar o restante do "fim_do_causo" depois de reconhecer ele,
-		 * para não ficar lendo ele como parte do comentário de bloco.
-		 */
-
 		/*
 		 * O -1 é para não pular o último caractere do "fim_do_causo", que é o 'o'.
 		 * Então, se houver algum comando logo após o "fim_do_causo", ele será lido corretamente.
@@ -251,6 +247,10 @@ func (e *estadoLexer) tratarChar(char rune, i int) int {
 		e.coluna++
 	} else if detectado, novoI := e.tratarSequenciaEscape(i); detectado {
 		return novoI
+	} else if len(e.buffer) >= 1 {
+		utils.ThrowLexerException("Unknown token: char literal has more than one character", e.linha_inicio, e.coluna_inicio)
+		e.erro_lexico = true
+		return i
 	} else {
 		if len(e.buffer) == 0 {
 			e.linha_inicio = e.linha
@@ -428,7 +428,7 @@ func AnalisarArquivo(conteudo string) []Tupla {
 	   Deve ser ao final pois anteriormente poderia não considerar um fim de bloco ao final do arquivo
 	*/
 	if e.lendoComentarioBloco {
-		utils.ThrowLexerException("'fim_do_causo' required after using 'causo'", e.linha_inicio, e.coluna_inicio)
+		utils.ThrowLexerException("Unterminated comment block: 'fim_do_causo' is required after using 'causo'", e.linha_inicio, e.coluna_inicio)
 	}
 
 	return e.tabela_lexica

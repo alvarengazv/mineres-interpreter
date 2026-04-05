@@ -28,7 +28,7 @@ CEFET-MG Campus V <br>
 
 ## 📚 O Projeto
 
-Neste repositório você encontrará o código fonte do projeto. O projeto foi desenvolvido em Go. Este trabalho também tem a produção de um TXT para relatar o cada alteração nas etapas do projeto, que está disponível em [`release_notes.txt`](release_notes.txt).
+Neste repositório você encontrará o código fonte do projeto. O projeto foi desenvolvido em Go. Este trabalho também tem a produção de um TXT para relatar cada alteração nas etapas do projeto, que está disponível em [`release_notes.txt`](release_notes.txt).
 
 De uma forma compacta e organizada, os arquivos e diretórios estão dispostos da seguinte forma:
 
@@ -174,8 +174,7 @@ Para instalar o projeto, siga os passos abaixo:
 [gmail-autor2]: mailto:
 
 [linkedin-autor3]: https://www.linkedin.com/in/luan-santos-9bb01920b/
-[telegram-autor3]: https://
-[gmail-autor3]: mailto:
+[gmail-autor3]: mailto:luanzinholulus@gmail.com
 
 [linkedin-badge]: https://img.shields.io/badge/-LinkedIn-0077B5?style=for-the-badge&logo=Linkedin&logoColor=white
 [telegram-badge]: https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white

@@ -174,7 +174,7 @@ Para instalar o projeto, siga os passos abaixo:
 [gmail-autor2]: mailto:
 
 [linkedin-autor3]: https://www.linkedin.com/in/luan-santos-9bb01920b/
-[telegram-autor3]: [https://](https://t.me/LuanLuL_SO7)
+[telegram-autor3]: https://t.me/LuanLuL_SO7
 [gmail-autor3]: mailto:luanzinholulus@gmail.com
 
 [linkedin-badge]: https://img.shields.io/badge/-LinkedIn-0077B5?style=for-the-badge&logo=Linkedin&logoColor=white

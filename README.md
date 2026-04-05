@@ -170,7 +170,7 @@ Para instalar o projeto, siga os passos abaixo:
 [gmail-autor1]: mailto:gui.alvarengas234@gmail.com
 
 [linkedin-autor2]: https://www.linkedin.com/in/joaquim-cruz-b760bb350/
-[telegram-autor2]: https://
+[telegram-autor2]: https://t.me/joaquim1333
 [gmail-autor2]: mailto:joaquimcezar930@gmail.com
 
 [linkedin-autor3]: https://www.linkedin.com/in/luan-santos-9bb01920b/

@@ -4,6 +4,7 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 2 - Evolução - Primeiras funções (podem mudar muito ainda) - 08/04/2026 - Guilherme Alvarenga
 Parte 1 - Correção - Correção de nomes de Enum/Atributos para o padrão da linguagem GO - 08/04/2026 - Guilherme Alvarenga
 Parte 1 - Correção - Tratamento de char literal com mais de um caractere & Especificação de Erros - 05/04/2026 - Guilherme Alvarenga
 Parte 1 - Correção - Tratamento de fim de comentário de bloco sem início & Especificação de Erros - 05/04/2026 - Guilherme Alvarenga

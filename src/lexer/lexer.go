@@ -57,15 +57,15 @@ func novoEstadoLexer(conteudo string) *estadoLexer {
 func (e *estadoLexer) classificarLexema(lexema string) TabelaPalavras {
 	switch {
 	case regexHexa.MatchString(lexema):
-		return literal_hex
+		return Literal_hex
 	case regexOctal.MatchString(lexema):
-		return literal_oct
+		return Literal_oct
 	case regexFloat.MatchString(lexema):
-		return literal_float
+		return Literal_float
 	case regexInteiro.MatchString(lexema):
-		return literal_int
+		return Literal_int
 	case regexVariavel.MatchString(lexema):
-		return identifier
+		return Identifier
 	default:
 		if e.lendoChar {
 			utils.ThrowLexerException("Unknown token: Unterminated char literal", e.linha_inicio, e.coluna_inicio)
@@ -77,7 +77,7 @@ func (e *estadoLexer) classificarLexema(lexema string) TabelaPalavras {
 		utils.ThrowLexerException("Unknown token: Invalid character", e.linha_inicio, e.coluna_inicio)
 
 		e.erro_lexico = true
-		return lexical_error
+		return Lexical_error
 	}
 }
 
@@ -93,12 +93,12 @@ func (e *estadoLexer) processarBuffer() {
 
 	if t, existe := PalavrasReservadas[lexema]; existe {
 		token = t
-		if token == comment_block_open {
+		if token == Comment_block_open {
 			e.lendoComentarioBloco = true
 			e.buffer = []rune{}
 			return
 		}
-		if token == comment_block_close && !e.lendoComentarioBloco {
+		if token == Comment_block_close && !e.lendoComentarioBloco {
 			utils.ThrowLexerException("Malformed comment block: 'causo' is required before 'fim_do_causo'", e.linha_inicio, e.coluna_inicio)
 			e.erro_lexico = true
 			return
@@ -108,10 +108,10 @@ func (e *estadoLexer) processarBuffer() {
 	}
 
 	e.tabela_lexica = append(e.tabela_lexica, Tupla{
-		lexema: lexema,
-		token:  token,
-		linha:  e.linha_inicio,
-		coluna: e.coluna_inicio,
+		Lexema: lexema,
+		Token:  token,
+		Linha:  e.linha_inicio,
+		Coluna: e.coluna_inicio,
 	})
 	e.buffer = []rune{}
 }
@@ -210,10 +210,10 @@ func (e *estadoLexer) tratarString(char rune, i int) int {
 		utils.ThrowLexerException("Unterminated string literal", e.linha_inicio, e.coluna_inicio)
 	} else if char == '"' {
 		e.tabela_lexica = append(e.tabela_lexica, Tupla{
-			lexema: string(e.buffer),
-			token:  literal_string,
-			linha:  e.linha_inicio,
-			coluna: e.coluna_inicio,
+			Lexema: string(e.buffer),
+			Token:  Literal_string,
+			Linha:  e.linha_inicio,
+			Coluna: e.coluna_inicio,
 		})
 		e.buffer = []rune{}
 		e.lendoString = false
@@ -237,10 +237,10 @@ func (e *estadoLexer) tratarChar(char rune, i int) int {
 		utils.ThrowLexerException("Unterminated char literal", e.linha_inicio, e.coluna_inicio)
 	} else if char == '\'' {
 		e.tabela_lexica = append(e.tabela_lexica, Tupla{
-			lexema: string(e.buffer),
-			token:  literal_char,
-			linha:  e.linha_inicio,
-			coluna: e.coluna_inicio,
+			Lexema: string(e.buffer),
+			Token:  Literal_char,
+			Linha:  e.linha_inicio,
+			Coluna: e.coluna_inicio,
 		})
 		e.buffer = []rune{}
 		e.lendoChar = false
@@ -321,42 +321,42 @@ func (e *estadoLexer) tratarSimbolosEspeciais(char rune, i int) int {
 
 	switch char {
 	case '(':
-		token = open_paren
+		token = Open_paren
 	case ')':
-		token = close_paren
+		token = Close_paren
 	case ',':
-		token = comma
+		token = Comma
 	case '{':
-		token = open_brace
+		token = Open_brace
 	case '}':
-		token = close_brace
+		token = Close_brace
 	case '+':
-		token = op_add
+		token = Op_add
 	case '-':
-		token = op_sub
+		token = Op_sub
 	case '<', '>':
 		if i+1 < len(e.runes) && e.runes[i+1] == '=' {
 			lexema = string(char) + "="
 			if char == '<' {
-				token = op_lte
+				token = Op_lte
 			} else {
-				token = op_gte
+				token = Op_gte
 			}
 			i++
 		} else if char == '<' {
-			token = op_lt
+			token = Op_lt
 		} else {
-			token = op_gt
+			token = Op_gt
 		}
 	case '%':
-		token = op_mod
+		token = Op_mod
 	case '/':
-		token = op_int_div
+		token = Op_int_div
 	case ';':
-		token = stmt_end_for
+		token = Stmt_end_for
 	}
 
-	e.tabela_lexica = append(e.tabela_lexica, Tupla{lexema: lexema, token: token, linha: e.linha, coluna: e.coluna})
+	e.tabela_lexica = append(e.tabela_lexica, Tupla{Lexema: lexema, Token: token, Linha: e.linha, Coluna: e.coluna})
 	e.coluna += len([]rune(lexema))
 	return i
 }

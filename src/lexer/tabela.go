@@ -3,34 +3,34 @@ package lexer
 import "fmt"
 
 type Tupla struct {
-	lexema string
-	token  TabelaPalavras
-	linha  int
-	coluna int
+	Lexema string
+	Token  TabelaPalavras
+	Linha  int
+	Coluna int
 }
 
 /**
- * TuplaToString(resumo = "Printar uma tupla",
- *	 	Parâmetros = {
- *	 		tupla(
- *					description = "struct do tipo Tupla",
- *					example = {
-  *						lexama: "trem_cum_virgula",
- *						token: 1,
- *						linha: 2,
- *						coluna: 14
- *					}
- *				)
- *		},
- *		Retorno = {}
- * )
- */
+* TuplaToString(resumo = "Printar uma tupla",
+*	 	Parâmetros = {
+*	 		tupla(
+*					description = "struct do tipo Tupla",
+*					example = {
+ *						lexama: "trem_cum_virgula",
+*						token: 1,
+*						linha: 2,
+*						coluna: 14
+*					}
+*				)
+*		},
+*		Retorno = {}
+* )
+*/
 func TuplaToString(t Tupla) {
 	fmt.Printf("Lexema: %s | Token: %d | Linha: %d | Coluna: %d\n",
-		t.lexema,
-		t.token,
-		t.linha,
-		t.coluna,
+		t.Lexema,
+		t.Token,
+		t.Linha,
+		t.Coluna,
 	)
 }
 

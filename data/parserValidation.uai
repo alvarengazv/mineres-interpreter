@@ -1,0 +1,33 @@
+bora_cumpade main()
+simbora
+     
+    trem_di_numeru limite, contador uai
+    trem_discrita mensagem uai
+    trem_discolhe condicao uai
+
+     
+    contador fica_assim_entao 0 uai
+    mensagem fica_assim_entao "Contando os trem..." uai
+    condicao fica_assim_entao eh uai
+
+    
+    oia_proce_ve("Digita ate quantu ce quer contar: ") uai
+    xove(trem_di_numeru, limite) uai
+
+    
+    enquanto_tiver_trem (contador < limite) simbora
+        oia_proce_ve("Contador: ", contador) uai
+        contador fica_assim_entao contador + 1 uai
+    cabo
+
+    
+    uai_se (contador mema_coisa limite) simbora
+        oia_proce_ve(mensagem, " Cabo!") uai
+    cabo
+    uai_senao simbora
+        oia_proce_ve("Uai, aconteceu um trem esquisito...") uai
+    cabo
+
+    
+    
+cabo

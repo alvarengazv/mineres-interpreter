@@ -326,6 +326,8 @@ func (e *estadoLexer) tratarSimbolosEspeciais(char rune, i int) int {
 		token = Close_paren
 	case ',':
 		token = Comma
+	case ':':
+		token = Colon
 	case '{':
 		token = Open_brace
 	case '}':
@@ -408,7 +410,7 @@ func AnalisarArquivo(conteudo string) []Tupla {
 		} else if unicode.IsSpace(char) {
 			// Delimitadores e Espaços
 			i = e.tratarEspacosDelimitadores(i)
-		} else if char == '(' || char == ')' || char == ',' || char == '{' || char == '}' || char == '+' || char == '-' || char == '%' || char == '/' || char == '<' || char == '>' {
+		} else if char == '(' || char == ')' || char == ',' || char == '{' || char == '}' || char == '+' || char == '-' || char == '%' || char == '/' || char == '<' || char == '>' || char == ';' || char == ':' {
 			// Símbolos especiais (inclui operadores compostos <= e >=)
 			i = e.tratarSimbolosEspeciais(char, i)
 		} else {

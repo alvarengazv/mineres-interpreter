@@ -41,54 +41,54 @@ const (
 	// Punctuation
 	Comma    // 23 - virgula → ,
 	Stmt_end // 24 - uai     → ; (fim da instrução)
-
+	Colon    // 25 - dois pontos → :
 	// Relational operators
-	Op_lt  // 25 - <  → menor que
-	Op_gt  // 26 - >  → maior que
-	Op_lte // 27 - <= → menor ou igual
-	Op_gte // 28 - >= → maior ou igual
+	Op_lt  // 26 - <  → menor que
+	Op_gt  // 27 - >  → maior que
+	Op_lte // 28 - <= → menor ou igual
+	Op_gte // 29 - >= → maior ou igual
 
 	// Assignment & equality
-	Op_assign // 29 - fica_assim_entao → = (atribuição)
-	Op_neq    // 30 - neh_nada         → != (diferente de)
-	Op_eq     // 31 - mema_coisa       → == (igual a)
+	Op_assign // 30 - fica_assim_entao → = (atribuição)
+	Op_neq    // 31 - neh_nada         → != (diferente de)
+	Op_eq     // 32 - mema_coisa       → == (igual a)
 
 	// Logical operators
-	Op_or  // 32 - quarque_um → or
-	Op_not // 33 - vam_marca  → not
-	Op_and // 34 - tamem      → and
-	Op_xor // 35 - um_o_oto   → xor
+	Op_or  // 33 - quarque_um → or
+	Op_not // 34 - vam_marca  → not
+	Op_and // 35 - tamem      → and
+	Op_xor // 36 - um_o_oto   → xor
 
 	// Arithmetic operators
-	Op_add     // 36 - +    → adição
-	Op_sub     // 37 - -    → subtração
-	Op_mul     // 38 - veiz → multiplicação  (*)
-	Op_div     // 39 - sob  → divisão        (/)
-	Op_mod     // 40 - %    → módulo
-	Op_int_div // 41 - /    → divisão inteira (//)
+	Op_add     // 37 - +    → adição
+	Op_sub     // 38 - -    → subtração
+	Op_mul     // 39 - veiz → multiplicação  (*)
+	Op_div     // 40 - sob  → divisão        (/)
+	Op_mod     // 41 - %    → módulo
+	Op_int_div // 42 - /    → divisão inteira (//)
 
 	// I/O
-	Io_scan  // 42 - xove        → scan  / input
-	Io_print // 43 - oia_proce_ve → print / output
+	Io_scan  // 43 - xove        → scan  / input
+	Io_print // 44 - oia_proce_ve → print / output
 
 	// Literals & tokens
-	Literal_string // 44 - conteúdo string
-	Literal_char   // 45 - conteúdo char
-	Comment_line   // 46 - // comentário de linha
+	Literal_string // 45 - conteúdo string
+	Literal_char   // 46 - conteúdo char
+	Comment_line   // 47 - // comentário de linha
 
-	Comment_block_open  // 47 - causo       → /* comentário de bloco
-	Comment_block_close // 48 - fim_do_causo → */ comentário de bloco
+	Comment_block_open  // 48 - causo       → /* comentário de bloco
+	Comment_block_close // 49 - fim_do_causo → */ comentário de bloco
 
-	Literal_int   // 49 - conteúdo inteiro
-	Literal_hex   // 50 - conteúdo hexadecimal (0x...)
-	Literal_oct   // 51 - conteúdo octal (0...)
-	Literal_float // 52 - conteúdo float
+	Literal_int   // 50 - conteúdo inteiro
+	Literal_hex   // 51 - conteúdo hexadecimal (0x...)
+	Literal_oct   // 52 - conteúdo octal (0...)
+	Literal_float // 53 - conteúdo float
 
-	Identifier    // 53 - variável / identificador
-	Lexical_error // 54 - token inválido
+	Identifier    // 54 - variável / identificador
+	Lexical_error // 55 - token inválido
 
-	Stmt_end_for  // 55 - ; → fim de statement no for
-	Main_function // 56 - main → função principal
+	Stmt_end_for  // 56 - ; → fim de statement no for
+	Main_function // 57 - main → função principal
 )
 
 var PalavrasReservadas = map[string]TabelaPalavras{

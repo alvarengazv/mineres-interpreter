@@ -1,109 +1,392 @@
 package parser
 
-import "mineres-interpreter/src/lexer"
+import (
+	"fmt"
+	"mineres-interpreter/src/lexer"
+)
 
-func Function(listTupla []lexer.Tupla) {
-	for i := 0; i < len(listTupla); i++ {
-		token := listTupla[i]
-		switch i {
-		case 0:
-			if token.Token != lexer.Func_decl {
-				// TO-DO: parser error
-				return
-			}
-		case 1:
-			if token.Token != lexer.Main_function {
-				// TO-DO: parser error
-				return
-			}
-		case 2:
-			if token.Token != lexer.Open_paren {
-				// TO-DO: parser error
-				return
-			}
-		case 3:
-			if token.Token != lexer.Close_paren {
-				// TO-DO: parser error
-				return
-			}
-		default:
-			i = bloco_function(listTupla, i)
-		}
+type Parser struct {
+	tokens []lexer.Tupla
+	pos    int
+}
+
+func NewParser(tokens []lexer.Tupla) *Parser {
+	return &Parser{
+		tokens: tokens,
+		pos:    0,
 	}
 }
 
-func bloco_function(listTupla []lexer.Tupla, i int) int {
-	i1 := i
-	for i := i; i < len(listTupla); i++ {
-		token := listTupla[i]
-		switch i {
-		case i1:
-			if token.Token != lexer.Block_open {
-				// TO-DO: parser error
-				return i
-			}
-		default:
-			if token.Token != lexer.Block_close {
-				i = stmtList_function(listTupla, i)
-			} else {
-				return i
-			}
-		}
+// Funções auxiliares para o manuseio do ponteiro do buffer
+
+func (p *Parser) current() lexer.Tupla {
+
+	if p.pos >= len(p.tokens) {
+		
 	}
-	return i
+
+	return p.tokens[p.pos]
 }
 
-func stmtList_function(listTupla []lexer.Tupla, i int) int {
-	for i := i; i < len(listTupla); i++ {
-		token := listTupla[i]
-		switch token.Token {
+func (p *Parser) advance() {
+
+	if p.pos < len(p.tokens){
+		p.pos ++
+	}
+
+}
+
+func (p *Parser) consume(expected lexer.TabelaPalavras) {
+
+	if p.current().Token == expected {
+		p.advance()
+	} else {
+		panic(fmt.Sprintf("Error: expected token %v, got %v on %d:%d", expected, p.current().Token, p.current().Linha, p.current().Coluna))
+	}
+
+}
+
+// Funções de parsing
+
+func (p *Parser) ParserFunction() {
+
+	p.consume(lexer.Func_decl)
+	p.consume(lexer.Main_function)
+	p.consume(lexer.Open_paren)
+	p.consume(lexer.Close_paren)
+	p.parseBloco()
+
+	fmt.Println("Syntactic analysis completed!")
+}
+
+func (p *Parser) parseBloco() {
+
+	p.consume(lexer.Block_open) // simbora
+	p.parseStmtList() // <stmt> <smtList> | &
+	p.consume(lexer.Block_close) // cabo 
+
+}
+
+func (p *Parser) parseStmtList() {
+
+	for p.current().Token != lexer.Block_close {
+		p.parseStmt() // função principal que vai chamar as outras funções de stmt
+	}
+
+}
+
+func (p *Parser) parseStmt() {
+
+	token := p.current().Token
+
+	switch token {
+
 		case lexer.Loop_for:
-			if token.Token != lexer.Block_open {
-				// TO-DO: parser error
-				return i
-			}
-		case lexer.Loop_while:
-			if token.Token != lexer.Block_open {
-				// TO-DO: parser error
-				return i
-			}
+			p.parseForStmt()
+		
 		case lexer.Conditional_if:
-			if token.Token != lexer.Block_open {
-				// TO-DO: parser error
-				return i
-			}
+			p.parseIfStmt()
+		
 		case lexer.Conditional_case:
-			if token.Token != lexer.Block_open {
-				// TO-DO: parser error
-				return i
-			}
+			p.parseCaseStmt()
+
+		case lexer.Loop_while:
+			p.parseWhileStmt()
+
 		case lexer.Block_open:
-			if token.Token != lexer.Block_open {
-				// TO-DO: parser error
-				return i
-			}
+			p.parseBloco()
+		
+		case lexer.Io_scan, lexer.Io_print:
+			p.parseIoStmt()
+		
 		case lexer.Loop_break:
-			if token.Token != lexer.Block_open {
-				// TO-DO: parser error
-				return i
-			}
+			p.advance()
+			p.consume(lexer.Stmt_end)
+		
 		case lexer.Loop_continue:
-			if token.Token != lexer.Block_open {
-				// TO-DO: parser error
-				return i
-			}
-
+			p.advance()
+			p.consume(lexer.Stmt_end)
+		
+		case lexer.Type_int, lexer.Type_float, lexer.Type_string, lexer.Type_bool, lexer.Type_char:
+			p.parseDeclaration()
+		
+		case lexer.Stmt_end:
+			p.advance() // uai
+		
 		default:
-			// TO-DO: <atrib> uai, <declaration>, uai
-		}
+			if p.isStartOfExpr(token) {
+				p.parseAtrib()
+				p.consume(lexer.Stmt_end)
+			} else {
+				panic(fmt.Sprintf("Error: unexpected token %v on %d:%d", token, p.current().Linha, p.current().Coluna))
+			}
 	}
-	return i
 }
 
-func stmt_function(listTupla []lexer.Tupla, i int) int {
-	return i
+// if
+func (p *Parser) parseIfStmt() {
+
+	p.consume(lexer.Conditional_if)
+	p.consume(lexer.Open_paren)
+	p.parseExpr()
+	p.consume(lexer.Close_paren)
+	p.parseBloco()
+
+	// se for seguido de else, consome o else e o bloco do else
+	if p.current().Token == lexer.Conditional_else {
+		p.consume(lexer.Conditional_else)
+		p.parseStmt()
+	}
 }
 
-func type_function(listTupla []lexer.Tupla, i int) int {
-	return i
+// while
+func (p *Parser) parseWhileStmt() {
+
+	p.consume(lexer.Loop_while)
+	p.consume(lexer.Open_paren)
+	p.parseExpr()
+	p.consume(lexer.Close_paren)
+	p.parseStmt()
 }
+
+// for
+func (p *Parser) parseForStmt() {
+
+	p.consume(lexer.Loop_for)
+	p.consume(lexer.Open_paren)
+	p.parseAtrib()
+	p.consume(lexer.Stmt_end_for)
+	p.parseExpr()
+	p.consume(lexer.Stmt_end_for)
+	p.parseAtrib()
+	p.consume(lexer.Close_paren)
+	p.parseStmt()
+	
+}
+
+func (p *Parser) parseDeclaration() {
+
+	p.parseType()
+	p.parseDeclarationList()
+	p.consume(lexer.Stmt_end)
+
+}
+
+func (p *Parser) parseDeclarationList() {
+
+	p.consume(lexer.Identifier)
+	for p.current().Token == lexer.Comma {
+		p.advance()
+		p.consume(lexer.Identifier)
+	}
+
+}
+
+// IO
+func (p *Parser) parseIoStmt() {
+
+	if p.current().Token == lexer.Io_scan {
+		p.advance()
+		p.consume(lexer.Open_paren)
+		p.parseType()
+		p.consume(lexer.Comma)
+		p.consume(lexer.Identifier)
+		p.consume(lexer.Close_paren)
+	} else {
+		p.consume(lexer.Io_print)
+		p.consume(lexer.Open_paren)
+		p.parseOutputList()
+		p.consume(lexer.Close_paren)
+	}
+
+	p.consume(lexer.Stmt_end)
+
+}
+
+func (p *Parser) parseOutputList() {
+
+	p.parseFatorZin()
+	for p.current().Token == lexer.Comma {
+		p.advance()
+		p.parseFatorZin()
+	}
+
+}
+
+func (p *Parser) parseCaseStmt() {
+
+	p.consume(lexer.Conditional_case)
+	p.consume(lexer.Open_paren)
+	p.consume(lexer.Identifier)
+	p.consume(lexer.Close_paren)
+	p.consume(lexer.Block_open)
+	for p.current().Token == lexer.Conditional_case {
+		p.parseDoCaso()
+	}
+	// if p.current().Token == lexer.Default_item {
+	// 	p.advance()
+	// 	p.consume(lexer.Default_item)
+	// 	p.parseStmt()
+	// }
+	p.consume(lexer.Block_close)
+
+}
+
+func (p *Parser) parseDoCaso() {
+
+	p.consume(lexer.Conditional_case)
+	p.parseFatorZin()
+	p.consume(lexer.Colon)
+	p.parseStmt()
+	
+}
+
+func (p *Parser) parseType() {
+
+	token := p.current().Token
+
+	if token == lexer.Type_int || token == lexer.Type_float || token == lexer.Type_string || token == lexer.Type_bool || token == lexer.Type_char {
+		p.advance()
+	} else {
+		panic(fmt.Sprintf("Error: expected type, got %v on %d:%d", token, p.current().Linha, p.current().Coluna))
+	}
+
+}
+
+// Precedencia de operadores
+
+func (p *Parser) parseExpr() {
+
+	p.parseAtrib()
+
+}
+
+func (p *Parser) parseAtrib() {
+
+	p.parseOR()
+    if(p.current().Token == lexer.Op_assign) {
+		p.advance()
+		p.parseAtrib() // recursão a direita para permitir varias atribuições
+	} 
+}
+
+// <or> -> <xor> { 'quarque_um' <xor> }
+func (p *Parser) parseOR() {
+
+	p.parseXor()
+	for(p.current().Token == lexer.Op_or) {
+		p.advance()
+		p.parseXor()
+	}
+
+}
+
+// <xor> -> <and> { 'um_o_oto' <and> }
+func (p *Parser) parseXor() {
+
+	p.parseAnd()
+	for(p.current().Token == lexer.Op_xor) {
+		p.advance()
+		p.parseAnd()
+	}
+}
+
+// <and> -> <not> { 'tamem' <not> }
+func (p *Parser) parseAnd() {
+
+	p.parseNot()
+	for(p.current().Token == lexer.Op_and) {
+		p.advance()
+		p.parseNot()
+	}
+}
+
+// <not> -> 'vam_marca' <not> | <rel>
+func (p *Parser) parseNot() {
+
+	if(p.current().Token == lexer.Op_not) {
+		p.advance()
+		p.parseNot()
+	} else {
+		p.parseRel()
+	}
+
+}
+
+// <rel> -> <add> { ('mema_coisa' | 'neh_nada') <add> }
+func (p *Parser) parseRel() {
+
+	p.parseAdd()
+	if(p.current().Token == lexer.Op_eq || p.current().Token == lexer.Op_lt || p.current().Token == lexer.Op_gt || p.current().Token == lexer.Op_lte || p.current().Token == lexer.Op_gte || p.current().Token == lexer.Op_neq) {
+		p.advance()
+		p.parseAdd()
+	}
+
+}
+
+// <add> -> <mul> { ('veiz' | 'sob') <mul> }
+func (p *Parser) parseAdd() {
+
+	p.parseMul()
+	for (p.current().Token == lexer.Op_add || p.current().Token == lexer.Op_sub) {
+		p.advance()
+		p.parseMul()
+	}
+
+}
+
+// <mul> -> <fator> { ('veiz' | 'sob') <fator> }
+func (p *Parser) parseMul() {
+	p.parseUno()
+	t := p.current().Token
+	for (t == lexer.Op_mul || t == lexer.Op_div || t == lexer.Op_mod || t == lexer.Op_int_div) {
+		p.advance()
+		p.parseUno()
+		t = p.current().Token
+	}
+
+}
+
+// <uno> -> '+' <uno> | '-' <uno> | <fatorZao>
+func (p *Parser) parseUno() {
+
+	if (p.current().Token == lexer.Op_add || p.current().Token == lexer.Op_sub) {
+		p.advance()
+		p.parseUno()
+	} else {
+		p.parseFatorZao()
+	}
+}
+
+// <fatorZao> -> <fatorzin> | '(' <atrib> ')'
+func (p *Parser) parseFatorZao() {
+
+	if (p.current().Token == lexer.Open_paren) {
+		p.advance()
+		p.parseAtrib()
+		p.consume(lexer.Close_paren)
+	} else {
+		p.parseFatorZin()
+	}
+
+}
+
+// <fatorZin> -> 'STR' | 'IDENT' | 'NUMint' |...
+func (p *Parser) parseFatorZin() {
+
+	t := p.current().Token
+	if (t == lexer.Literal_string || t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false) {
+		p.advance()
+	} else {
+		panic(fmt.Sprintf("Error: expected factor, got %v on %d:%d", t, p.current().Linha, p.current().Coluna))
+	}
+}
+
+func (p *Parser) isStartOfExpr(t lexer.TabelaPalavras) bool {
+
+	return t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_string || 
+		   t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false || t == lexer.Open_paren || 
+		   t == lexer.Op_add || t == lexer.Op_sub || t == lexer.Op_not
+
+}
+

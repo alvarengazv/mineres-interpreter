@@ -35,9 +35,9 @@ simbora
 
     "teste \" de string";
 
-    trem_di_numero teste_if fica_assim_entao ".5" uai
-    trem_di_numero teste_if fica_assim_entao .5          /                  2 uai
-    trem_di_numero teste_if fica_assim_entao contador + 5 uai
+    trem_di_numeru teste_if fica_assim_entao ".5" uai
+    trem_di_numeru teste_if fica_assim_entao .5          /                  2 uai
+    trem_di_numeru teste_if fica_assim_entao contador + 5 uai
 
 
     trem_di_numeru teste_float fica_assim_entao '\\' und

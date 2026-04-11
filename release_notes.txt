@@ -4,6 +4,8 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 2 - Evolução - Criação de estrutura e funções para encontrar a equivalência entre tokens da Linguagem Minerês e seus valores numéricos na TabelaPalavras - 10/04/2026 - Guilherme Alvarenga
+Parte 2 - Correção - Tratando parse de switch-case que estava parcialmente incorreto - 10/04/2026 - Guilherme Alvarenga
 Parte 2 - Evolução - Criação das funções do parser e 2 casos testes (Caso default comentado, pois não tem na liguagem ainda) - 10/04/2026 - Joaquim Cruz 
 Parte 2 - Evolução - Primeiras funções (podem mudar muito ainda) - 08/04/2026 - Guilherme Alvarenga
 Parte 1 - Correção - Correção de nomes de Enum/Atributos para o padrão da linguagem GO - 08/04/2026 - Guilherme Alvarenga

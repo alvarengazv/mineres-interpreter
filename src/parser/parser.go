@@ -41,7 +41,13 @@ func (p *Parser) consume(expected lexer.TabelaPalavras) {
 	if p.current().Token == expected {
 		p.advance()
 	} else {
-		panic(fmt.Sprintf("Error: expected token %v, got %v on %d:%d", expected, p.current().Token, p.current().Linha, p.current().Coluna))
+		// Get the expected and current tokens as strings for better error messages
+		token, _ := lexer.TabelaPalavrasFromInt(int(expected))
+		expectedStr := token.String()
+
+		currentToken, _ := lexer.TabelaPalavrasFromInt(int(p.current().Token))
+		currentStr := currentToken.String()
+		panic(fmt.Sprintf("Error: expected token '%v', got '%v' on %d:%d", expectedStr, currentStr, p.current().Linha, p.current().Coluna))
 	}
 
 }
@@ -87,7 +93,7 @@ func (p *Parser) parseStmt() {
 		case lexer.Conditional_if:
 			p.parseIfStmt()
 		
-		case lexer.Conditional_case:
+		case lexer.Conditional_switch:
 			p.parseCaseStmt()
 
 		case lexer.Loop_while:
@@ -118,7 +124,10 @@ func (p *Parser) parseStmt() {
 				p.parseAtrib()
 				p.consume(lexer.Stmt_end)
 			} else {
-				panic(fmt.Sprintf("Error: unexpected token %v on %d:%d", token, p.current().Linha, p.current().Coluna))
+				tokenF, _ := lexer.TabelaPalavrasFromInt(int(token))
+				print(token);
+				stringToken := tokenF.String()
+				panic(fmt.Sprintf("Error: unexpected token '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
 			}
 	}
 }
@@ -215,7 +224,7 @@ func (p *Parser) parseOutputList() {
 
 func (p *Parser) parseCaseStmt() {
 
-	p.consume(lexer.Conditional_case)
+	p.consume(lexer.Conditional_switch)
 	p.consume(lexer.Open_paren)
 	p.consume(lexer.Identifier)
 	p.consume(lexer.Close_paren)
@@ -248,7 +257,9 @@ func (p *Parser) parseType() {
 	if token == lexer.Type_int || token == lexer.Type_float || token == lexer.Type_string || token == lexer.Type_bool || token == lexer.Type_char {
 		p.advance()
 	} else {
-		panic(fmt.Sprintf("Error: expected type, got %v on %d:%d", token, p.current().Linha, p.current().Coluna))
+		tokenF, _ := lexer.TabelaPalavrasFromInt(int(token))
+		stringToken := tokenF.String()
+		panic(fmt.Sprintf("Error: expected type, got '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
 	}
 
 }
@@ -378,7 +389,9 @@ func (p *Parser) parseFatorZin() {
 	if (t == lexer.Literal_string || t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false) {
 		p.advance()
 	} else {
-		panic(fmt.Sprintf("Error: expected factor, got %v on %d:%d", t, p.current().Linha, p.current().Coluna))
+		tokenF, _ := lexer.TabelaPalavrasFromInt(int(t))
+		stringToken := tokenF.String()
+		panic(fmt.Sprintf("Error: expected factor, got '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
 	}
 }
 

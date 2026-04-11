@@ -1,5 +1,7 @@
 package lexer
 
+import "fmt"
+
 type TabelaPalavras int
 
 const (
@@ -91,6 +93,7 @@ const (
 	Main_function // 57 - main → função principal
 )
 
+// Pro Lexer
 var PalavrasReservadas = map[string]TabelaPalavras{
 	// Data types
 	"trem_di_numeru":   Type_int,
@@ -176,4 +179,117 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 	// Comments
 	"causo":        Comment_block_open,
 	"fim_do_causo": Comment_block_close,
+}
+
+// Pro parser, para encontrar o lexema esperado da linguagem minerês (palavras ou símbolos), a partir do número do token lido
+var PalavrasReservadasReverso = map[TabelaPalavras]string{
+	// Data types
+	Type_int:    "trem_di_numeru",  	// 0  - trem_di_numeru   → int
+	Type_float:  "trem_cum_virgula",	// 1  - trem_cum_virgula → float
+	Type_string: "trem_discrita",		// 2  - trem_discrita    → string
+	Type_bool:   "trem_discolhe",		// 3  - trem_discolhe    → bool
+	Type_char:   "trosso",				// 4  - trosso           → char
+
+	// Conditionals
+	Conditional_if:     "uai_se",		// 5  - uai_se    → if
+	Conditional_else:   "uai_senao",    // 6  - uai_senao → else
+	Conditional_switch: "dependenu",	// 9  - dependenu → switch
+	Conditional_case:   "du_casu",		// 10 - du_casu   → case
+
+	// Loops
+	Loop_for:           "roda_esse_trem",		// 7  - roda_esse_trem      → for
+	Loop_while:         "enquanto_tiver_trem",	// 8  - enquanto_tiver_trem → while
+
+	// Functions & return
+	Func_decl:     "bora_cumpade",		// 14 - bora_cumpade → function declaration
+	Func_return:   "ta_bao",			// 11 - ta_bao       → return
+	Main_function: "main",				// 57 - main         → main function
+	Loop_break:    "para_o_trem",		// 12 - para_o_trem  → break
+	Loop_continue: "toca_o_trem",		// 13 - toca_o_trem  → continue
+
+
+	// Boolean literals
+	Literal_true:  "eh",				// 17 - eh     → true
+	Literal_false: "num_eh",			// 18 - num_eh → false
+
+	// Block delimiters
+	Block_open:  "simbora",			// 15 - simbora → {
+	Block_close: "cabo",				// 16 - cabo → }
+	Open_brace:  "{",		// 21 - abre_chave → {
+	Close_brace: "}",		// 22 - fecha_chave → }
+	
+	// Parentheses
+	Open_paren:  "(",		// 19 - abre_parentese  → (
+	Close_paren: ")",		// 20 - fecha_parentese → )
+
+	// Punctuation
+	Stmt_end:     "uai",	// 24 - uai     → ; (fim da instrução)
+	Stmt_end_for: ";",		// 56 - ; → fim de statement no for
+	Comma:        ",",		// 23 - virgula → ,
+	Colon:        ":",		// 25 - dois pontos → :
+
+	// Assignment & equality
+	Op_assign: "fica_assim_entao", 		// 30 - fica_assim_entao → = (atribuição)
+	Op_neq:    "neh_nada",				// 31 - neh_nada         → != (diferente de)
+	Op_eq:     "mema_coisa",			// 32 - mema_coisa       → == (igual a)
+
+	// Logical operators
+	Op_or:  "quarque_um",				// 33 - quarque_um → or
+	Op_not: "vam_marca",				// 34 - vam_marca  → not
+	Op_and: "tamem",					// 35 - tamem      → and
+	Op_xor: "um_o_oto",					// 36 - um_o_oto   → xor
+
+	// Arithmetic operators (only words, not symbols)
+	Op_add: "+",						// 37 - + → +
+	Op_sub: "-",						// 38 - - → -
+	Op_mul: "veiz",					// 39 - veiz → *
+	Op_div: "sob",						// 40 - sob → /
+	Op_mod: "%",						// 41 - % → %
+	Op_int_div: "/",					// 42 - / → /
+	
+	// Relational operators
+	Op_lt:  "<",						// 26 - <  → menor que
+	Op_gt:  ">",						// 27 - >  → maior que
+	Op_lte: "<=",						// 28 - <= → menor ou igual
+	Op_gte: ">=",						// 29 - >= → maior ou igual
+
+	// I/O
+	Io_scan:  "xove",					// 43 - xove        → scan  / input
+	Io_print: "oia_proce_ve",			// 44 - oia_proce_ve → print / output
+
+	// Comments
+	Comment_block_open:  "causo",		// 48 - causo       → /* comentário de bloco
+	Comment_block_close: "fim_do_causo",// 49 - fim_do_causo → */ comentário de bloco
+
+	// Literals & tokens
+	Literal_string: "conteúdo string",	// 45 - conteúdo string
+	Literal_char:   "conteúdo char",	// 46 - conteúdo char
+	Comment_line:   "// comentário de linha", // 47 - // comentário de linha
+
+	Literal_int:   "conteúdo inteiro",	// 50 - conteúdo inteiro
+	Literal_hex:   "conteúdo hexadecimal (0x...)", // 51 - conteúdo hexadecimal (0x...)
+	Literal_oct:   "conteúdo octal (0...)", // 52 - conteúdo octal (0...)
+	Literal_float: "conteúdo float",	// 53 - conteúdo float
+
+	Identifier:    "variável / identificador", // 54 - variável / identificador
+	Lexical_error: "token inválido",	// 55 - token inválido
+
+
+}
+
+// TabelaPalavrasFromInt converte um valor numérico para o token tipado.
+// Retorna false quando não existe equivalência no mapa reverso.
+func TabelaPalavrasFromInt(value int) (TabelaPalavras, bool) {
+	token := TabelaPalavras(value)
+	_, ok := PalavrasReservadasReverso[token]
+	return token, ok
+}
+
+// String retorna o lexema minerês associado ao token.
+func (t TabelaPalavras) String() string {
+	if lexema, ok := PalavrasReservadasReverso[t]; ok {
+		return lexema
+	}
+
+	return fmt.Sprintf("TabelaPalavras(%d)", int(t))
 }

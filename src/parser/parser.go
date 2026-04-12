@@ -22,7 +22,7 @@ func NewParser(tokens []lexer.Tupla) *Parser {
 func (p *Parser) current() lexer.Tupla {
 
 	if p.pos >= len(p.tokens) {
-		
+
 	}
 
 	return p.tokens[p.pos]
@@ -30,8 +30,8 @@ func (p *Parser) current() lexer.Tupla {
 
 func (p *Parser) advance() {
 
-	if p.pos < len(p.tokens){
-		p.pos ++
+	if p.pos < len(p.tokens) {
+		p.pos++
 	}
 
 }
@@ -67,9 +67,9 @@ func (p *Parser) ParserFunction() {
 
 func (p *Parser) parseBloco() {
 
-	p.consume(lexer.Block_open) // simbora
-	p.parseStmtList() // <stmt> <smtList> | &
-	p.consume(lexer.Block_close) // cabo 
+	p.consume(lexer.Block_open)  // simbora
+	p.parseStmtList()            // <stmt> <smtList> | &
+	p.consume(lexer.Block_close) // cabo
 
 }
 
@@ -87,48 +87,48 @@ func (p *Parser) parseStmt() {
 
 	switch token {
 
-		case lexer.Loop_for:
-			p.parseForStmt()
-		
-		case lexer.Conditional_if:
-			p.parseIfStmt()
-		
-		case lexer.Conditional_switch:
-			p.parseCaseStmt()
+	case lexer.Loop_for:
+		p.parseForStmt()
 
-		case lexer.Loop_while:
-			p.parseWhileStmt()
+	case lexer.Conditional_if:
+		p.parseIfStmt()
 
-		case lexer.Block_open:
-			p.parseBloco()
-		
-		case lexer.Io_scan, lexer.Io_print:
-			p.parseIoStmt()
-		
-		case lexer.Loop_break:
-			p.advance()
+	case lexer.Conditional_switch:
+		p.parseCaseStmt()
+
+	case lexer.Loop_while:
+		p.parseWhileStmt()
+
+	case lexer.Block_open:
+		p.parseBloco()
+
+	case lexer.Io_scan, lexer.Io_print:
+		p.parseIoStmt()
+
+	case lexer.Loop_break:
+		p.advance()
+		p.consume(lexer.Stmt_end)
+
+	case lexer.Loop_continue:
+		p.advance()
+		p.consume(lexer.Stmt_end)
+
+	case lexer.Type_int, lexer.Type_float, lexer.Type_string, lexer.Type_bool, lexer.Type_char:
+		p.parseDeclaration()
+
+	case lexer.Stmt_end:
+		p.advance() // uai
+
+	default:
+		if p.isStartOfExpr(token) {
+			p.parseAtrib()
 			p.consume(lexer.Stmt_end)
-		
-		case lexer.Loop_continue:
-			p.advance()
-			p.consume(lexer.Stmt_end)
-		
-		case lexer.Type_int, lexer.Type_float, lexer.Type_string, lexer.Type_bool, lexer.Type_char:
-			p.parseDeclaration()
-		
-		case lexer.Stmt_end:
-			p.advance() // uai
-		
-		default:
-			if p.isStartOfExpr(token) {
-				p.parseAtrib()
-				p.consume(lexer.Stmt_end)
-			} else {
-				tokenF, _ := lexer.TabelaPalavrasFromInt(int(token))
-				print(token);
-				stringToken := tokenF.String()
-				panic(fmt.Sprintf("Error: unexpected token '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
-			}
+		} else {
+			tokenF, _ := lexer.TabelaPalavrasFromInt(int(token))
+			print(token)
+			stringToken := tokenF.String()
+			panic(fmt.Sprintf("Error: unexpected token '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
+		}
 	}
 }
 
@@ -170,7 +170,7 @@ func (p *Parser) parseForStmt() {
 	p.parseAtrib()
 	p.consume(lexer.Close_paren)
 	p.parseStmt()
-	
+
 }
 
 func (p *Parser) parseDeclaration() {
@@ -232,11 +232,11 @@ func (p *Parser) parseCaseStmt() {
 	for p.current().Token == lexer.Conditional_case {
 		p.parseDoCaso()
 	}
-	// if p.current().Token == lexer.Default_item {
-	// 	p.advance()
-	// 	p.consume(lexer.Default_item)
-	// 	p.parseStmt()
-	// }
+	if p.current().Token == lexer.Conditional_default {
+		p.advance()
+		p.consume(lexer.Conditional_default)
+		p.parseStmt()
+	}
 	p.consume(lexer.Block_close)
 
 }
@@ -247,7 +247,7 @@ func (p *Parser) parseDoCaso() {
 	p.parseFatorZin()
 	p.consume(lexer.Colon)
 	p.parseStmt()
-	
+
 }
 
 func (p *Parser) parseType() {
@@ -275,17 +275,17 @@ func (p *Parser) parseExpr() {
 func (p *Parser) parseAtrib() {
 
 	p.parseOR()
-    if(p.current().Token == lexer.Op_assign) {
+	if p.current().Token == lexer.Op_assign {
 		p.advance()
 		p.parseAtrib() // recursão a direita para permitir varias atribuições
-	} 
+	}
 }
 
 // <or> -> <xor> { 'quarque_um' <xor> }
 func (p *Parser) parseOR() {
 
 	p.parseXor()
-	for(p.current().Token == lexer.Op_or) {
+	for p.current().Token == lexer.Op_or {
 		p.advance()
 		p.parseXor()
 	}
@@ -296,7 +296,7 @@ func (p *Parser) parseOR() {
 func (p *Parser) parseXor() {
 
 	p.parseAnd()
-	for(p.current().Token == lexer.Op_xor) {
+	for p.current().Token == lexer.Op_xor {
 		p.advance()
 		p.parseAnd()
 	}
@@ -306,7 +306,7 @@ func (p *Parser) parseXor() {
 func (p *Parser) parseAnd() {
 
 	p.parseNot()
-	for(p.current().Token == lexer.Op_and) {
+	for p.current().Token == lexer.Op_and {
 		p.advance()
 		p.parseNot()
 	}
@@ -315,7 +315,7 @@ func (p *Parser) parseAnd() {
 // <not> -> 'vam_marca' <not> | <rel>
 func (p *Parser) parseNot() {
 
-	if(p.current().Token == lexer.Op_not) {
+	if p.current().Token == lexer.Op_not {
 		p.advance()
 		p.parseNot()
 	} else {
@@ -328,7 +328,7 @@ func (p *Parser) parseNot() {
 func (p *Parser) parseRel() {
 
 	p.parseAdd()
-	if(p.current().Token == lexer.Op_eq || p.current().Token == lexer.Op_lt || p.current().Token == lexer.Op_gt || p.current().Token == lexer.Op_lte || p.current().Token == lexer.Op_gte || p.current().Token == lexer.Op_neq) {
+	if p.current().Token == lexer.Op_eq || p.current().Token == lexer.Op_lt || p.current().Token == lexer.Op_gt || p.current().Token == lexer.Op_lte || p.current().Token == lexer.Op_gte || p.current().Token == lexer.Op_neq {
 		p.advance()
 		p.parseAdd()
 	}
@@ -339,7 +339,7 @@ func (p *Parser) parseRel() {
 func (p *Parser) parseAdd() {
 
 	p.parseMul()
-	for (p.current().Token == lexer.Op_add || p.current().Token == lexer.Op_sub) {
+	for p.current().Token == lexer.Op_add || p.current().Token == lexer.Op_sub {
 		p.advance()
 		p.parseMul()
 	}
@@ -350,7 +350,7 @@ func (p *Parser) parseAdd() {
 func (p *Parser) parseMul() {
 	p.parseUno()
 	t := p.current().Token
-	for (t == lexer.Op_mul || t == lexer.Op_div || t == lexer.Op_mod || t == lexer.Op_int_div) {
+	for t == lexer.Op_mul || t == lexer.Op_div || t == lexer.Op_mod || t == lexer.Op_int_div {
 		p.advance()
 		p.parseUno()
 		t = p.current().Token
@@ -361,7 +361,7 @@ func (p *Parser) parseMul() {
 // <uno> -> '+' <uno> | '-' <uno> | <fatorZao>
 func (p *Parser) parseUno() {
 
-	if (p.current().Token == lexer.Op_add || p.current().Token == lexer.Op_sub) {
+	if p.current().Token == lexer.Op_add || p.current().Token == lexer.Op_sub {
 		p.advance()
 		p.parseUno()
 	} else {
@@ -372,7 +372,7 @@ func (p *Parser) parseUno() {
 // <fatorZao> -> <fatorzin> | '(' <atrib> ')'
 func (p *Parser) parseFatorZao() {
 
-	if (p.current().Token == lexer.Open_paren) {
+	if p.current().Token == lexer.Open_paren {
 		p.advance()
 		p.parseAtrib()
 		p.consume(lexer.Close_paren)
@@ -386,20 +386,19 @@ func (p *Parser) parseFatorZao() {
 func (p *Parser) parseFatorZin() {
 
 	t := p.current().Token
-	if (t == lexer.Literal_string || t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false) {
+	if t == lexer.Literal_string || t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false {
 		p.advance()
 	} else {
 		tokenF, _ := lexer.TabelaPalavrasFromInt(int(t))
 		stringToken := tokenF.String()
-		panic(fmt.Sprintf("Error: expected factor, got '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
+		panic(fmt.Sprintf("Error: expected 'STR' or 'IDENT' or 'NUMint' or 'NUMfloat' or 'valorBooleano' or 'valorChar', got '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
 	}
 }
 
 func (p *Parser) isStartOfExpr(t lexer.TabelaPalavras) bool {
 
-	return t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_string || 
-		   t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false || t == lexer.Open_paren || 
-		   t == lexer.Op_add || t == lexer.Op_sub || t == lexer.Op_not
+	return t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_string ||
+		t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false || t == lexer.Open_paren ||
+		t == lexer.Op_add || t == lexer.Op_sub || t == lexer.Op_not
 
 }
-

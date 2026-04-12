@@ -14,6 +14,22 @@ simbora
     oia_proce_ve("Digita ate quantu ce quer contar: ") uai
     xove(trem_di_numeru, limite) uai
 
+    roda_esse_trem (trem_di_numeru i; i fica_assim_entao 0 uai; i < 5; i veiz 2 uai) simbora
+        oia_proce_ve("Contador: ", i) uai
+    cabo
+
+    dependenu (contador) simbora
+        du_casu 1:
+            oia_proce_ve("Um") uai
+        du_casu 2:
+            oia_proce_ve("Dois") uai
+        du_casu 3:
+            oia_proce_ve("Tres") uai
+        default: 
+            oia_proce_ve("Outru trem") uai
+        cabo
+    cabo
+
     
     enquanto_tiver_trem (contador < limite) simbora
         oia_proce_ve("Contador: ", contador) uai

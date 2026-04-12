@@ -6,7 +6,7 @@ import (
 )
 
 /**
- * ThrowException(Resumo = "Criar e mostrar erros do lexer",
+ * ThrowLexerException(Resumo = "Criar e mostrar erros do lexer",
  *		Parâmetros = {
  *			mensagem(
  *				description = "Erro no qual o sistema deve apresentar",

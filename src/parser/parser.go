@@ -408,7 +408,7 @@ func (p *Parser) parseFatorZin() {
 	} else {
 		tokenF, _ := lexer.TabelaPalavrasFromInt(int(t))
 		stringToken := tokenF.String()
-		utils.ThrowParserException(fmt.Sprintf("expected 'STR' or 'IDENT' or 'NUMint' or 'NUMfloat' or 'valorBooleano' or 'valorChar', got '%v'", stringToken), p.current().Linha, p.current().Coluna)
+		utils.ThrowParserException(fmt.Sprintf("expected 'STR' or 'IDENT' or 'NUMint' or 'NUMfloat' or 'NUMhex' or 'NUMoct' or 'valorBooleano' or 'valorChar', got '%v'", stringToken), p.current().Linha, p.current().Coluna)
 	}
 }
 

@@ -7,12 +7,12 @@ bora_cumpade main ( )
 simbora
     // Preparando os trem
     trem_di_numeru limite uai
-    trem_di_numeru contador fica_assim_entao 0 uai
-    trem_discrita mensagem fica_assim_entao "Fim da contagem" uai
-    trosso letra fica_assim_entao 'A' uai
+    trem_di_numeru contador uai
+    trem_discrita mensagem uai
+    trosso letra uai
 
     oia_proce_ve ( "Digita ate quantu  \' \" ce quer \t contar: ") uai
-    xove ( limite ) uai
+    xove ( trem_di_numeru, limite ) uai
 
     enquanto_tiver_trem ( contador < limite )
     simbora
@@ -31,25 +31,25 @@ simbora
         oia_proce_ve ( "Deu algum trem \t errado na logica...", .5, 1, 0xFF, "teste" ) uai
     cabo
     
-    "TESTE \aa \n \ testesaa "
+    "TESTE \aa \n \ testesaa " uai
 
-    "teste \" de string";
+    "teste \" de string" uai
 
-    trem_di_numeru teste_if fica_assim_entao ".5" uai
-    trem_di_numeru teste_if fica_assim_entao .5          /                  2 uai
-    trem_di_numeru teste_if fica_assim_entao contador + 5 uai
+    teste_if fica_assim_entao ".5" uai
+    teste_if fica_assim_entao .5          /                  2 uai
+    teste_if fica_assim_entao contador + 5 uai
 
 
-    trem_di_numeru teste_float fica_assim_entao '\\' und
-    trem_di_numeru teste_float fica_assim_entao 0.5 uai
-    trem_di_numeru teste_float fica_assim_entao 3.14 uai
-    trem_cum_virgula teste_float_dois fica_assim_entao .5 uai
-    trem_di_numeru teste_hexa fica_assim_entao 0x1A uai
-    trem_di_numeru teste_octal fica_assim_entao 012 uai
-    trem_di_numeru teste_inteiro fica_assim_entao 12 uai
-    trem_di_numeru teste_inteiro fica_assim_entao 0000 uai
-    trem_di_numeru teste_inteiro fica_assim_entao 0x0 uai
-    trem_di_numeru teste_inteiro fica_assim_entao 0x00 uai
+    teste_float fica_assim_entao '\\' und
+    teste_float fica_assim_entao 0.5 uai
+    teste_float fica_assim_entao 3.14 uai
+    teste_float_dois fica_assim_entao .5 uai
+    teste_hexa fica_assim_entao 0x1A uai
+    teste_octal fica_assim_entao 012 uai
+    teste_inteiro fica_assim_entao 12 uai
+    teste_inteiro fica_assim_entao 0000 uai
+    teste_inteiro fica_assim_entao 0x0 uai
+    teste_inteiro fica_assim_entao 0x00 uai
     
     ta_bao uai
 cabo

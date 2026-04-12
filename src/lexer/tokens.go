@@ -19,7 +19,7 @@ const (
 	Loop_while          // 8  - enquanto_tiver_trem → while
 	Conditional_switch  // 9  - dependenu → switch
 	Conditional_case    // 10 - du_casu   → case
-	Conditional_default // 11 - default   → default
+	Conditional_default // 11 - uai_so   → default
 
 	// Functions & return
 	Func_return   // 12 - ta_bao       → return
@@ -132,7 +132,7 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 	// Block delimiters
 	"simbora": Block_open,
 	"cabo":    Block_close,
-	"default": Conditional_default,
+	"uai_so":  Conditional_default,
 	// COMENTADOS: tratados diretamente pelo lexer (chars '{', '}', '"', etc.)
 	// Se descomentadas, variáveis com esses nomes seriam mascaradas.
 	// "abre_chave":          Open_brace,
@@ -197,7 +197,7 @@ var PalavrasReservadasReverso = map[TabelaPalavras]string{
 	Conditional_else:    "uai_senao", // 6  - uai_senao → else
 	Conditional_switch:  "dependenu", // 9  - dependenu → switch
 	Conditional_case:    "du_casu",   // 10 - du_casu   → case
-	Conditional_default: "default",   // 11 - default   → default
+	Conditional_default: "uai_so",    // 11 - uai_so    → default
 
 	// Loops
 	Loop_for:   "roda_esse_trem",      // 7  - roda_esse_trem      → for

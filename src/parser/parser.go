@@ -22,7 +22,7 @@ func NewParser(tokens []lexer.Tupla) *Parser {
 func (p *Parser) current() lexer.Tupla {
 
 	if p.pos >= len(p.tokens) {
-
+		panic("Error: unexpected end of file")
 	}
 
 	return p.tokens[p.pos]
@@ -119,13 +119,15 @@ func (p *Parser) parseStmt() {
 	case lexer.Stmt_end:
 		p.advance() // uai
 
+	// case lexer.Func_return:
+	// 	p.parseReturnStmt()
+
 	default:
 		if p.isStartOfExpr(token) {
 			p.parseAtrib()
 			p.consume(lexer.Stmt_end)
 		} else {
 			tokenF, _ := lexer.TabelaPalavrasFromInt(int(token))
-			print(token)
 			stringToken := tokenF.String()
 			panic(fmt.Sprintf("Error: unexpected token '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
 		}
@@ -139,7 +141,7 @@ func (p *Parser) parseIfStmt() {
 	p.consume(lexer.Open_paren)
 	p.parseExpr()
 	p.consume(lexer.Close_paren)
-	p.parseBloco()
+	p.parseStmt()
 
 	// se for seguido de else, consome o else e o bloco do else
 	if p.current().Token == lexer.Conditional_else {
@@ -233,8 +235,8 @@ func (p *Parser) parseCaseStmt() {
 		p.parseDoCaso()
 	}
 	if p.current().Token == lexer.Conditional_default {
-		p.advance()
 		p.consume(lexer.Conditional_default)
+		p.consume(lexer.Colon)
 		p.parseStmt()
 	}
 	p.consume(lexer.Block_close)
@@ -249,6 +251,16 @@ func (p *Parser) parseDoCaso() {
 	p.parseStmt()
 
 }
+
+// func (p *Parser) parseReturnStmt() {
+
+// 	p.consume(lexer.Func_return)
+// 	if p.current().Token != lexer.Stmt_end {
+// 		p.parseExpr()
+// 	}
+// 	p.consume(lexer.Stmt_end)
+
+// }
 
 func (p *Parser) parseType() {
 
@@ -386,7 +398,11 @@ func (p *Parser) parseFatorZao() {
 func (p *Parser) parseFatorZin() {
 
 	t := p.current().Token
-	if t == lexer.Literal_string || t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false {
+	if t == lexer.Literal_string || t == lexer.Identifier || 
+	   t == lexer.Literal_int || t == lexer.Literal_float || 
+	   t == lexer.Literal_char || t == lexer.Literal_true || 
+	   t == lexer.Literal_false || t == lexer.Literal_hex ||
+	   t == lexer.Literal_oct {
 		p.advance()
 	} else {
 		tokenF, _ := lexer.TabelaPalavrasFromInt(int(t))
@@ -399,6 +415,6 @@ func (p *Parser) isStartOfExpr(t lexer.TabelaPalavras) bool {
 
 	return t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_string ||
 		t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false || t == lexer.Open_paren ||
-		t == lexer.Op_add || t == lexer.Op_sub || t == lexer.Op_not
+		t == lexer.Op_add || t == lexer.Op_sub || t == lexer.Op_not || t == lexer.Literal_hex || t == lexer.Literal_oct
 
 }

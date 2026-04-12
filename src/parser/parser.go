@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"mineres-interpreter/src/lexer"
+	"mineres-interpreter/src/utils"
 )
 
 type Parser struct {
@@ -22,7 +23,7 @@ func NewParser(tokens []lexer.Tupla) *Parser {
 func (p *Parser) current() lexer.Tupla {
 
 	if p.pos >= len(p.tokens) {
-		panic("Error: unexpected end of file")
+		utils.ThrowException("parser.go", "current", "unexpected end of file")
 	}
 
 	return p.tokens[p.pos]
@@ -47,7 +48,7 @@ func (p *Parser) consume(expected lexer.TabelaPalavras) {
 
 		currentToken, _ := lexer.TabelaPalavrasFromInt(int(p.current().Token))
 		currentStr := currentToken.String()
-		panic(fmt.Sprintf("Error: expected token '%v', got '%v' on %d:%d", expectedStr, currentStr, p.current().Linha, p.current().Coluna))
+		utils.ThrowParserException(fmt.Sprintf("expected token '%v', got '%v'", expectedStr, currentStr), p.current().Linha, p.current().Coluna)
 	}
 
 }
@@ -129,7 +130,7 @@ func (p *Parser) parseStmt() {
 		} else {
 			tokenF, _ := lexer.TabelaPalavrasFromInt(int(token))
 			stringToken := tokenF.String()
-			panic(fmt.Sprintf("Error: unexpected token '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
+			utils.ThrowParserException(fmt.Sprintf("unexpected token '%v'", stringToken), p.current().Linha, p.current().Coluna)
 		}
 	}
 }
@@ -271,7 +272,7 @@ func (p *Parser) parseType() {
 	} else {
 		tokenF, _ := lexer.TabelaPalavrasFromInt(int(token))
 		stringToken := tokenF.String()
-		panic(fmt.Sprintf("Error: expected type, got '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
+		utils.ThrowParserException(fmt.Sprintf("expected type, got '%v'", stringToken), p.current().Linha, p.current().Coluna)
 	}
 
 }
@@ -407,7 +408,7 @@ func (p *Parser) parseFatorZin() {
 	} else {
 		tokenF, _ := lexer.TabelaPalavrasFromInt(int(t))
 		stringToken := tokenF.String()
-		panic(fmt.Sprintf("Error: expected 'STR' or 'IDENT' or 'NUMint' or 'NUMfloat' or 'valorBooleano' or 'valorChar', got '%v' on %d:%d", stringToken, p.current().Linha, p.current().Coluna))
+		utils.ThrowParserException(fmt.Sprintf("expected 'STR' or 'IDENT' or 'NUMint' or 'NUMfloat' or 'valorBooleano' or 'valorChar', got '%v'", stringToken), p.current().Linha, p.current().Coluna)
 	}
 }
 

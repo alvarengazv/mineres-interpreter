@@ -64,6 +64,35 @@ ThrowException::%s (%s) => %s
 }
 
 /**
+ * ThrowParserException(Resumo = "Criar e mostrar erros do parser",
+ *		Parâmetros = {
+ *			mensagem(
+ *				description = "Erro no qual o sistema deve apresentar",
+ *				example = "Token esperado: ';'"
+ *			),
+ *			line(
+ *				description = "Linha na qual o erro aconteceu"
+ *				example = 6
+ *			),
+ *			column(
+ *				description = "Coluna na qual o erro aconteceu"
+ *				example = 35
+ *			)
+ *		},
+ *		Retorno = {}
+ * )
+ */
+func ThrowParserException(mensagem string, line, column int) {
+	executeException(fmt.Errorf(`
+Parser error on (%d::%d) => %s
+`,
+		line,
+		column,
+		mensagem,
+	))
+}
+
+/**
   * executeException(Resumo = "Lançar o erro no sistema",
   *		Parâmetros = {
   *			err(
@@ -76,7 +105,7 @@ ThrowException::%s (%s) => %s
   */
 func executeException(err error) {
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(0)
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
 	}
 }

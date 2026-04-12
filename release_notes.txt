@@ -4,6 +4,7 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 2 - Evolução - Erros personalizados para o Parser - 12/04/2026 - Joaquim Cruz 
 Parte 2 - Correção - Parse IfStmt com 'parseStmt' - 12/04/2026 - Guilherme Alvarenga
 Parte 2 - Correção - Tratamento do 'default' como 'uai_so' & símbolo ':' - 12/04/2026 - Guilherme Alvarenga
 Parte 2 - Correção - Tratamento de números Octais e Hexadecimais - 12/04/2026 - Guilherme Alvarenga

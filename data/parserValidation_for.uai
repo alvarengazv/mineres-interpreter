@@ -1,0 +1,19 @@
+bora_cumpade main() simbora
+
+    trem_di_numeru i, limite uai
+    limite fica_assim_entao 10 uai
+
+    
+    roda_esse_trem(i fica_assim_entao 0 ; i < limite ; i fica_assim_entao i + 1) simbora
+        oia_proce_ve(i) uai
+    cabo
+
+    
+    i fica_assim_entao 5 uai
+    roda_esse_trem( ; i > 0 ; i fica_assim_entao i - 1) simbora
+        oia_proce_ve(i) uai
+    cabo
+
+
+
+cabo

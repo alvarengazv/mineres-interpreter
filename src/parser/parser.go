@@ -177,11 +177,11 @@ func (p *Parser) parseForStmt() {
 
 	p.consume(lexer.Loop_for)
 	p.consume(lexer.Open_paren)
-	p.parseAtrib()
+	p.parseOptExpr()
 	p.consume(lexer.Stmt_end_for)
-	p.parseExpr()
+	p.parseOptExpr()
 	p.consume(lexer.Stmt_end_for)
-	p.parseAtrib()
+	p.parseOptExpr()
 	p.consume(lexer.Close_paren)
 	p.parseStmt()
 
@@ -293,6 +293,12 @@ func (p *Parser) parseExpr() {
 
 	p.parseAtrib()
 
+}
+
+func (p *Parser) parseOptExpr() {
+	if p.isStartOfExpr(p.current().Token) {
+		p.parseAtrib()
+	}
 }
 
 func (p *Parser) parseAtrib() {

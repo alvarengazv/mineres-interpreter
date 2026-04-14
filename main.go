@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	conteudo := utils.LerArquivo("data/parserValidation_unexpected-token-switch.uai")
+	conteudo := utils.LerArquivo("data/parserValidation_expected-type-scan.uai")
 	listTupla := lexer.AnalisarArquivo(conteudo)
 	//lexer.ListTuplaToString(listTupla)
 
@@ -15,3 +15,4 @@ func main() {
 	parser.ParserFunction()
 
 }
+

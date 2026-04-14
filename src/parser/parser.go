@@ -23,7 +23,13 @@ func NewParser(tokens []lexer.Tupla) *Parser {
 func (p *Parser) current() lexer.Tupla {
 
 	if p.pos >= len(p.tokens) {
-		utils.ThrowException("parser.go", "current", "unexpected end of file")
+		linha, coluna := 1, 1
+		if len(p.tokens) > 0 {
+			ultimo := p.tokens[len(p.tokens)-1]
+			linha = ultimo.Linha
+			coluna = ultimo.Coluna + len(ultimo.Lexema)
+		}
+		return lexer.Tupla{Token: -1, Linha: linha, Coluna: coluna, Lexema: "EOF"}
 	}
 
 	return p.tokens[p.pos]
@@ -37,18 +43,24 @@ func (p *Parser) advance() {
 
 }
 
-func (p *Parser) consume(expected lexer.TabelaPalavras) {
+func (p *Parser) tokenToString(t lexer.TabelaPalavras) string {
+	if t == -1 {
+		return "EOF"
+	}
+	tokenF, _ := lexer.TabelaPalavrasFromInt(int(t))
+	return tokenF.String()
+}
 
-	if p.current().Token == expected {
+func (p *Parser) consume(expected lexer.TabelaPalavras) {
+	curr := p.current()
+
+	if curr.Token == expected {
 		p.advance()
 	} else {
-		// Get the expected and current tokens as strings for better error messages
-		token, _ := lexer.TabelaPalavrasFromInt(int(expected))
-		expectedStr := token.String()
+		expectedStr := p.tokenToString(expected)
+		currentStr := p.tokenToString(curr.Token)
 
-		currentToken, _ := lexer.TabelaPalavrasFromInt(int(p.current().Token))
-		currentStr := currentToken.String()
-		utils.ThrowParserException(fmt.Sprintf("expected token '%v', got '%v'", expectedStr, currentStr), p.current().Linha, p.current().Coluna)
+		utils.ThrowParserException(fmt.Sprintf("expected token '%v', got '%v'", expectedStr, currentStr), curr.Linha, curr.Coluna)
 	}
 
 }
@@ -76,7 +88,7 @@ func (p *Parser) parseBloco() {
 
 func (p *Parser) parseStmtList() {
 
-	for p.current().Token != lexer.Block_close {
+	for p.current().Token != lexer.Block_close && p.current().Token != -1 {
 		p.parseStmt() // função principal que vai chamar as outras funções de stmt
 	}
 
@@ -128,8 +140,7 @@ func (p *Parser) parseStmt() {
 			p.parseAtrib()
 			p.consume(lexer.Stmt_end)
 		} else {
-			tokenF, _ := lexer.TabelaPalavrasFromInt(int(token))
-			stringToken := tokenF.String()
+			stringToken := p.tokenToString(token)
 			utils.ThrowParserException(fmt.Sprintf("unexpected token '%v'", stringToken), p.current().Linha, p.current().Coluna)
 		}
 	}
@@ -270,8 +281,7 @@ func (p *Parser) parseType() {
 	if token == lexer.Type_int || token == lexer.Type_float || token == lexer.Type_string || token == lexer.Type_bool || token == lexer.Type_char {
 		p.advance()
 	} else {
-		tokenF, _ := lexer.TabelaPalavrasFromInt(int(token))
-		stringToken := tokenF.String()
+		stringToken := p.tokenToString(token)
 		utils.ThrowParserException(fmt.Sprintf("expected type, got '%v'", stringToken), p.current().Linha, p.current().Coluna)
 	}
 
@@ -406,8 +416,7 @@ func (p *Parser) parseFatorZin() {
 	   t == lexer.Literal_oct {
 		p.advance()
 	} else {
-		tokenF, _ := lexer.TabelaPalavrasFromInt(int(t))
-		stringToken := tokenF.String()
+		stringToken := p.tokenToString(t)
 		utils.ThrowParserException(fmt.Sprintf("expected 'STR' or 'IDENT' or 'NUMint' or 'NUMfloat' or 'NUMhex' or 'NUMoct' or 'valorBooleano' or 'valorChar', got '%v'", stringToken), p.current().Linha, p.current().Coluna)
 	}
 }

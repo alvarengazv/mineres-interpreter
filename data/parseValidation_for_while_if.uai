@@ -1,12 +1,33 @@
 bora_cumpade main()
 simbora
 
-    trem_di_numeru x uai
+    trem_di_numeru i, j uai
 
-    x fica_assim_entao 07 uai
-    oia_proce_ve(x) uai
+    // FOR principal
+    roda_esse_trem (i fica_assim_entao 0; i < 5; i fica_assim_entao i + 1)
+    simbora
 
-    x fica_assim_entao 017 uai
-    oia_proce_ve(x) uai
+        // IF dentro do FOR
+        uai_se (i mema_coisa 2)
+            oia_proce_ve("i eh 2") uai
+        uai_senao
+            oia_proce_ve("i num eh 2") uai
+
+        // WHILE dentro do FOR
+        j fica_assim_entao 0 uai
+        enquanto_tiver_trem (j < 3)
+        simbora
+
+            // IF dentro do WHILE
+            uai_se (j > 1)
+                para_o_trem uai
+            uai_senao
+                oia_proce_ve("j ainda pequeno") uai
+
+            j fica_assim_entao j + 1 uai
+
+        cabo
+
+    cabo
 
 cabo

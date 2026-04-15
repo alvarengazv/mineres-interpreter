@@ -23,12 +23,35 @@ Engenharia de Computação <br>
 CEFET-MG Campus V <br>
 2026/1 
 
-
 </div>
+
+<details>
+  <summary>
+  <b style='font-size: 15px'>
+    📑 Sumário
+  </b>
+  </summary>
+  <ol>
+    <li><a href="#-o-projeto">📚 O Projeto</a></li>
+    <li><a href="#-estrutura-e-explicação-do-código">🏗️ Estrutura e Explicação do Código</a></li>
+    <li><a href="#instalando">🔨 Instalando</a></li>
+    <li><a href="#-ambiente-de-compilação-e-execução">🧪 Ambiente de Compilação e Execução</a></li>
+    <li><a href="#-contato">📨 Contato</a></li>
+    <li><a href="#referencias">📚 Referências</a></li>
+  </ol>
+</details>
+
+
 
 ## 📚 O Projeto
 
 Neste repositório você encontrará o código fonte do projeto. O projeto foi desenvolvido em Go. Este trabalho também tem a produção de um TXT para relatar cada alteração nas etapas do projeto, que está disponível em [`release_notes.txt`](release_notes.txt).
+
+## 🏗️ Estrutura e Explicação do Código
+
+A arquitetura do projeto é dividida em módulos que separam a análise léxica, a análise sintática e as ferramentas utilitárias. 
+
+### ESTRUTURA
 
 De uma forma compacta e organizada, os arquivos e diretórios estão dispostos da seguinte forma:
 
@@ -55,6 +78,32 @@ mineres-interpreter/
 ├── README.md
 └── release_notes.txt
   ```
+
+### 🔍 LEXER (Análise Léxica)
+Responsável por transformar o código-fonte (texto bruto) em uma lista de unidades lógicas chamadas **Tokens**. 
+
+**`tokens.go`**: Define o "vocabulário" da linguagem Minerês por meio da enumeração `TabelaPalavras`.  Mapeia termos regionais como `trem_di_numeru` para tipos de dados e `uai` para o fim de instruções. 
+
+**`tabela.go`**: Estrutura a saída do analisador através da struct `Tupla`, que armazena o lexema, o token e sua localização exata (linha e coluna) no código.
+
+**`lexer.go`**: Contém o "motor" do analisador que utiliza expressões regulares para identificar números hexadecimais, octais, inteiros e floats.  Também gerena estados para strings e comentários de bloco (`causo ... fim_do_causo`). 
+
+### 📐 PARSER (Análise Sintática)
+Responsável por verificar se a sequência de tokens segue as regras gramaticais da linguagem. 
+
+**`parser.go`**: Implementa um **Analisador Descendente Recursivo** que consome os tokens e valida estruturas.  Ele processa laços `roda_esse_trem` (for), condicionais `uai_se` (if), declarações e a precedência de operadores. 
+
+### 🛠️ UTILS (Utilitários)
+Funções de suporte para o funcionamento do sistema e tratamento de erros. 
+
+**`error.go`**: Centraliza o tratamento de exceções, fornecendo funções como `ThrowLexerException` e `ThrowParserException`.  Exibe erros detalhados indicando a linha e a coluna exata do problema. 
+
+**`file.go`**: Gerencia a manipulação de arquivos, incluindo funções para verificar a existência e realizar a leitura completa de scripts `.uai`. 
+
+### 🚀 RAÍZ (Execução e Configuração)
+**`main.go`**: Ponto de entrada do interpretador que coordena a leitura do arquivo, a geração de tokens pelo Lexer e a validação final pelo Parser. 
+
+**`go.mod`**: Define o nome do módulo do projeto e especifica a versão do Go (1.26.1) necessária para a compilação. 
 
 ## Instalando
 Para instalar o projeto, siga os passos abaixo:

@@ -117,7 +117,7 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 
 	// Functions & return
 	"bora_cumpade": Func_decl,
-	"ta_bao":       Func_return,
+	// "ta_bao":       Func_return,
 	"main":         Main_function,
 
 	// Symbols — COMENTADOS: tratados diretamente em tratarSimbolosEspeciais, nunca chegam ao buffer.

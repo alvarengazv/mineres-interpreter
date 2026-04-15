@@ -75,7 +75,7 @@ func (p *Parser) ParserFunction() {
 	p.consume(lexer.Close_paren)
 	p.parseBloco()
 
-	fmt.Println("Syntactic analysis completed!")
+	fmt.Println("\nSyntactic analysis completed!")
 }
 
 func (p *Parser) parseBloco() {

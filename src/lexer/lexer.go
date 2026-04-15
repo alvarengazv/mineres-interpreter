@@ -10,7 +10,7 @@ var (
 	// 0x seguido de um ou mais números hexadecimais
 	regexHexa = regexp.MustCompile(`^0x[0-9A-F]+$`)
 	// 0 seguido de um ou mais números octais, não podendo ter 0 como segundo caractere
-	regexOctal = regexp.MustCompile(`^0[1-7][0-7]+$`)
+	regexOctal = regexp.MustCompile(`^0[1-7][0-7]*$`)
 	// Um ou mais números seguidos de ponto e um ou mais números, ou ponto seguido de um ou mais números
 	regexFloat = regexp.MustCompile(`^[0-9]*\.[0-9]+$|^[0-9]+\.[0-9]+$`)
 	// Um ou mais zeros seguidos, OU um número diferente de 0 seguido de qualquer número

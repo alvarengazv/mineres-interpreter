@@ -4,6 +4,7 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 2 - Correção - Refatorando a regex dos numeros octais - 14/04/2026 - Luan Santos
 Parte 2 - Evolução - Agora o for pode ser vazio - 14/02/2026 - Joaquim Cruz 
 Parte 2 - Correção - Corrigindo mensagem de erro ao chegar no fim do arquivo sem o token especifico - 14/03/2026 - Joaquim Cruz
 Parte 2 - Evolução - Erros personalizados para o Parser - 12/04/2026 - Joaquim Cruz 

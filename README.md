@@ -35,17 +35,17 @@ De uma forma compacta e organizada, os arquivos e diretórios estão dispostos d
   ```.
 mineres-interpreter/
 ├── data/
-│   ├── lexerValidation_char-nao-fechado.uai
-│   ├── lexerValidation_comentario-bloco-nao-fechado.uai
-│   ├── lexerValidation_numero-invalido.uai
-│   ├── lexerValidation_simbolo-desconhecido.uai
-│   ├── lexerValidation_string-nao-fechada.uai
+│   ├── lexerValidation*.uai
+│   ├── parserValidation*.uai
+│   ├── mineres.gmr
 │   └── main.uai
 ├── src/
 │   ├── lexer/
 │   │   ├── lexer.go
 │   │   ├── tabela.go
 │   │   └── tokens.go
+│   ├── parser/
+│   │   └── parser.go
 │   └── utils/
 │       ├── error.go
 │       └── file.go

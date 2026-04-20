@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"mineres-interpreter/src/utils"
 	"regexp"
 	"unicode"
@@ -12,12 +13,28 @@ var (
 	// 0 seguido de um ou mais números octais, não podendo ter 0 como segundo caractere
 	regexOctal = regexp.MustCompile(`^0[1-7][0-7]*$`)
 	// Um ou mais números seguidos de ponto e um ou mais números, ou ponto seguido de um ou mais números
-	regexFloat = regexp.MustCompile(`^[0-9]*\.[0-9]+$|^[0-9]+\.[0-9]+$`)
+	regexFloat = regexp.MustCompile(`^[0-9]*\.[0-9]+$|^[0-9]+\.[0-9]*$`)
 	// Um ou mais zeros seguidos, OU um número diferente de 0 seguido de qualquer número
 	regexInteiro = regexp.MustCompile(`^[0]+$|^[1-9][0-9]*$`)
 	// Começa com letra, seguido de letras, números ou underscore
 	regexVariavel = regexp.MustCompile(`^[a-zA-Z][a-zA-Z0-9_]*$`)
 )
+
+var simbolos = map[rune]TabelaPalavras{
+	'(':  Open_paren,
+	')':  Close_paren,
+	'{':  Block_open,
+	'}':  Block_close,
+	',':  Comma,
+	':':  Colon,
+	';':  Stmt_end,
+	'+':  Op_add,
+	'-':  Op_sub,
+	'/':  Op_int_div,
+	'%':  Op_mod,
+	'<':  Op_lt,
+	'>':  Op_gt,
+}
 
 // estadoLexer mantém todo o estado mutável do analisador léxico,
 // permitindo que as funções auxiliares compartilhem e modifiquem o estado.
@@ -68,13 +85,13 @@ func (e *estadoLexer) classificarLexema(lexema string) TabelaPalavras {
 		return Identifier
 	default:
 		if e.lendoChar {
-			utils.ThrowLexerException("Unknown token: Unterminated char literal", e.linha_inicio, e.coluna_inicio)
+			utils.ThrowLexerException(fmt.Sprintf("Unknown token: Unterminated char literal - '%v'", lexema), e.linha_inicio, e.coluna_inicio)
 		} else if e.lendoString {
-			utils.ThrowLexerException("Unknown token: Unterminated string literal", e.linha_inicio, e.coluna_inicio)
+			utils.ThrowLexerException(fmt.Sprintf("Unknown token: Unterminated string literal - '%v'", lexema), e.linha_inicio, e.coluna_inicio)
 		} else if lexema[0] >= '0' && lexema[0] <= '9' {
-			utils.ThrowLexerException("Unknown token: Invalid number value", e.linha_inicio, e.coluna_inicio)
+			utils.ThrowLexerException(fmt.Sprintf("Unknown token: Invalid number value - '%v'", lexema), e.linha_inicio, e.coluna_inicio)
 		}
-		utils.ThrowLexerException("Unknown token: Invalid character", e.linha_inicio, e.coluna_inicio)
+		utils.ThrowLexerException(fmt.Sprintf("Unknown token: '%v'", lexema), e.linha_inicio, e.coluna_inicio)
 
 		e.erro_lexico = true
 		return Lexical_error
@@ -162,12 +179,7 @@ func (e *estadoLexer) tratarComentarioLinha(char rune) {
 // - Dentro de string/char: converte para o caractere real e acumula no buffer.
 // - Fora de string/char: retorna false para que a barra seja tratada como caractere normal.
 func (e *estadoLexer) tratarSequenciaEscape(i int) (bool, int) {
-	if i < len(e.runes) && e.runes[i] == '\\' && i+1 < len(e.runes) {
-		// Só processa sequências de escape se estivermos dentro de uma string ou char
-		if !e.lendoString && !e.lendoChar {
-			return false, i
-		}
-
+	if i < len(e.runes) && i+1 < len(e.runes) && e.runes[i] == '\\' {
 		prox := e.runes[i+1]
 
 		// Verifica se é uma sequência de escape conhecida e qual o seu caractere real
@@ -311,58 +323,6 @@ func (e *estadoLexer) tratarEspacosDelimitadores(i int) int {
 	return i
 }
 
-// tratarSimbolosEspeciais trata símbolos especiais como parênteses, vírgulas, chaves, etc.
-// Para < e >, verifica se o próximo caractere é '=' para formar <= ou >=.
-// Retorna o novo índice i (possivelmente avançado).
-func (e *estadoLexer) tratarSimbolosEspeciais(char rune, i int) int {
-	e.processarBuffer()
-	var token TabelaPalavras
-	lexema := string(char)
-
-	switch char {
-	case '(':
-		token = Open_paren
-	case ')':
-		token = Close_paren
-	case ',':
-		token = Comma
-	case ':':
-		token = Colon
-	case '{':
-		token = Open_brace
-	case '}':
-		token = Close_brace
-	case '+':
-		token = Op_add
-	case '-':
-		token = Op_sub
-	case '<', '>':
-		if i+1 < len(e.runes) && e.runes[i+1] == '=' {
-			lexema = string(char) + "="
-			if char == '<' {
-				token = Op_lte
-			} else {
-				token = Op_gte
-			}
-			i++
-		} else if char == '<' {
-			token = Op_lt
-		} else {
-			token = Op_gt
-		}
-	case '%':
-		token = Op_mod
-	case '/':
-		token = Op_int_div
-	case ';':
-		token = Stmt_end_for
-	}
-
-	e.tabela_lexica = append(e.tabela_lexica, Tupla{Lexema: lexema, Token: token, Linha: e.linha, Coluna: e.coluna})
-	e.coluna += len([]rune(lexema))
-	return i
-}
-
 // acumularBuffer adiciona um caractere ao buffer de leitura,
 // registrando a posição de início se o buffer estiver vazio.
 func (e *estadoLexer) acumularBuffer(char rune) {
@@ -404,17 +364,19 @@ func AnalisarArquivo(conteudo string) []Tupla {
 		} else if char == '\'' {
 			// Detectar início de caractere '
 			e.detectarInicioChar()
-		} else if detectado, novoI := e.tratarSequenciaEscape(i); detectado {
-			// Tratamento de sequências de escape fora de strings/chars
-			i = novoI
+		} else if _, existe := simbolos[char]; existe {
+			e.processarBuffer()
+			e.acumularBuffer(char)
+			if e.runes[i+1] == '=' {
+				e.acumularBuffer(e.runes[i+1])
+				i++
+			}
+
+			e.processarBuffer()
 		} else if unicode.IsSpace(char) {
 			// Delimitadores e Espaços
 			i = e.tratarEspacosDelimitadores(i)
-		} else if char == '(' || char == ')' || char == ',' || char == '{' || char == '}' || char == '+' || char == '-' || char == '%' || char == '/' || char == '<' || char == '>' || char == ';' || char == ':' {
-			// Símbolos especiais (inclui operadores compostos <= e >=)
-			i = e.tratarSimbolosEspeciais(char, i)
 		} else {
-			// Acumular caractere no buffer
 			e.acumularBuffer(char)
 		}
 	}

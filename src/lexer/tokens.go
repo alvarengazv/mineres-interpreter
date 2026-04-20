@@ -135,8 +135,10 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 	"uai_so":  Conditional_default,
 	// COMENTADOS: tratados diretamente pelo lexer (chars '{', '}', '"', etc.)
 	// Se descomentadas, variáveis com esses nomes seriam mascaradas.
-	// "abre_chave":          Open_brace,
-	// "fecha_chave":         Close_brace,
+	"{": Open_brace,
+	"}": Close_brace,
+	"(": Open_paren,
+	")": Close_paren,
 	// "abre_aspas":          Open_quote,
 	// "fecha_aspas":         Close_quote,
 	// "abre_aspas_simples":  Open_squote,
@@ -144,9 +146,10 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 
 	// Punctuation
 	// COMENTADO: ',' é tratado em tratarSimbolosEspeciais. Uma variável "virgula" seria mascarada.
-	// "virgula": Comma,
+	",": Comma,
 	"uai": Stmt_end,
 	";":   Stmt_end_for,
+	":":   Colon,
 
 	// Assignment & equality
 	"fica_assim_entao": Op_assign,
@@ -161,18 +164,18 @@ var PalavrasReservadas = map[string]TabelaPalavras{
 
 	// Arithmetic operators (only words, not symbols)
 	// COMENTADOS: tratados em tratarSimbolosEspeciais, nunca chegam ao buffer.
-	// "+":  Op_add,
-	// "-":  Op_sub,
+	"+":  Op_add,
+	"-":  Op_sub,
 	"veiz": Op_mul,
 	"sob":  Op_div,
-	// "%":  Op_mod,
-	// "/":  Op_int_div,
+	"%":  Op_mod,
+	"/":  Op_int_div,
 
 	// COMENTADOS: '<' e '>' são tratados em tratarSimbolosEspeciais (inclui <= e >=).
-	// "<":  Op_lt,
-	// ">":  Op_gt,
-	// "<=": Op_lte,
-	// ">=": Op_gte,
+	"<":  Op_lt,
+	">":  Op_gt,
+	"<=": Op_lte,
+	">=": Op_gte,
 
 	// I/O
 	"xove":         Io_scan,
@@ -264,17 +267,17 @@ var PalavrasReservadasReverso = map[TabelaPalavras]string{
 	Comment_block_close: "fim_do_causo", // 50 - fim_do_causo → */ comentário de bloco
 
 	// Literals & tokens
-	Literal_string: "conteúdo string",        // 46 - conteúdo string
-	Literal_char:   "conteúdo char",          // 47 - conteúdo char
-	Comment_line:   "// comentário de linha", // 48 - // comentário de linha
+	Literal_string: "trem_discrita content",        // 46 - conteúdo string
+	Literal_char:   "trosso content",          // 47 - conteúdo char
+	Comment_line:   "inline_comment", // 48 - // comentário de linha
 
-	Literal_int:   "conteúdo inteiro",             // 51 - conteúdo inteiro
-	Literal_hex:   "conteúdo hexadecimal (0x...)", // 52 - conteúdo hexadecimal (0x...)
-	Literal_oct:   "conteúdo octal (0...)",        // 53 - conteúdo octal (0...)
-	Literal_float: "conteúdo float",               // 54 - conteúdo float
+	Literal_int:   "trem_di_numeru content",             // 51 - conteúdo inteiro
+	Literal_hex:   "trem_di_numeru_hex content", // 52 - conteúdo hexadecimal (0x...)
+	Literal_oct:   "trem_di_numeru_oct content",        // 53 - conteúdo octal (0...)
+	Literal_float: "trem_cum_virgula content",               // 54 - conteúdo float
 
-	Identifier:    "variável / identificador", // 55 - variável / identificador
-	Lexical_error: "token inválido",           // 56 - token inválido
+	Identifier:    "variable / identifier", // 55 - variável / identificador
+	Lexical_error: "invalid token",           // 56 - token inválido
 
 }
 

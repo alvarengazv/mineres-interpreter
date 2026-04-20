@@ -4,6 +4,9 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 2 - Correção - Melhor descrição de erros do Parser - 19/04/2026 - Guilherme Alvarenga
+Parte 2 - Correção - Conferir se há tokens após o fim da função main - 19/04/2026 - Guilherme Alvarenga
+Parte 2 - Correção - Tirando if-statement grande do parser - 19/04/2026 - Guilherme Alvarenga
 Parte 1 - Correção - Tirando if-statement grande do lexer & Float Literal: '*' - 19/04/2026 - Guilherme Alvarenga
 Parte 2 - Correção - Refatorando a regex dos numeros octais - 14/04/2026 - Luan Santos
 Parte 2 - Evolução - Agora o for pode ser vazio - 14/02/2026 - Joaquim Cruz 

@@ -6,6 +6,59 @@ import (
 	"mineres-interpreter/src/utils"
 )
 
+// Conjuntos de tokens para lookups O(1), substituindo cadeias de if/||
+var typeTokens = map[lexer.TabelaPalavras]bool{
+	lexer.Type_int:    true,
+	lexer.Type_float:  true,
+	lexer.Type_string: true,
+	lexer.Type_bool:   true,
+	lexer.Type_char:   true,
+}
+
+var relOpTokens = map[lexer.TabelaPalavras]bool{
+	lexer.Op_eq:  true,
+	lexer.Op_neq: true,
+	lexer.Op_lt:  true,
+	lexer.Op_gt:  true,
+	lexer.Op_lte: true,
+	lexer.Op_gte: true,
+}
+
+var mulOpTokens = map[lexer.TabelaPalavras]bool{
+	lexer.Op_mul:     true,
+	lexer.Op_div:     true,
+	lexer.Op_mod:     true,
+	lexer.Op_int_div: true,
+}
+
+var fatorTokens = map[lexer.TabelaPalavras]bool{
+	lexer.Literal_string: true,
+	lexer.Identifier:     true,
+	lexer.Literal_int:    true,
+	lexer.Literal_float:  true,
+	lexer.Literal_char:   true,
+	lexer.Literal_true:   true,
+	lexer.Literal_false:  true,
+	lexer.Literal_hex:    true,
+	lexer.Literal_oct:    true,
+}
+
+var exprStartTokens = map[lexer.TabelaPalavras]bool{
+	lexer.Identifier:     true,
+	lexer.Literal_int:    true,
+	lexer.Literal_float:  true,
+	lexer.Literal_string: true,
+	lexer.Literal_char:   true,
+	lexer.Literal_true:   true,
+	lexer.Literal_false:  true,
+	lexer.Literal_hex:    true,
+	lexer.Literal_oct:    true,
+	lexer.Open_paren:     true,
+	lexer.Op_add:         true,
+	lexer.Op_sub:         true,
+	lexer.Op_not:         true,
+}
+
 type Parser struct {
 	tokens []lexer.Tupla
 	pos    int
@@ -75,6 +128,10 @@ func (p *Parser) ParserFunction() {
 	p.consume(lexer.Close_paren)
 	p.parseBloco()
 
+	if p.current().Token != -1 {
+		utils.ThrowParserException("Unexpected token after main function: '"+ p.tokenToString(p.current().Token) + "'", p.current().Linha, p.current().Coluna)
+	}
+
 	fmt.Println("\nSyntactic analysis completed!")
 }
 
@@ -136,12 +193,12 @@ func (p *Parser) parseStmt() {
 	// 	p.parseReturnStmt()
 
 	default:
-		if p.isStartOfExpr(token) {
+		if exprStartTokens[token] {
 			p.parseAtrib()
 			p.consume(lexer.Stmt_end)
 		} else {
 			stringToken := p.tokenToString(token)
-			utils.ThrowParserException(fmt.Sprintf("unexpected token '%v'", stringToken), p.current().Linha, p.current().Coluna)
+			utils.ThrowParserException(fmt.Sprintf("Expected statement, got '%v'", stringToken), p.current().Linha, p.current().Coluna)
 		}
 	}
 }
@@ -278,7 +335,7 @@ func (p *Parser) parseType() {
 
 	token := p.current().Token
 
-	if token == lexer.Type_int || token == lexer.Type_float || token == lexer.Type_string || token == lexer.Type_bool || token == lexer.Type_char {
+	if typeTokens[token] {
 		p.advance()
 	} else {
 		stringToken := p.tokenToString(token)
@@ -296,7 +353,7 @@ func (p *Parser) parseExpr() {
 }
 
 func (p *Parser) parseOptExpr() {
-	if p.isStartOfExpr(p.current().Token) {
+	if exprStartTokens[p.current().Token] {
 		p.parseAtrib()
 	}
 }
@@ -357,7 +414,7 @@ func (p *Parser) parseNot() {
 func (p *Parser) parseRel() {
 
 	p.parseAdd()
-	if p.current().Token == lexer.Op_eq || p.current().Token == lexer.Op_lt || p.current().Token == lexer.Op_gt || p.current().Token == lexer.Op_lte || p.current().Token == lexer.Op_gte || p.current().Token == lexer.Op_neq {
+	if relOpTokens[p.current().Token] {
 		p.advance()
 		p.parseAdd()
 	}
@@ -378,11 +435,9 @@ func (p *Parser) parseAdd() {
 // <mul> -> <fator> { ('veiz' | 'sob') <fator> }
 func (p *Parser) parseMul() {
 	p.parseUno()
-	t := p.current().Token
-	for t == lexer.Op_mul || t == lexer.Op_div || t == lexer.Op_mod || t == lexer.Op_int_div {
+	for mulOpTokens[p.current().Token] {
 		p.advance()
 		p.parseUno()
-		t = p.current().Token
 	}
 
 }
@@ -415,22 +470,10 @@ func (p *Parser) parseFatorZao() {
 func (p *Parser) parseFatorZin() {
 
 	t := p.current().Token
-	if t == lexer.Literal_string || t == lexer.Identifier || 
-	   t == lexer.Literal_int || t == lexer.Literal_float || 
-	   t == lexer.Literal_char || t == lexer.Literal_true || 
-	   t == lexer.Literal_false || t == lexer.Literal_hex ||
-	   t == lexer.Literal_oct {
+	if fatorTokens[t] {
 		p.advance()
 	} else {
 		stringToken := p.tokenToString(t)
 		utils.ThrowParserException(fmt.Sprintf("expected 'STR' or 'IDENT' or 'NUMint' or 'NUMfloat' or 'NUMhex' or 'NUMoct' or 'valorBooleano' or 'valorChar', got '%v'", stringToken), p.current().Linha, p.current().Coluna)
 	}
-}
-
-func (p *Parser) isStartOfExpr(t lexer.TabelaPalavras) bool {
-
-	return t == lexer.Identifier || t == lexer.Literal_int || t == lexer.Literal_float || t == lexer.Literal_string ||
-		t == lexer.Literal_char || t == lexer.Literal_true || t == lexer.Literal_false || t == lexer.Open_paren ||
-		t == lexer.Op_add || t == lexer.Op_sub || t == lexer.Op_not || t == lexer.Literal_hex || t == lexer.Literal_oct
-
 }

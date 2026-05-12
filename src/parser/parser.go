@@ -60,11 +60,11 @@ var exprStartTokens = map[lexer.TabelaPalavras]bool{
 }
 
 type Parser struct {
-	tokens []lexer.Tupla
+	tokens []lexer.TuplaLex
 	pos    int
 }
 
-func NewParser(tokens []lexer.Tupla) *Parser {
+func NewParser(tokens []lexer.TuplaLex) *Parser {
 	return &Parser{
 		tokens: tokens,
 		pos:    0,
@@ -73,7 +73,7 @@ func NewParser(tokens []lexer.Tupla) *Parser {
 
 // Funções auxiliares para o manuseio do ponteiro do buffer
 
-func (p *Parser) current() lexer.Tupla {
+func (p *Parser) current() lexer.TuplaLex {
 
 	if p.pos >= len(p.tokens) {
 		linha, coluna := 1, 1
@@ -82,7 +82,7 @@ func (p *Parser) current() lexer.Tupla {
 			linha = ultimo.Linha
 			coluna = ultimo.Coluna + len(ultimo.Lexema)
 		}
-		return lexer.Tupla{Token: -1, Linha: linha, Coluna: coluna, Lexema: "EOF"}
+		return lexer.TuplaLex{Token: -1, Linha: linha, Coluna: coluna, Lexema: "EOF"}
 	}
 
 	return p.tokens[p.pos]
@@ -104,16 +104,19 @@ func (p *Parser) tokenToString(t lexer.TabelaPalavras) string {
 	return tokenF.String()
 }
 
-func (p *Parser) consume(expected lexer.TabelaPalavras) {
+func (p *Parser) consume(expected lexer.TabelaPalavras) *lexer.TuplaLex {
 	curr := p.current()
 
 	if curr.Token == expected {
 		p.advance()
+		return &curr
 	} else {
 		expectedStr := p.tokenToString(expected)
 		currentStr := p.tokenToString(curr.Token)
 
 		utils.ThrowParserException(fmt.Sprintf("expected token '%v', got '%v'", expectedStr, currentStr), curr.Linha, curr.Coluna)
+
+		return nil
 	}
 
 }
@@ -129,7 +132,7 @@ func (p *Parser) ParserFunction() {
 	p.parseBloco()
 
 	if p.current().Token != -1 {
-		utils.ThrowParserException("Unexpected token after main function: '"+ p.tokenToString(p.current().Token) + "'", p.current().Linha, p.current().Coluna)
+		utils.ThrowParserException("Unexpected token after main function: '"+p.tokenToString(p.current().Token)+"'", p.current().Linha, p.current().Coluna)
 	}
 
 	fmt.Println("\nSyntactic analysis completed!")
@@ -244,22 +247,42 @@ func (p *Parser) parseForStmt() {
 
 }
 
-func (p *Parser) parseDeclaration() {
+func (p *Parser) parseDeclaration() []TuplaMicrocode {
 
-	p.parseType()
-	p.parseDeclarationList()
+	typeToken := p.parseType()
+
+	commandList := p.parseDeclarationList(typeToken)
 	p.consume(lexer.Stmt_end)
 
+	ListTuplaMicrocodeToString(commandList)
+
+	return commandList
 }
 
-func (p *Parser) parseDeclarationList() {
+func (p *Parser) parseDeclarationList(typeToken lexer.TabelaPalavras) []TuplaMicrocode {
+	commandList := []TuplaMicrocode{}
 
-	p.consume(lexer.Identifier)
+	currentToken := p.consume(lexer.Identifier)
+
+	commandList = append(commandList, TuplaMicrocode{
+		operation: att,
+		res:       currentToken,
+		op1:       getDefaultValue(typeToken),
+		op2:       nil,
+	})
+
 	for p.current().Token == lexer.Comma {
 		p.advance()
-		p.consume(lexer.Identifier)
+		currentToken := p.consume(lexer.Identifier)
+		commandList = append(commandList, TuplaMicrocode{
+			operation: att,
+			res:       currentToken,
+			op1:       getDefaultValue(typeToken),
+			op2:       nil,
+		})
 	}
 
+	return commandList
 }
 
 // IO
@@ -331,15 +354,17 @@ func (p *Parser) parseDoCaso() {
 
 // }
 
-func (p *Parser) parseType() {
+func (p *Parser) parseType() lexer.TabelaPalavras {
 
 	token := p.current().Token
 
 	if typeTokens[token] {
 		p.advance()
+		return token
 	} else {
 		stringToken := p.tokenToString(token)
 		utils.ThrowParserException(fmt.Sprintf("expected type, got '%v'", stringToken), p.current().Linha, p.current().Coluna)
+		return -1
 	}
 
 }

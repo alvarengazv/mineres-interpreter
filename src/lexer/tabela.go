@@ -2,7 +2,7 @@ package lexer
 
 import "fmt"
 
-type Tupla struct {
+type TuplaLex struct {
 	Lexema string
 	Token  TabelaPalavras
 	Linha  int
@@ -25,7 +25,7 @@ type Tupla struct {
 *		Retorno = {}
 * )
 */
-func TuplaToString(t Tupla) {
+func TuplaToString(t TuplaLex) {
 	fmt.Printf("Lexema: %s | Token: %d | Linha: %d | Coluna: %d\n",
 		t.Lexema,
 		t.Token,
@@ -58,7 +58,7 @@ func TuplaToString(t Tupla) {
  *		Retorno = {}
  * )
  */
-func ListTuplaToString(lista []Tupla) {
+func ListTuplaToString(lista []TuplaLex) {
 	for _, item := range lista {
 		TuplaToString(item)
 	}

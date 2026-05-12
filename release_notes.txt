@@ -4,6 +4,7 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 3 - Evolução - Tabela de microcódigo & Nomenclatura de Tuplas - 12/05/2026 - Guilherme Alvarenga
 Parte 2 - Correção - Melhor descrição de erros do Parser - 19/04/2026 - Guilherme Alvarenga
 Parte 2 - Correção - Conferir se há tokens após o fim da função main - 19/04/2026 - Guilherme Alvarenga
 Parte 2 - Correção - Tirando if-statement grande do parser - 19/04/2026 - Guilherme Alvarenga

@@ -21,26 +21,26 @@ var (
 )
 
 var simbolos = map[rune]TabelaPalavras{
-	'(':  Open_paren,
-	')':  Close_paren,
-	'{':  Block_open,
-	'}':  Block_close,
-	',':  Comma,
-	':':  Colon,
-	';':  Stmt_end,
-	'+':  Op_add,
-	'-':  Op_sub,
-	'/':  Op_int_div,
-	'%':  Op_mod,
-	'<':  Op_lt,
-	'>':  Op_gt,
+	'(': Open_paren,
+	')': Close_paren,
+	'{': Block_open,
+	'}': Block_close,
+	',': Comma,
+	':': Colon,
+	';': Stmt_end,
+	'+': Op_add,
+	'-': Op_sub,
+	'/': Op_int_div,
+	'%': Op_mod,
+	'<': Op_lt,
+	'>': Op_gt,
 }
 
 // estadoLexer mantém todo o estado mutável do analisador léxico,
 // permitindo que as funções auxiliares compartilhem e modifiquem o estado.
 type estadoLexer struct {
 	runes         []rune
-	tabela_lexica []Tupla
+	tabela_lexica []TuplaLex
 	linha         int
 	coluna        int
 	linha_inicio  int
@@ -124,7 +124,7 @@ func (e *estadoLexer) processarBuffer() {
 		token = e.classificarLexema(lexema)
 	}
 
-	e.tabela_lexica = append(e.tabela_lexica, Tupla{
+	e.tabela_lexica = append(e.tabela_lexica, TuplaLex{
 		Lexema: lexema,
 		Token:  token,
 		Linha:  e.linha_inicio,
@@ -221,7 +221,7 @@ func (e *estadoLexer) tratarString(char rune, i int) int {
 	if char == '\n' || char == '\r' {
 		utils.ThrowLexerException("Unterminated string literal", e.linha_inicio, e.coluna_inicio)
 	} else if char == '"' {
-		e.tabela_lexica = append(e.tabela_lexica, Tupla{
+		e.tabela_lexica = append(e.tabela_lexica, TuplaLex{
 			Lexema: string(e.buffer),
 			Token:  Literal_string,
 			Linha:  e.linha_inicio,
@@ -248,7 +248,7 @@ func (e *estadoLexer) tratarChar(char rune, i int) int {
 	if char == '\n' || char == '\r' {
 		utils.ThrowLexerException("Unterminated char literal", e.linha_inicio, e.coluna_inicio)
 	} else if char == '\'' {
-		e.tabela_lexica = append(e.tabela_lexica, Tupla{
+		e.tabela_lexica = append(e.tabela_lexica, TuplaLex{
 			Lexema: string(e.buffer),
 			Token:  Literal_char,
 			Linha:  e.linha_inicio,
@@ -334,7 +334,7 @@ func (e *estadoLexer) acumularBuffer(char rune) {
 	e.coluna++
 }
 
-func AnalisarArquivo(conteudo string) []Tupla {
+func AnalisarArquivo(conteudo string) []TuplaLex {
 	e := novoEstadoLexer(conteudo)
 
 	for i := 0; i < len(e.runes); i++ {

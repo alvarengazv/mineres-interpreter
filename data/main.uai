@@ -1,55 +1,10 @@
-causo
-  Programa de teste pro interpretador em Minerês.
-  Lê um número do usuário, faz uma contagem e testa uma condição.
-fim_do_causo
-
 bora_cumpade main ( )
 simbora
-    // Preparando os trem
-    trem_di_numeru limite uai
-    trem_di_numeru contador uai
-    trem_discrita mensagem uai
-    trosso letra uai
 
-    oia_proce_ve ( "Digita ate quantu  \' \" ce quer \t contar: ") uai
-    xove ( trem_di_numeru, limite ) uai
-
-    enquanto_tiver_trem ( contador < limite )
-    simbora
-        oia_proce_ve ( contador ) uai
-        contador fica_assim_entao contador + 1 uai
-    cabo
-
-    oia_proce_ve ( mensagem ) uai
-
-    uai_se ( contador mema_coisa limite )
-    simbora
-        oia_proce_ve ( "Chegou no limite certim!" ) uai
-    cabo
-    uai_senao
-    simbora
-        oia_proce_ve ( "Deu algum trem \t errado na logica...", .5, 1, 0xFF, "teste" ) uai
-    cabo
+    trem_di_numeru x, y uai
+    trem_cum_virgula z uai
+    oia_proce_ve("VAI TOMANDO") uai
+    xove(trem_di_numeru, x) uai
+    x fica_assim_entao 10 uai
     
-    "TESTE \aa \n \ testesaa " uai
-
-    "teste \" de string" uai
-
-    teste_if fica_assim_entao ".5" uai
-    teste_if fica_assim_entao .5          /                  2 uai
-    teste_if fica_assim_entao contador + 5 uai
-
-
-    teste_float fica_assim_entao '\\' und
-    teste_float fica_assim_entao 0.5 uai
-    teste_float fica_assim_entao 3.14 uai
-    teste_float_dois fica_assim_entao .5 uai
-    teste_hexa fica_assim_entao 0x1A uai
-    teste_octal fica_assim_entao 012 uai
-    teste_inteiro fica_assim_entao 12 uai
-    teste_inteiro fica_assim_entao 0000 uai
-    teste_inteiro fica_assim_entao 0x0 uai
-    teste_inteiro fica_assim_entao 0x00 uai
-    
-    ta_bao uai
 cabo

@@ -286,24 +286,53 @@ func (p *Parser) parseDeclarationList(typeToken lexer.TabelaPalavras) []TuplaMic
 }
 
 // IO
-func (p *Parser) parseIoStmt() {
+func (p *Parser) parseIoStmt() []TuplaMicrocode {
+	commandList := []TuplaMicrocode{}
 
 	if p.current().Token == lexer.Io_scan {
 		p.advance()
 		p.consume(lexer.Open_paren)
 		p.parseType()
 		p.consume(lexer.Comma)
-		p.consume(lexer.Identifier)
+		ident := p.consume(lexer.Identifier)
 		p.consume(lexer.Close_paren)
+
+		commandList = append(commandList, TuplaMicrocode{
+			operation: call,
+			res: &lexer.TuplaLex{
+				Lexema: "read",
+			},
+			op1: ident,
+			op2: nil,
+		})
 	} else {
 		p.consume(lexer.Io_print)
 		p.consume(lexer.Open_paren)
+		valor := p.current()
 		p.parseOutputList()
 		p.consume(lexer.Close_paren)
+
+		microcode := TuplaMicrocode{
+			operation: call,
+			res: &lexer.TuplaLex{
+				Lexema: "print",
+			},
+		}
+
+		if valor.Token == lexer.Identifier {
+			microcode.op1 = &valor
+			microcode.op2 = nil
+		} else {
+			microcode.op1 = nil
+			microcode.op2 = &valor
+		}
+
+		commandList = append(commandList, microcode)
 	}
 
 	p.consume(lexer.Stmt_end)
-
+	ListTuplaMicrocodeToString(commandList)
+	return commandList
 }
 
 func (p *Parser) parseOutputList() {

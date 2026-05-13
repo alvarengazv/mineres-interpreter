@@ -62,12 +62,27 @@ var exprStartTokens = map[lexer.TabelaPalavras]bool{
 type Parser struct {
 	tokens []lexer.TuplaLex
 	pos    int
+
+	microcodes []TuplaMicrocode
+	tempCount int
 }
 
 func NewParser(tokens []lexer.TuplaLex) *Parser {
 	return &Parser{
 		tokens: tokens,
 		pos:    0,
+	}
+}
+
+func (p *Parser) newTemp() *lexer.TuplaLex {
+
+	p.tempCount++
+
+	return &lexer.TuplaLex{
+		Token:  lexer.Identifier,
+		Lexema: fmt.Sprintf("t%d", p.tempCount),
+		Linha:  0,
+		Coluna: 0,
 	}
 }
 
@@ -343,10 +358,14 @@ func (p *Parser) parseIoStmt() []TuplaMicrocode {
 func (p *Parser) parseOutputList() []*lexer.TuplaLex {
 	args := []*lexer.TuplaLex{}
 
-	args = append(args, p.parseFatorZin())
+	tupla, _ := p.parseFatorZin()
+	if tupla != nil {
+		args = append(args, tupla)
+	}
 	for p.current().Token == lexer.Comma {
 		p.advance()
-		args = append(args, p.parseFatorZin())
+		tupla, _ := p.parseFatorZin()
+		args = append(args, tupla)
 	}
 
 	return args
@@ -391,9 +410,7 @@ func (p *Parser) parseDoCaso() {
 // }
 
 func (p *Parser) parseType() lexer.TabelaPalavras {
-
 	token := p.current().Token
-
 	if typeTokens[token] {
 		p.advance()
 		return token
@@ -402,13 +419,11 @@ func (p *Parser) parseType() lexer.TabelaPalavras {
 		utils.ThrowParserException(fmt.Sprintf("expected type, got '%v'", stringToken), p.current().Linha, p.current().Coluna)
 		return -1
 	}
-
 }
 
 // Precedencia de operadores
 
 func (p *Parser) parseExpr() {
-
 	p.parseAtrib()
 
 }
@@ -419,124 +434,303 @@ func (p *Parser) parseOptExpr() {
 	}
 }
 
-func (p *Parser) parseAtrib() {
-
-	p.parseOR()
+func (p *Parser) parseAtrib() (*lexer.TuplaLex, []TuplaMicrocode) {
+	left, code := p.parseOR()
 	if p.current().Token == lexer.Op_assign {
-		p.advance()
-		p.parseAtrib() // recursão a direita para permitir varias atribuições
+		if left.Token != lexer.Identifier {
+			utils.ThrowParserException(
+				"left side of assignment must be a variable",
+				left.Linha,
+				left.Coluna,
+			)
+		}
+		p.consume(lexer.Op_assign)
+		right, rightCode := p.parseAtrib()
+		code = append(code, rightCode...)
+		code = append(code, TuplaMicrocode{
+			operation: att,
+			res:       left,
+			op1:       right,
+			op2:       nil,
+		})
+		return left, code
 	}
+	return left, code
 }
 
 // <or> -> <xor> { 'quarque_um' <xor> }
-func (p *Parser) parseOR() {
-
-	p.parseXor()
+func (p *Parser) parseOR() (*lexer.TuplaLex, []TuplaMicrocode) {
+	left, commandList := p.parseXor()
 	for p.current().Token == lexer.Op_or {
 		p.advance()
-		p.parseXor()
+		right, rightCommands := p.parseXor()
+		commandList = append(commandList, rightCommands...)
+		temp := p.newTemp()
+		commandList = append(commandList, TuplaMicrocode{
+			operation: or,
+			res:       temp,
+			op1:       left,
+			op2:       right,
+		})
+		left = temp
 	}
-
+	ListTuplaMicrocodeToString(commandList);
+	return left, commandList
 }
 
 // <xor> -> <and> { 'um_o_oto' <and> }
-func (p *Parser) parseXor() {
-
-	p.parseAnd()
+func (p *Parser) parseXor() (*lexer.TuplaLex, []TuplaMicrocode) {
+	left, commandList := p.parseAnd()
 	for p.current().Token == lexer.Op_xor {
 		p.advance()
-		p.parseAnd()
+		right, rightCommands := p.parseAnd()
+		commandList = append(commandList, rightCommands...)
+		temp := p.newTemp()
+		commandList = append(commandList, TuplaMicrocode{
+			operation: xor,
+			res:       temp,
+			op1:       left,
+			op2:       right,
+		})
+		left = temp
 	}
+	return left, commandList
 }
 
 // <and> -> <not> { 'tamem' <not> }
-func (p *Parser) parseAnd() {
-
-	p.parseNot()
+func (p *Parser) parseAnd() (*lexer.TuplaLex, []TuplaMicrocode) {
+	left, commandList := p.parseNot()
 	for p.current().Token == lexer.Op_and {
 		p.advance()
-		p.parseNot()
+		right, rightCommands := p.parseNot()
+		commandList = append(commandList, rightCommands...)
+		temp := p.newTemp()
+		commandList = append(commandList, TuplaMicrocode{
+			operation: and,
+			res:       temp,
+			op1:       left,
+			op2:       right,
+		})
+		left = temp
 	}
+	return left, commandList
 }
 
 // <not> -> 'vam_marca' <not> | <rel>
-func (p *Parser) parseNot() {
-
+func (p *Parser) parseNot() (*lexer.TuplaLex, []TuplaMicrocode) {
 	if p.current().Token == lexer.Op_not {
 		p.advance()
-		p.parseNot()
-	} else {
-		p.parseRel()
+		value, commandList := p.parseNot()
+		temp := p.newTemp()
+		commandList = append(commandList, TuplaMicrocode{
+			operation: not,
+			res:       temp,
+			op1:       value,
+			op2:       nil,
+		})
+		return temp, commandList
 	}
-
+	return p.parseRel()
 }
 
 // <rel> -> <add> { ('mema_coisa' | 'neh_nada') <add> }
-func (p *Parser) parseRel() {
+func (p *Parser) parseRel() (*lexer.TuplaLex, []TuplaMicrocode) {
 
-	p.parseAdd()
-	if relOpTokens[p.current().Token] {
+	left, commandList := p.parseAdd()
+
+	for relOpTokens[p.current().Token] {
+
+		operator := p.current().Token
 		p.advance()
-		p.parseAdd()
+
+		right, rightCommands := p.parseAdd()
+
+		commandList = append(commandList, rightCommands...)
+
+		temp := p.newTemp()
+
+		var op TabelaMicrocodes
+
+		switch operator {
+		case lexer.Op_eq:
+			op = eq
+		case lexer.Op_neq:
+			op = neq
+		case lexer.Op_lt:
+			op = lt
+		case lexer.Op_gt:
+			op = gt
+		case lexer.Op_lte:
+			op = lte
+		case lexer.Op_gte:
+			op = gte
+		}
+
+		commandList = append(commandList, TuplaMicrocode{
+			operation: op,
+			res:       temp,
+			op1:       left,
+			op2:       right,
+		})
+
+		left = temp
 	}
 
+	return left, commandList
 }
 
 // <add> -> <mul> { ('veiz' | 'sob') <mul> }
-func (p *Parser) parseAdd() {
+func (p *Parser) parseAdd() (*lexer.TuplaLex, []TuplaMicrocode) {
 
-	p.parseMul()
-	for p.current().Token == lexer.Op_add || p.current().Token == lexer.Op_sub {
+	left, commandList := p.parseMul()
+
+	for p.current().Token == lexer.Op_add ||
+		p.current().Token == lexer.Op_sub {
+
+		operator := p.current().Token
+
 		p.advance()
-		p.parseMul()
+
+		right, rightCommands := p.parseMul()
+
+		commandList = append(commandList, rightCommands...)
+
+		temp := p.newTemp()
+
+		var op TabelaMicrocodes
+
+		if operator == lexer.Op_add {
+			op = add
+		} else {
+			op = sub
+		}
+
+		commandList = append(commandList, TuplaMicrocode{
+			operation: op,
+			res:       temp,
+			op1:       left,
+			op2:       right,
+		})
+
+		left = temp
 	}
 
+	return left, commandList
 }
 
 // <mul> -> <fator> { ('veiz' | 'sob') <fator> }
-func (p *Parser) parseMul() {
-	p.parseUno()
+func (p *Parser) parseMul() (*lexer.TuplaLex, []TuplaMicrocode) {
+
+	left, commandList := p.parseUno()
+
 	for mulOpTokens[p.current().Token] {
+
+		operator := p.current().Token
+
 		p.advance()
-		p.parseUno()
+
+		right, rightCommands := p.parseUno()
+
+		commandList = append(commandList, rightCommands...)
+
+		temp := p.newTemp()
+
+		var op TabelaMicrocodes
+
+		switch operator {
+		case lexer.Op_mul:
+			op = mul
+		case lexer.Op_div:
+			op = div
+		case lexer.Op_int_div:
+			op = divI
+		case lexer.Op_mod:
+			op = mod
+		}
+
+		commandList = append(commandList, TuplaMicrocode{
+			operation: op,
+			res:       temp,
+			op1:       left,
+			op2:       right,
+		})
+
+		left = temp
 	}
 
+	return left, commandList
 }
 
 // <uno> -> '+' <uno> | '-' <uno> | <fatorZao>
-func (p *Parser) parseUno() {
+func (p *Parser) parseUno() (*lexer.TuplaLex, []TuplaMicrocode) {
 
-	if p.current().Token == lexer.Op_add || p.current().Token == lexer.Op_sub {
+	if p.current().Token == lexer.Op_add {
+
 		p.advance()
-		p.parseUno()
-	} else {
-		p.parseFatorZao()
+
+		return p.parseUno()
 	}
+
+	if p.current().Token == lexer.Op_sub {
+
+		p.advance()
+
+		value, commandList := p.parseUno()
+
+		temp := p.newTemp()
+
+		commandList = append(commandList, TuplaMicrocode{
+			operation: uno,
+			res:       temp,
+			op1:       value,
+			op2:       nil,
+		})
+
+		return temp, commandList
+	}
+
+	return p.parseFatorZao()
 }
 
 // <fatorZao> -> <fatorzin> | '(' <atrib> ')'
-func (p *Parser) parseFatorZao() {
+func (p *Parser) parseFatorZao() (*lexer.TuplaLex, []TuplaMicrocode) {
 
 	if p.current().Token == lexer.Open_paren {
+
 		p.advance()
-		p.parseAtrib()
+
+		result, commandList := p.parseAtrib()
+
 		p.consume(lexer.Close_paren)
-	} else {
-		p.parseFatorZin()
+		
+		return result, commandList
 	}
 
+	return p.parseFatorZin()
 }
 
 // <fatorZin> -> 'STR' | 'IDENT' | 'NUMint' |...
-func (p *Parser) parseFatorZin() *lexer.TuplaLex {
+func (p *Parser) parseFatorZin() (*lexer.TuplaLex, []TuplaMicrocode) {
 
 	t := p.current()
+
 	if fatorTokens[t.Token] {
+
 		p.advance()
-		return &t
-	} else {
-		stringToken := p.tokenToString(t.Token)
-		utils.ThrowParserException(fmt.Sprintf("expected 'STR' or 'IDENT' or 'NUMint' or 'NUMfloat' or 'NUMhex' or 'NUMoct' or 'valorBooleano' or 'valorChar', got '%v'", stringToken), p.current().Linha, p.current().Coluna)
-		return nil
+
+		return &t, []TuplaMicrocode{}
 	}
+
+	stringToken := p.tokenToString(t.Token)
+
+	utils.ThrowParserException(
+		fmt.Sprintf(
+			"expected fator, got '%v'",
+			stringToken,
+		),
+		t.Linha,
+		t.Coluna,
+	)
+
+	return nil, nil
 }

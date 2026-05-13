@@ -64,7 +64,7 @@ type Parser struct {
 	pos    int
 
 	microcodes []TuplaMicrocode
-	tempCount int
+	tempCount  int
 }
 
 func NewParser(tokens []lexer.TuplaLex) *Parser {
@@ -212,7 +212,8 @@ func (p *Parser) parseStmt() {
 
 	default:
 		if exprStartTokens[token] {
-			p.parseAtrib()
+			_, code := p.parseAtrib()
+			ListTuplaMicrocodeToString(code)
 			p.consume(lexer.Stmt_end)
 		} else {
 			stringToken := p.tokenToString(token)
@@ -226,7 +227,8 @@ func (p *Parser) parseIfStmt() {
 
 	p.consume(lexer.Conditional_if)
 	p.consume(lexer.Open_paren)
-	p.parseExpr()
+	_, code := p.parseExpr()
+	ListTuplaMicrocodeToString(code)
 	p.consume(lexer.Close_paren)
 	p.parseStmt()
 
@@ -242,7 +244,8 @@ func (p *Parser) parseWhileStmt() {
 
 	p.consume(lexer.Loop_while)
 	p.consume(lexer.Open_paren)
-	p.parseExpr()
+	_, code := p.parseExpr()
+	ListTuplaMicrocodeToString(code)
 	p.consume(lexer.Close_paren)
 	p.parseStmt()
 }
@@ -252,11 +255,20 @@ func (p *Parser) parseForStmt() {
 
 	p.consume(lexer.Loop_for)
 	p.consume(lexer.Open_paren)
-	p.parseOptExpr()
+	_, code1 := p.parseOptExpr()
+	if code1 != nil {
+		ListTuplaMicrocodeToString(code1)
+	}
 	p.consume(lexer.Stmt_end_for)
-	p.parseOptExpr()
+	_, code2 := p.parseOptExpr()
+	if code2 != nil {
+		ListTuplaMicrocodeToString(code2)
+	}
 	p.consume(lexer.Stmt_end_for)
-	p.parseOptExpr()
+	_, code3 := p.parseOptExpr()
+	if code3 != nil {
+		ListTuplaMicrocodeToString(code3)
+	}
 	p.consume(lexer.Close_paren)
 	p.parseStmt()
 
@@ -323,10 +335,10 @@ func (p *Parser) parseIoStmt() []TuplaMicrocode {
 	} else {
 		p.consume(lexer.Io_print)
 		p.consume(lexer.Open_paren)
-		
+
 		// Agora pega tudo
 		args := p.parseOutputList()
-		
+
 		p.consume(lexer.Close_paren)
 
 		// Depois de pega tudo faz um for para criar tupla de print para cada argumento
@@ -423,15 +435,15 @@ func (p *Parser) parseType() lexer.TabelaPalavras {
 
 // Precedencia de operadores
 
-func (p *Parser) parseExpr() {
-	p.parseAtrib()
-
+func (p *Parser) parseExpr() (*lexer.TuplaLex, []TuplaMicrocode) {
+	return p.parseAtrib()
 }
 
-func (p *Parser) parseOptExpr() {
+func (p *Parser) parseOptExpr() (*lexer.TuplaLex, []TuplaMicrocode) {
 	if exprStartTokens[p.current().Token] {
-		p.parseAtrib()
+		return p.parseAtrib()
 	}
+	return nil, nil
 }
 
 func (p *Parser) parseAtrib() (*lexer.TuplaLex, []TuplaMicrocode) {
@@ -474,7 +486,6 @@ func (p *Parser) parseOR() (*lexer.TuplaLex, []TuplaMicrocode) {
 		})
 		left = temp
 	}
-	ListTuplaMicrocodeToString(commandList);
 	return left, commandList
 }
 
@@ -702,7 +713,7 @@ func (p *Parser) parseFatorZao() (*lexer.TuplaLex, []TuplaMicrocode) {
 		result, commandList := p.parseAtrib()
 
 		p.consume(lexer.Close_paren)
-		
+
 		return result, commandList
 	}
 

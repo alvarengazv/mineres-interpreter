@@ -1,19 +1,35 @@
 bora_cumpade main ( )
 simbora
 
-    trem_di_numeru x, y uai
-    trem_cum_virgula z uai
-    oia_proce_ve("VAI TOMANDO") uai
-    xove(trem_di_numeru, x) uai
-    x fica_assim_entao 10 uai
+    trem_di_numeru a, b, c uai
+    trem_discolhe flag1, flag2, flag3, flag4, flag5 uai
+
+    // Aritmetica complexa
+    a fica_assim_entao 10 veiz 5 + 30 sob (2 - 1) uai
+
+    // Logica e relacional
+    flag1 fica_assim_entao (a > 20) tamem (a <= 100) uai
+    flag2 fica_assim_entao vam_marca (a mema_coisa 50) quarque_um num_eh uai
+
+    // Misturando tudo: matematica, logica, comparacao e XOR
+    b fica_assim_entao a + 5 uai
+    c fica_assim_entao b veiz 2 uai
     
-    trem_di_numeru x, y uai
-    trem_cum_virgula z uai
-    oia_proce_ve("VAI TOMANDO") uai
-    x fica_assim_entao 27 uai
-    //xove(trem_di_numeru, x) uai
-    y fica_assim_entao 4 uai
-    //xove(trem_di_numeru, y) uai
-    z fica_assim_entao x + y uai
-    x fica_assim_entao z veiz z + 2 uai
+    flag1 fica_assim_entao (c >= 100) um_o_oto (b neh_nada 0) uai
+
+    // 1. Aritmética e relacional resultando em flag
+    flag1 fica_assim_entao vam_marca (a veiz 2 sob 3 > 10) tamem (b + 5 <= c - 1 veiz 1) uai
+
+    // 2. Aritmética, igualdades, XOR, OR e NOT
+    flag2 fica_assim_entao (a mema_coisa b) um_o_oto vam_marca (c neh_nada 0) quarque_um (10 > 5) uai
+
+    // 3. Aritmética altamente aninhada e lógicas
+    flag3 fica_assim_entao ((a + b) veiz (c - 2) >= 100) tamem vam_marca (a sob 2 < 5) uai
+
+    // 4. Mistura de literais booleanos com contas matemáticas e igualdades
+    flag4 fica_assim_entao eh tamem (a veiz b % 3 mema_coisa 0) quarque_um vam_marca num_eh uai
+
+    // 5. Cadeia imensa: lógicas, prioridade de parênteses, matemáticas e relacionais encadeados
+    flag5 fica_assim_entao vam_marca (a > b) um_o_oto (c <= 10) tamem (a + b veiz c > 50) quarque_um (a mema_coisa 10) uai
+
 cabo

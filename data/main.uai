@@ -3,8 +3,7 @@ simbora
 
     trem_di_numeru x, y uai
     trem_cum_virgula z uai
-    oia_proce_ve("VAI TOMANDO") uai
+    oia_proce_ve("x", x) uai
     xove(trem_di_numeru, x) uai
-    x fica_assim_entao 10 uai
     
 cabo

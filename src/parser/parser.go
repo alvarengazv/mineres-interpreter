@@ -308,26 +308,31 @@ func (p *Parser) parseIoStmt() []TuplaMicrocode {
 	} else {
 		p.consume(lexer.Io_print)
 		p.consume(lexer.Open_paren)
-		valor := p.current()
-		p.parseOutputList()
+		
+		// Agora pega tudo
+		args := p.parseOutputList()
+		
 		p.consume(lexer.Close_paren)
 
-		microcode := TuplaMicrocode{
-			operation: call,
-			res: &lexer.TuplaLex{
-				Lexema: "print",
-			},
-		}
+		// Depois de pega tudo faz um for para criar tupla de print para cada argumento
+		for _, arg := range args {
+			microcode := TuplaMicrocode{
+				operation: call,
+				res: &lexer.TuplaLex{
+					Lexema: "print",
+				},
+			}
 
-		if valor.Token == lexer.Identifier {
-			microcode.op1 = &valor
-			microcode.op2 = nil
-		} else {
-			microcode.op1 = nil
-			microcode.op2 = &valor
-		}
+			if arg.Token == lexer.Identifier {
+				microcode.op1 = arg
+				microcode.op2 = nil
+			} else {
+				microcode.op1 = nil
+				microcode.op2 = arg
+			}
 
-		commandList = append(commandList, microcode)
+			commandList = append(commandList, microcode)
+		}
 	}
 
 	p.consume(lexer.Stmt_end)
@@ -335,14 +340,16 @@ func (p *Parser) parseIoStmt() []TuplaMicrocode {
 	return commandList
 }
 
-func (p *Parser) parseOutputList() {
+func (p *Parser) parseOutputList() []*lexer.TuplaLex {
+	args := []*lexer.TuplaLex{}
 
-	p.parseFatorZin()
+	args = append(args, p.parseFatorZin())
 	for p.current().Token == lexer.Comma {
 		p.advance()
-		p.parseFatorZin()
+		args = append(args, p.parseFatorZin())
 	}
 
+	return args
 }
 
 func (p *Parser) parseCaseStmt() {
@@ -521,13 +528,15 @@ func (p *Parser) parseFatorZao() {
 }
 
 // <fatorZin> -> 'STR' | 'IDENT' | 'NUMint' |...
-func (p *Parser) parseFatorZin() {
+func (p *Parser) parseFatorZin() *lexer.TuplaLex {
 
-	t := p.current().Token
-	if fatorTokens[t] {
+	t := p.current()
+	if fatorTokens[t.Token] {
 		p.advance()
+		return &t
 	} else {
-		stringToken := p.tokenToString(t)
+		stringToken := p.tokenToString(t.Token)
 		utils.ThrowParserException(fmt.Sprintf("expected 'STR' or 'IDENT' or 'NUMint' or 'NUMfloat' or 'NUMhex' or 'NUMoct' or 'valorBooleano' or 'valorChar', got '%v'", stringToken), p.current().Linha, p.current().Coluna)
+		return nil
 	}
 }

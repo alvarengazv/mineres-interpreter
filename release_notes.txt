@@ -4,6 +4,7 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 3 - Evolução - Criação de tuplas do código intermediário para funções IO. 12/05/2026 - Joaquim Cruz
 Parte 3 - Mudança  - Refatoração da função de geração de declarations para gerar tuplas de microcódigo - 12/05/2026 - Guilherme Alvarenga
 Parte 3 - Evolução - Tabela de microcódigo & Nomenclatura de Tuplas - 12/05/2026 - Guilherme Alvarenga
 Parte 2 - Correção - Melhor descrição de erros do Parser - 19/04/2026 - Guilherme Alvarenga

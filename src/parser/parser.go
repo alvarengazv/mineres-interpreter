@@ -6,7 +6,7 @@ import (
 	"mineres-interpreter/src/utils"
 )
 
-// Conjuntos de tokens para lookups O(1), substituindo cadeias de if/||
+// Conjuntos de tokens para lookups O(1), substituindo cadeias de if
 var typeTokens = map[lexer.TabelaPalavras]bool{
 	lexer.Type_int:    true,
 	lexer.Type_float:  true,
@@ -63,8 +63,20 @@ type Parser struct {
 	tokens []lexer.TuplaLex
 	pos    int
 
-	microcodes []TuplaMicrocode
-	tempCount  int
+	microcodes    []TuplaMicrocode
+	tempCount     int
+	labelTrue     int
+	labelFalse    int
+	labelEndIf    int
+	labelLoopInit int
+	labelForInc   int
+	labelLoopEnd  int
+	labelCaseIfT  int
+	labelCaseIfF  int
+	labelEndCase  int
+
+	breakStack    Stack
+	continueStack Stack
 }
 
 func NewParser(tokens []lexer.TuplaLex) *Parser {
@@ -150,6 +162,8 @@ func (p *Parser) ParserFunction() {
 		utils.ThrowParserException("Unexpected token after main function: '"+p.tokenToString(p.current().Token)+"'", p.current().Linha, p.current().Coluna)
 	}
 
+	ListTuplaMicrocodeToString(p.microcodes)
+
 	fmt.Println("\nSyntactic analysis completed!")
 }
 
@@ -194,12 +208,10 @@ func (p *Parser) parseStmt() {
 		p.parseIoStmt()
 
 	case lexer.Loop_break:
-		p.advance()
-		p.consume(lexer.Stmt_end)
+		p.parseBreak()
 
 	case lexer.Loop_continue:
-		p.advance()
-		p.consume(lexer.Stmt_end)
+		p.parseContinue()
 
 	case lexer.Type_int, lexer.Type_float, lexer.Type_string, lexer.Type_bool, lexer.Type_char:
 		p.parseDeclaration()
@@ -213,7 +225,8 @@ func (p *Parser) parseStmt() {
 	default:
 		if exprStartTokens[token] {
 			_, code := p.parseAtrib()
-			ListTuplaMicrocodeToString(code)
+			// ListTuplaMicrocodeToString(code)
+			p.microcodes = append(p.microcodes, code...)
 			p.consume(lexer.Stmt_end)
 		} else {
 			stringToken := p.tokenToString(token)
@@ -227,16 +240,60 @@ func (p *Parser) parseIfStmt() {
 
 	p.consume(lexer.Conditional_if)
 	p.consume(lexer.Open_paren)
-	_, code := p.parseExpr()
-	ListTuplaMicrocodeToString(code)
+	resExpr, codeExpr := p.parseExpr()
+	p.microcodes = append(p.microcodes, codeExpr...)
 	p.consume(lexer.Close_paren)
+
+	labelTrue := p.newLabelTrue()
+	labelFalse := p.newLabelFalse()
+	labelEndIf := p.newLabelEndIf()
+
+	codeIf := TuplaMicrocode{
+		operation: if_eq,
+		res:       resExpr,
+		op1:       labelTrue,
+		op2:       labelFalse,
+	}
+
+	p.microcodes = append(p.microcodes, codeIf)
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelTrue,
+		op1:       nil,
+		op2:       nil,
+	})
+
 	p.parseStmt()
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: jump,
+		res:       labelEndIf,
+		op1:       nil,
+		op2:       nil,
+	})
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelFalse,
+		op1:       nil,
+		op2:       nil,
+	})
 
 	// se for seguido de else, consome o else e o bloco do else
 	if p.current().Token == lexer.Conditional_else {
 		p.consume(lexer.Conditional_else)
 		p.parseStmt()
 	}
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelEndIf,
+		op1:       nil,
+		op2:       nil,
+	})
+
+	// ListTuplaMicrocodeToString(p.microcodes)
 }
 
 // while
@@ -244,10 +301,61 @@ func (p *Parser) parseWhileStmt() {
 
 	p.consume(lexer.Loop_while)
 	p.consume(lexer.Open_paren)
-	_, code := p.parseExpr()
-	ListTuplaMicrocodeToString(code)
+	resExpr, codeExpr := p.parseExpr()
+	// ListTuplaMicrocodeToString(code)
+	p.microcodes = append(p.microcodes, codeExpr...)
+
+	labelLoopInit := p.newLabelLoopInit()
+	labelTrue := p.newLabelTrue()
+	labelEndLoop := p.newLabelLoopEnd()
+
+	p.breakStack.Push(labelEndLoop.Lexema)
+	p.continueStack.Push(labelLoopInit.Lexema)
+
+	codeLabelInit := TuplaMicrocode{
+		operation: label,
+		res:       labelLoopInit,
+		op1:       nil,
+		op2:       nil,
+	}
+
+	p.microcodes = append(p.microcodes, codeLabelInit)
+
+	codeIf := TuplaMicrocode{
+		operation: if_eq,
+		res:       resExpr,
+		op1:       labelTrue,
+		op2:       labelEndLoop,
+	}
+
+	p.microcodes = append(p.microcodes, codeIf)
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelTrue,
+		op1:       nil,
+		op2:       nil,
+	})
+
 	p.consume(lexer.Close_paren)
 	p.parseStmt()
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: jump,
+		res:       labelLoopInit,
+		op1:       nil,
+		op2:       nil,
+	})
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelEndLoop,
+		op1:       nil,
+		op2:       nil,
+	})
+
+	p.breakStack.Pop()
+	p.continueStack.Pop()
 }
 
 // for
@@ -255,23 +363,81 @@ func (p *Parser) parseForStmt() {
 
 	p.consume(lexer.Loop_for)
 	p.consume(lexer.Open_paren)
+
 	_, code1 := p.parseOptExpr()
 	if code1 != nil {
-		ListTuplaMicrocodeToString(code1)
+		// ListTuplaMicrocodeToString(code1)
+		p.microcodes = append(p.microcodes, code1...)
 	}
+
 	p.consume(lexer.Stmt_end_for)
-	_, code2 := p.parseOptExpr()
-	if code2 != nil {
-		ListTuplaMicrocodeToString(code2)
+
+	labelLoopInit := p.newLabelLoopInit()
+	labelTrue := p.newLabelTrue()
+	labelEndLoop := p.newLabelLoopEnd()
+	labelForInc := p.newLabelForInc()
+
+	p.breakStack.Push(labelEndLoop.Lexema)
+	p.continueStack.Push(labelForInc.Lexema)
+
+	codeLabelInit := TuplaMicrocode{
+		operation: label,
+		res:       labelLoopInit,
+		op1:       nil,
+		op2:       nil,
 	}
+
+	p.microcodes = append(p.microcodes, codeLabelInit)
+
+	resExpr2, codeExpr2 := p.parseOptExpr()
+	if codeExpr2 != nil {
+		// ListTuplaMicrocodeToString(code2)
+		p.microcodes = append(p.microcodes, codeExpr2...)
+	}
+
 	p.consume(lexer.Stmt_end_for)
-	_, code3 := p.parseOptExpr()
-	if code3 != nil {
-		ListTuplaMicrocodeToString(code3)
+	_, codeExpr3 := p.parseOptExpr()
+
+	codeIf := TuplaMicrocode{
+		operation: if_eq,
+		res:       resExpr2,
+		op1:       labelTrue,
+		op2:       labelEndLoop,
 	}
+
+	p.microcodes = append(p.microcodes, codeIf)
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelTrue,
+		op1:       nil,
+		op2:       nil,
+	})
+
 	p.consume(lexer.Close_paren)
 	p.parseStmt()
 
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelForInc,
+		op1:       nil,
+		op2:       nil,
+	})
+
+	if codeExpr3 != nil {
+		// ListTuplaMicrocodeToString(code3)
+		p.microcodes = append(p.microcodes, codeExpr3...)
+	}
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelEndLoop,
+		op1:       nil,
+		op2:       nil,
+	})
+
+	p.breakStack.Pop()
+	p.continueStack.Pop()
 }
 
 func (p *Parser) parseDeclaration() []TuplaMicrocode {
@@ -281,7 +447,8 @@ func (p *Parser) parseDeclaration() []TuplaMicrocode {
 	commandList := p.parseDeclarationList(typeToken)
 	p.consume(lexer.Stmt_end)
 
-	ListTuplaMicrocodeToString(commandList)
+	// ListTuplaMicrocodeToString(commandList)
+	p.microcodes = append(p.microcodes, commandList...)
 
 	return commandList
 }
@@ -363,7 +530,8 @@ func (p *Parser) parseIoStmt() []TuplaMicrocode {
 	}
 
 	p.consume(lexer.Stmt_end)
-	ListTuplaMicrocodeToString(commandList)
+	// ListTuplaMicrocodeToString(commandList)
+	p.microcodes = append(p.microcodes, commandList...)
 	return commandList
 }
 
@@ -387,11 +555,16 @@ func (p *Parser) parseCaseStmt() {
 
 	p.consume(lexer.Conditional_switch)
 	p.consume(lexer.Open_paren)
-	p.consume(lexer.Identifier)
+
+	ident := p.consume(lexer.Identifier)
+
 	p.consume(lexer.Close_paren)
 	p.consume(lexer.Block_open)
+	labelEndCase := p.newLabelEndCase()
+
 	for p.current().Token == lexer.Conditional_case {
-		p.parseDoCaso()
+
+		p.parseDoCaso(ident, labelEndCase)
 	}
 	if p.current().Token == lexer.Conditional_default {
 		p.consume(lexer.Conditional_default)
@@ -400,14 +573,63 @@ func (p *Parser) parseCaseStmt() {
 	}
 	p.consume(lexer.Block_close)
 
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelEndCase,
+		op1:       nil,
+		op2:       nil,
+	})
+
 }
 
-func (p *Parser) parseDoCaso() {
+func (p *Parser) parseDoCaso(ident *lexer.TuplaLex, labelEndCase *lexer.TuplaLex) {
 
 	p.consume(lexer.Conditional_case)
-	p.parseFatorZin()
+
+	labelTrue := p.newLabelCaseIfT()
+	labelFalse := p.newLabelCaseIfF()
+
+	valueCase, _ := p.parseFatorZin()
+
+	temp := p.newTemp()
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: eq,
+		res:       temp,
+		op1:       ident,
+		op2:       valueCase,
+	})
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: if_eq,
+		res:       temp,
+		op1:       labelTrue,
+		op2:       labelFalse,
+	})
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelTrue,
+		op1:       nil,
+		op2:       nil,
+	})
+
 	p.consume(lexer.Colon)
 	p.parseStmt()
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: jump,
+		res:       labelEndCase,
+		op1:       nil,
+		op2:       nil,
+	})
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		operation: label,
+		res:       labelFalse,
+		op1:       nil,
+		op2:       nil,
+	})
 
 }
 
@@ -744,4 +966,56 @@ func (p *Parser) parseFatorZin() (*lexer.TuplaLex, []TuplaMicrocode) {
 	)
 
 	return nil, nil
+}
+
+func (p *Parser) parseBreak() {
+	if p.breakStack.IsEmpty() {
+		utils.ThrowParserException("break statement outside of loop", p.current().Linha, p.current().Coluna)
+	}
+
+	labelEnd := p.breakStack.Top()
+
+	labelTuple := &lexer.TuplaLex{
+		Token:  lexer.Literal_string,
+		Lexema: labelEnd,
+	}
+
+	command := TuplaMicrocode{
+		operation: jump,
+		res:       labelTuple,
+		op1:       nil,
+		op2:       nil,
+	}
+
+	// ListTuplaMicrocodeToString([]TuplaMicrocode{command})
+	p.microcodes = append(p.microcodes, command)
+
+	p.advance()
+	p.consume(lexer.Stmt_end)
+}
+
+func (p *Parser) parseContinue() {
+	if p.continueStack.IsEmpty() {
+		utils.ThrowParserException("continue statement outside of loop", p.current().Linha, p.current().Coluna)
+	}
+
+	labelEnd := p.continueStack.Top()
+
+	labelTuple := &lexer.TuplaLex{
+		Token:  lexer.Literal_string,
+		Lexema: labelEnd,
+	}
+
+	command := TuplaMicrocode{
+		operation: jump,
+		res:       labelTuple,
+		op1:       nil,
+		op2:       nil,
+	}
+
+	// ListTuplaMicrocodeToString([]TuplaMicrocode{command})
+	p.microcodes = append(p.microcodes, command)
+
+	p.advance()
+	p.consume(lexer.Stmt_end)
 }

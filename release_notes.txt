@@ -4,6 +4,7 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 3 - Evolução - Geração do microcode de while, for, switch-case e if-else - 20/05/2026 - Guilherme Alvarenga
 Parte 3 - Evolução - Pilhas para continue & break - 20/05/2026 - Guilherme Alvarenga
 Parte 3 - Evolução - Geradores de labels - 20/05/2026 - Guilherme Alvarenga
 Parte 3 - Correção - Print das expressões só ao final - 13/05/2026 - Guilherme Alvarenga

@@ -12,6 +12,9 @@ simbora
             oia_proce_ve("i eh 2") uai
         uai_senao
             oia_proce_ve("i num eh 2") uai
+        
+        para_o_trem uai
+        toca_o_trem uai
 
         // WHILE dentro do FOR
         j fica_assim_entao 0 uai
@@ -26,8 +29,12 @@ simbora
 
             j fica_assim_entao j + 1 uai
 
-        cabo
+            para_o_trem uai
+            toca_o_trem uai
 
+        cabo
+        para_o_trem uai
+        toca_o_trem uai
     cabo
 
 cabo

@@ -4,6 +4,7 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 3 - Evolução - Geradores de labels - 20/05/2026 - Guilherme Alvarenga
 Parte 3 - Correção - Print das expressões só ao final - 13/05/2026 - Guilherme Alvarenga
 Parte 3 - Evolução - Geração de código intermediário para as expressões. 12/05/2026 - Luan Santos
 Parte 3 - Evolução - Criação de tuplas do código intermediário para funções IO. 12/05/2026 - Joaquim Cruz

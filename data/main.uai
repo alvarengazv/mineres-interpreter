@@ -32,4 +32,9 @@ simbora
     // 5. Cadeia imensa: lógicas, prioridade de parênteses, matemáticas e relacionais encadeados
     flag5 fica_assim_entao vam_marca (a > b) um_o_oto (c <= 10) tamem (a + b veiz c > 50) quarque_um (a mema_coisa 10) uai
 
+    uai_se(2 + 2 > 3)
+        oia_proce_ve("a") uai
+    uai_senao
+        oia_proce_ve("a") uai
+
 cabo

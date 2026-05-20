@@ -21,16 +21,11 @@ simbora
     dependenu (contador) simbora
         du_casu 1: simbora
             oia_proce_ve("Um") uai
-            para_o_trem uai
         cabo
         du_casu 2: simbora
             oia_proce_ve("Dois") uai
-            para_o_trem uai
         cabo
-        du_casu 3: 
-            oia_proce_ve("Tres") uai
-            para_o_trem uai
-        uai_so: 
+        uai_so: simbora
             oia_proce_ve("Outru trem") uai
         cabo
     cabo

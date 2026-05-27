@@ -6,28 +6,28 @@ import (
 )
 
 type TuplaMicrocode struct {
-	operation TabelaMicrocodes
-	res       *lexer.TuplaLex
-	op1       *lexer.TuplaLex
-	op2       *lexer.TuplaLex
+	Operation TabelaMicrocodes
+	Res       *lexer.TuplaLex
+	Op1       *lexer.TuplaLex
+	Op2       *lexer.TuplaLex
 }
 
 func TuplaMicrocodeToString(t TuplaMicrocode) {
 	resStr := "null"
-	if t.res != nil {
-		resStr = t.res.Lexema
+	if t.Res != nil {
+		resStr = t.Res.Lexema
 	}
 	op1Str := "null"
-	if t.op1 != nil {
-		op1Str = t.op1.Lexema
+	if t.Op1 != nil {
+		op1Str = t.Op1.Lexema
 	}
 	op2Str := "null"
-	if t.op2 != nil {
-		op2Str = t.op2.Lexema
+	if t.Op2 != nil {
+		op2Str = t.Op2.Lexema
 	}
 
 	fmt.Printf("Operation: %s | Res: %s | Op1: %s | Op2: %s\n",
-		PalavrasReservadasReverso[t.operation],
+		PalavrasReservadasReverso[t.Operation],
 		resStr,
 		op1Str,
 		op2Str,

@@ -6,6 +6,36 @@ import (
 )
 
 /**
+ * ThrowInterpreterException(Resumo = "Criar e mostrar erros do interpreter",
+ *		Parâmetros = {
+ *			mensagem(
+ *				description = "Erro no qual o sistema deve apresentar",
+ *				example = "Token esperado: ';'"
+ *			),
+ *			line(
+ *				description = "Linha na qual o erro aconteceu"
+ *				example = 6
+ *			),
+ *			column(
+ *				description = "Coluna na qual o erro aconteceu"
+ *				example = 35
+ *			)
+ *		},
+ *		Retorno = {}
+ * )
+ */
+func ThrowInterpreterException(mensagem string, line, column int) {
+	executeException(fmt.Errorf(`
+Interpreter error on (%d::%d) => %s
+`,
+		line,
+		column,
+		mensagem,
+	))
+}
+
+
+/**
  * ThrowLexerException(Resumo = "Criar e mostrar erros do lexer",
  *		Parâmetros = {
  *			mensagem(

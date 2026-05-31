@@ -12,8 +12,8 @@ func main() {
     listTupla := lexer.AnalisarArquivo(conteudo)
 
     parser := parser.NewParser(listTupla)
-    ir := parser.ParserFunction()
+    codigoIntermediario := parser.ParserFunction()
 
-	interpreter := interpreter.NewInterpreter(ir)
+	interpreter := interpreter.NewInterpreter(codigoIntermediario)
 	interpreter.Run()
 }

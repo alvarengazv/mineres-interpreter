@@ -4,6 +4,9 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 4 - Evolução - Adicionando métodos para cobrir as operações do interpreter - 31/05/206 - Luan Santos 
+Parte 4 - Evolução - Criando executor para o interpreter - 31/05/206 - Luan Santos
+Parte 4 - Evolução - Criando arquivo para gerenciar labels no interpreter - 31/05/2026 - Luan Santos
 Parte 4 - Evolução - Criando estrutura inicial do interpreter - - 26/05/2026 - Luan Santos
 Parte 4 - Mudança - Alterando todas as variaveis privadas do parser para publicas - 26/05/2026 - Luan Santos
 Parte 3 - Evolução - Geração do microcode de while, for, switch-case e if-else - 20/05/2026 - Guilherme Alvarenga

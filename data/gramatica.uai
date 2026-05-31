@@ -1,8 +1,16 @@
 bora_cumpade main()
 simbora
-     
-    trem_di_numeru negativo uai
 
-    negativo fica_assim_entao -5 uai
-    
+    trem_di_numeru contador uai
+
+    contador fica_assim_entao 13 uai
+
+    enquanto_tiver_trem (contador < 11) simbora
+
+        oia_proce_ve(contador) uai
+
+        contador fica_assim_entao contador + 1 uai
+
+    cabo
+
 cabo

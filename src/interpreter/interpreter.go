@@ -1,32 +1,33 @@
 package interpreter
 
-import "mineres-interpreter/src/parser"
+import (
+	"mineres-interpreter/src/parser"
+)
 
 type Interpreter struct {
 	code []parser.TuplaMicrocode
 	ip   int
-
 	labels map[string]int
-	memory map[string]interface{}
+	memory    map[string]any
 }
 
 func NewInterpreter(code []parser.TuplaMicrocode) *Interpreter {
-	i := &Interpreter{
-		code:   code,
-		ip:     0,
-		labels: make(map[string]int),
-		memory: make(map[string]interface{}),
+	interpreter := &Interpreter{
+		code:         code,
+		ip: 		  0,
+		labels:       make(map[string]int),
+		memory:    make(map[string]any),
 	}
 
-	//i.buildLabels()
+	interpreter.buildLabels()
 
-	return i
+	return interpreter
 }
 
-func (i *Interpreter) Run() {
-	for i.ip < len(i.code) {
-		//instr := i.code[i.ip]
-		//i.execute(instr)
-		i.ip++
+func (interpreter *Interpreter) Run() {
+	for interpreter.ip < len(interpreter.code) {
+		instrucao := interpreter.code[interpreter.ip]
+		interpreter.execute(instrucao)
+		interpreter.ip++
 	}
 }

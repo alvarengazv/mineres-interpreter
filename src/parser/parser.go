@@ -59,6 +59,18 @@ var exprStartTokens = map[lexer.TabelaPalavras]bool{
 	lexer.Op_not:         true,
 }
 
+type TypeTable int
+
+const(
+
+	Type_int	 TypeTable = iota	
+	Type_float   	
+    Type_string  	
+	Type_bool   	 
+	Type_char   
+	 	
+)
+	
 type Parser struct {
 	tokens []lexer.TuplaLex
 	pos    int
@@ -74,21 +86,97 @@ type Parser struct {
 	labelCaseIfT  int
 	labelCaseIfF  int
 	labelEndCase  int
+	symbolTable    map[string]TypeTable
 
 	breakStack    Stack
 	continueStack Stack
+}
+
+func  verifyTypeCompatibility(type1 TypeTable, type2 TypeTable, line int, column int) {
+
+	if type1 != type2 && !(type1 == Type_float && type2 == Type_int) && !(type1 == Type_int && type2 == Type_float) {
+		utils.ThrowParserException(fmt.Sprintf("Type mismatch: cannot operate between %v and %v", type1, type2), line, column)
+	} 
+
+}	
+
+func (p *Parser) toType(t *lexer.TuplaLex) TypeTable {
+
+	switch t.Token {
+	case lexer.Type_int, lexer.Literal_int, lexer.Literal_hex, lexer.Literal_oct:
+		return Type_int
+	case lexer.Type_float, lexer.Literal_float:
+		return Type_float
+	case lexer.Type_string, lexer.Literal_string:
+		return Type_string
+	case lexer.Type_bool, lexer.Literal_true, lexer.Literal_false:
+		return Type_bool
+	case lexer.Type_char, lexer.Literal_char:
+		return Type_char
+	
+	case lexer.Identifier:
+		value, ok := p.symbolTable[t.Lexema]
+		if !ok {
+			utils.ThrowParserException(fmt.Sprintf("Variable '%s' not declared", t.Lexema), t.Linha, t.Coluna)
+		}
+		return value
+	}
+	return -1
+}
+
+func (p *Parser) inferType(op lexer.TabelaPalavras, t1, t2 TypeTable, linha, coluna int) TypeTable {
+	switch op {
+	case lexer.Op_add:
+		if (t1 == Type_char && t2 == Type_char) ||
+			(t1 == Type_char && t2 == Type_string) ||
+			(t1 == Type_string && t2 == Type_char) ||
+			(t1 == Type_string && t2 == Type_string) {
+			return Type_string
+		}
+
+		if t1 == Type_int && t2 == Type_int {
+			return Type_int
+		}
+
+		if (t1 == Type_float || t1 == Type_int) && (t2 == Type_float || t2 == Type_int) {
+			return Type_float
+		}
+
+	case lexer.Op_sub, lexer.Op_mul, lexer.Op_div, lexer.Op_int_div, lexer.Op_mod:
+		if t1 == Type_string || t2 == Type_string || t1 == Type_char || t2 == Type_char {
+			utils.ThrowParserException("Arithmetic operation not allowed on strings or characters", linha, coluna)
+		}
+
+		if op == lexer.Op_mod || op == lexer.Op_int_div {
+			if t1 != Type_int || t2 != Type_int {
+				utils.ThrowParserException("Operation expected integer values", linha, coluna)
+			}
+			return Type_int
+		}
+
+		if t1 == Type_int && t2 == Type_int {
+			return Type_int
+		}
+		return Type_float
+	}
+
+	utils.ThrowParserException("Operação com tipos incompatíveis", linha, coluna)
+	return -1
 }
 
 func NewParser(tokens []lexer.TuplaLex) *Parser {
 	return &Parser{
 		tokens: tokens,
 		pos:    0,
+		symbolTable: make(map[string]TypeTable),
 	}
 }
 
-func (p *Parser) newTemp() *lexer.TuplaLex {
+func (p *Parser) newTemp(typeVal TypeTable) *lexer.TuplaLex {
 
 	p.tempCount++
+	nomeTemp := fmt.Sprintf("t%d", p.tempCount)
+	p.symbolTable[nomeTemp] = typeVal
 
 	return &lexer.TuplaLex{
 		Token:  lexer.Identifier,
@@ -456,7 +544,15 @@ func (p *Parser) parseDeclaration() []TuplaMicrocode {
 func (p *Parser) parseDeclarationList(typeToken lexer.TabelaPalavras) []TuplaMicrocode {
 	commandList := []TuplaMicrocode{}
 
+	currentType := p.toType(&lexer.TuplaLex{Token: typeToken})
 	currentToken := p.consume(lexer.Identifier)
+	value, ok := p.symbolTable[currentToken.Lexema]
+
+	if ok {
+		 utils.ThrowParserException(fmt.Sprintf("Variable '%s' already declared with type %v", currentToken.Lexema, value), currentToken.Linha, currentToken.Coluna)
+	}
+
+	p.symbolTable[currentToken.Lexema] = currentType 
 
 	commandList = append(commandList, TuplaMicrocode{
 		Operation: Att,
@@ -465,9 +561,18 @@ func (p *Parser) parseDeclarationList(typeToken lexer.TabelaPalavras) []TuplaMic
 		Op2:       nil,
 	})
 
+
 	for p.current().Token == lexer.Comma {
 		p.advance()
 		currentToken := p.consume(lexer.Identifier)
+		value, ok := p.symbolTable[currentToken.Lexema]
+
+		if ok {
+			utils.ThrowParserException(fmt.Sprintf("Variable '%s' already declared with type %v", currentToken.Lexema, value), currentToken.Linha, currentToken.Coluna)
+		}
+
+		p.symbolTable[currentToken.Lexema] = currentType
+
 		commandList = append(commandList, TuplaMicrocode{
 			Operation: Att,
 			Res:       currentToken,
@@ -591,7 +696,7 @@ func (p *Parser) parseDoCaso(ident *lexer.TuplaLex, labelEndCase *lexer.TuplaLex
 
 	valueCase, _ := p.parseFatorZin()
 
-	temp := p.newTemp()
+	temp := p.newTemp(Type_bool)
 
 	p.microcodes = append(p.microcodes, TuplaMicrocode{
 		Operation: Eq,
@@ -681,6 +786,11 @@ func (p *Parser) parseAtrib() (*lexer.TuplaLex, []TuplaMicrocode) {
 		p.consume(lexer.Op_assign)
 		right, rightCode := p.parseAtrib()
 		code = append(code, rightCode...)
+
+		typeleft := p.toType(left)
+		typeright := p.toType(right)
+		verifyTypeCompatibility(typeleft, typeright, left.Linha, left.Coluna)
+
 		code = append(code, TuplaMicrocode{
 			Operation: Att,
 			Res:       left,
@@ -698,8 +808,11 @@ func (p *Parser) parseOR() (*lexer.TuplaLex, []TuplaMicrocode) {
 	for p.current().Token == lexer.Op_or {
 		p.advance()
 		right, rightCommands := p.parseXor()
+		if (p.toType(left) != Type_bool) || (p.toType(right) != Type_bool) {
+			utils.ThrowParserException("Can not perform 'quarque_um' operation on non-boolean values", left.Linha, left.Coluna)
+		}
 		commandList = append(commandList, rightCommands...)
-		temp := p.newTemp()
+		temp := p.newTemp(Type_bool)
 		commandList = append(commandList, TuplaMicrocode{
 			Operation: Or,
 			Res:       temp,
@@ -717,8 +830,11 @@ func (p *Parser) parseXor() (*lexer.TuplaLex, []TuplaMicrocode) {
 	for p.current().Token == lexer.Op_xor {
 		p.advance()
 		right, rightCommands := p.parseAnd()
+		if (p.toType(left) != Type_bool) || (p.toType(right) != Type_bool) {
+			utils.ThrowParserException("Can not perform 'um_o_oto' operation on non-boolean values", left.Linha, left.Coluna)
+		}
 		commandList = append(commandList, rightCommands...)
-		temp := p.newTemp()
+		temp := p.newTemp(Type_bool)
 		commandList = append(commandList, TuplaMicrocode{
 			Operation: Xor,
 			Res:       temp,
@@ -736,8 +852,15 @@ func (p *Parser) parseAnd() (*lexer.TuplaLex, []TuplaMicrocode) {
 	for p.current().Token == lexer.Op_and {
 		p.advance()
 		right, rightCommands := p.parseNot()
+		if (p.toType(left) != Type_bool) || (p.toType(right) != Type_bool) {
+			utils.ThrowParserException("Can not perform 'tamem' operation on non-boolean values", left.Linha, left.Coluna)
+		}
 		commandList = append(commandList, rightCommands...)
-		temp := p.newTemp()
+		typeLeft := p.toType(left)
+		typeRight := p.toType(right)
+		resType := p.inferType(lexer.Op_and, typeLeft, typeRight, left.Linha, left.Coluna)
+		temp := p.newTemp(resType)
+
 		commandList = append(commandList, TuplaMicrocode{
 			Operation: And,
 			Res:       temp,
@@ -754,7 +877,10 @@ func (p *Parser) parseNot() (*lexer.TuplaLex, []TuplaMicrocode) {
 	if p.current().Token == lexer.Op_not {
 		p.advance()
 		value, commandList := p.parseNot()
-		temp := p.newTemp()
+		if p.toType(value) != Type_bool {
+			utils.ThrowParserException("Can not perform 'vam_marca' operation on non-boolean values", value.Linha, value.Coluna)
+		}
+		temp := p.newTemp(Type_bool)
 		commandList = append(commandList, TuplaMicrocode{
 			Operation: Not,
 			Res:       temp,
@@ -780,7 +906,7 @@ func (p *Parser) parseRel() (*lexer.TuplaLex, []TuplaMicrocode) {
 
 		commandList = append(commandList, rightCommands...)
 
-		temp := p.newTemp()
+		temp := p.newTemp(Type_bool)
 
 		var op TabelaMicrocodes
 
@@ -827,8 +953,11 @@ func (p *Parser) parseAdd() (*lexer.TuplaLex, []TuplaMicrocode) {
 		right, rightCommands := p.parseMul()
 
 		commandList = append(commandList, rightCommands...)
-
-		temp := p.newTemp()
+		
+		typeLeft := p.toType(left)
+		typeRight := p.toType(right)
+		resType := p.inferType(operator, typeLeft, typeRight, left.Linha, left.Coluna)
+		temp := p.newTemp(resType)
 
 		var op TabelaMicrocodes
 
@@ -866,7 +995,10 @@ func (p *Parser) parseMul() (*lexer.TuplaLex, []TuplaMicrocode) {
 
 		commandList = append(commandList, rightCommands...)
 
-		temp := p.newTemp()
+		typeLeft := p.toType(left)
+		typeRight := p.toType(right)
+		resType := p.inferType(operator, typeLeft, typeRight, left.Linha, left.Coluna)
+		temp := p.newTemp(resType)
 
 		var op TabelaMicrocodes
 
@@ -909,8 +1041,12 @@ func (p *Parser) parseUno() (*lexer.TuplaLex, []TuplaMicrocode) {
 		p.advance()
 
 		value, commandList := p.parseUno()
+		if p.toType(value) != Type_int && p.toType(value) != Type_float {
+			utils.ThrowParserException("Can not perform unary '-' operation on non-numeric values", value.Linha, value.Coluna)
+		}
 
-		temp := p.newTemp()
+		typeValue := p.toType(value)
+		temp := p.newTemp(typeValue)
 
 		commandList = append(commandList, TuplaMicrocode{
 			Operation: Uno,
@@ -948,7 +1084,14 @@ func (p *Parser) parseFatorZin() (*lexer.TuplaLex, []TuplaMicrocode) {
 	t := p.current()
 
 	if fatorTokens[t.Token] {
-
+		
+		if t.Token == lexer.Identifier {
+			_, ok := p.symbolTable[t.Lexema]
+			if !ok {
+				utils.ThrowParserException(fmt.Sprintf("Variable '%s' not declared", t.Lexema), t.Linha, t.Coluna)
+			}
+		}
+		
 		p.advance()
 
 		return &t, []TuplaMicrocode{}

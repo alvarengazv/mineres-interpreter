@@ -1,0 +1,35 @@
+bora_cumpade main() simbora
+    // TESTE DE RE-DECLARAÇÃO 
+    //trem_di_numeru x uai
+    //trem_di_numeru x uai // Erro: Variável 'x' já declarada
+
+    // TESTE DE DECLARAÇÃO PRÉVIA 
+    // y fica_assim_entao 10 uai // Erro: Variável 'y' não declarada
+
+    //  TESTE DE COMPATIBILIDADE NA ATRIBUIÇÃO 
+    trem_di_numeru a uai
+    //a fica_assim_entao "trem bão" uai // Erro: Incompatibilidade de tipos (int vs string)
+
+    //  TESTE DE OPERAÇÕES INVÁLIDAS 
+    //trem_di_numeru b uai
+   //b fica_assim_entao "alo" - "ola" uai // Erro: Operação aritmética inválida para texto
+    
+    // TESTE DE OPERAÇÕES LÓGICAS COM TIPOS ERRADOS 
+    //trem_di_numeru c uai
+    //uai_se (c tamem eh) simbora cabo // Erro: 'tamem' exige booleanos, 'c' é int
+
+    // TESTE DO CASO ESPECIAL (CHAR + CHAR = STRING) 
+    //trosso c1 uai
+    // trosso c2 uai
+    //trosso c3 uai
+    //c1 fica_assim_entao 'a' uai
+    //c2 fica_assim_entao 'b' uai
+   //c3 fica_assim_entao c1 + c2 uai // Erro: c1+c2 resulta em STRING, não pode guardar em CHAR
+
+    // TESTE DE MOD/DIVISÃO INTEIRA COM FLOAT 
+    //trem_cum_virgula f fica_assim_entao 10.5 uai
+    //trem_di_numeru r uai
+    //r fica_assim_entao f % 2 uai // Erro: Mod exige valores inteiros
+
+    oia_proce_ve("Fim dos testes") uai
+cabo

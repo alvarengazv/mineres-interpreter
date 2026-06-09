@@ -390,15 +390,10 @@ func (p *Parser) parseWhileStmt() {
 	p.consume(lexer.Loop_while)
 	p.consume(lexer.Open_paren)
 	resExpr, codeExpr := p.parseExpr()
-	// ListTuplaMicrocodeToString(code)
-	p.microcodes = append(p.microcodes, codeExpr...)
 
 	labelLoopInit := p.newLabelLoopInit()
 	labelTrue := p.newLabelTrue()
 	labelEndLoop := p.newLabelLoopEnd()
-
-	p.breakStack.Push(labelEndLoop.Lexema)
-	p.continueStack.Push(labelLoopInit.Lexema)
 
 	codeLabelInit := TuplaMicrocode{
 		Operation: Label,
@@ -408,6 +403,11 @@ func (p *Parser) parseWhileStmt() {
 	}
 
 	p.microcodes = append(p.microcodes, codeLabelInit)
+	// ListTuplaMicrocodeToString(code)
+	p.microcodes = append(p.microcodes, codeExpr...)
+
+	p.breakStack.Push(labelEndLoop.Lexema)
+	p.continueStack.Push(labelLoopInit.Lexema)
 
 	codeIf := TuplaMicrocode{
 		Operation: If_eq,

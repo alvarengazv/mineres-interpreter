@@ -4,7 +4,8 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
-Parte 4 - Evolução - Tratando erros relacionados a declaração, re-declaração, operações e tipos de variaveis - 08/06/2026 - Joaquim Cruz
+Parte 3 - Correção - Tratando localização da label inicial do while - 09/06/2026 - Guilherme Alvarenga
+Parte 3 - Evolução - Tratando erros relacionados a declaração, re-declaração, operações e tipos de variaveis - 08/06/2026 - Joaquim Cruz
 Parte 4 - Evolução - Adicionando métodos para cobrir as operações do interpreter - 31/05/206 - Luan Santos 
 Parte 4 - Evolução - Criando executor para o interpreter - 31/05/206 - Luan Santos
 Parte 4 - Evolução - Criando arquivo para gerenciar labels no interpreter - 31/05/2026 - Luan Santos

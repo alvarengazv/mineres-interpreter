@@ -4,6 +4,8 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 3 - Evolução - Tratando expressões no if que não retornam resultado booleano - 10/06/2026 - Joaquim Cruz
+Parte 3 - Correção - Corrigindo erro na função parseRel no momento da tratativa de erros - 10/06/2026 - Joaquim Cruz
 Parte 3 - Correção - Tratando localização da label inicial do while - 09/06/2026 - Guilherme Alvarenga
 Parte 3 - Evolução - Tratando erros relacionados a declaração, re-declaração, operações e tipos de variaveis - 08/06/2026 - Joaquim Cruz
 Parte 4 - Evolução - Adicionando métodos para cobrir as operações do interpreter - 31/05/206 - Luan Santos 

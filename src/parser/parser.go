@@ -70,6 +70,24 @@ const(
 	Type_char   
 	 	
 )
+
+// conversao para mensagem de erro 
+func (t TypeTable) String() string {
+	switch t {
+	case Type_int:
+		return "trem_di_numeru"
+	case Type_float:
+		return "trem_cum_virgula"
+	case Type_string:
+		return "trem_discrita"
+	case Type_bool:
+		return "trem_discolhe"
+	case Type_char:
+		return "trosso"
+	default:
+		return "unknown"
+	}
+}
 	
 type Parser struct {
 	tokens []lexer.TuplaLex
@@ -158,6 +176,24 @@ func (p *Parser) inferType(op lexer.TabelaPalavras, t1, t2 TypeTable, linha, col
 			return Type_int
 		}
 		return Type_float
+
+	case lexer.Op_eq, lexer.Op_neq:
+		if (t1 == Type_int || t1 == Type_float) && (t2 == Type_int || t2 == Type_float) {
+			return Type_bool
+		}
+		if t1 == t2 {
+			return Type_bool
+		}
+		utils.ThrowParserException(fmt.Sprintf("Equality operation not allowed between %v and %v", t1, t2), linha, coluna)
+
+	case lexer.Op_gt, lexer.Op_lt, lexer.Op_gte, lexer.Op_lte:
+		if (t1 == Type_int || t1 == Type_float) && (t2 == Type_int || t2 == Type_float) {
+			return Type_bool
+		}
+		if t1 == Type_string && t2 == Type_string {
+			return Type_bool
+		}
+		utils.ThrowParserException(fmt.Sprintf("Relational operation not allowed between %v and %v", t1, t2), linha, coluna)
 	}
 
 	utils.ThrowParserException("Operação com tipos incompatíveis", linha, coluna)
@@ -329,6 +365,9 @@ func (p *Parser) parseIfStmt() {
 	p.consume(lexer.Conditional_if)
 	p.consume(lexer.Open_paren)
 	resExpr, codeExpr := p.parseExpr()
+	if p.toType(resExpr) != Type_bool {
+		utils.ThrowParserException("If condition must be a boolean expression", resExpr.Linha, resExpr.Coluna)
+	}
 	p.microcodes = append(p.microcodes, codeExpr...)
 	p.consume(lexer.Close_paren)
 
@@ -906,7 +945,10 @@ func (p *Parser) parseRel() (*lexer.TuplaLex, []TuplaMicrocode) {
 
 		commandList = append(commandList, rightCommands...)
 
-		temp := p.newTemp(Type_bool)
+		typeLeft := p.toType(left)
+		typeRight := p.toType(right)
+		resType := p.inferType(operator, typeLeft, typeRight, left.Linha, left.Coluna)
+		temp := p.newTemp(resType)
 
 		var op TabelaMicrocodes
 

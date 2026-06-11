@@ -4,11 +4,11 @@ bora_cumpade main() simbora
     //trem_di_numeru x uai // Erro: Variável 'x' já declarada
 
     // TESTE DE DECLARAÇÃO PRÉVIA 
-    // y fica_assim_entao 10 uai // Erro: Variável 'y' não declarada
+    //y fica_assim_entao 10 uai // Erro: Variável 'y' não declarada
 
     //  TESTE DE COMPATIBILIDADE NA ATRIBUIÇÃO 
     trem_di_numeru a uai
-    //a fica_assim_entao "trem bão" uai // Erro: Incompatibilidade de tipos (int vs string)
+    a fica_assim_entao "trem bão" uai // Erro: Incompatibilidade de tipos (int vs string)
 
     //  TESTE DE OPERAÇÕES INVÁLIDAS 
     //trem_di_numeru b uai

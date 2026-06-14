@@ -31,3 +31,4 @@ func (interpreter *Interpreter) Run() {
 		interpreter.ip++
 	}
 }
+

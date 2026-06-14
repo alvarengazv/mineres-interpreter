@@ -3,11 +3,12 @@ simbora
 
     trem_di_numeru contador uai
 
-    contador fica_assim_entao 13 uai
+    contador fica_assim_entao 0 uai
 
-    enquanto_tiver_trem (contador < 11) simbora
+    enquanto_tiver_trem (contador < 10) simbora
 
         oia_proce_ve(contador) uai
+        oia_proce_ve("\n") uai
 
         contador fica_assim_entao contador + 1 uai
 

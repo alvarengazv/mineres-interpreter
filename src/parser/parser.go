@@ -286,7 +286,7 @@ func (p *Parser) ParserFunction() []TuplaMicrocode{
 		utils.ThrowParserException("Unexpected token after main function: '"+p.tokenToString(p.current().Token)+"'", p.current().Linha, p.current().Coluna)
 	}
 
-	// ListTuplaMicrocodeToString(p.microcodes)
+	ListTuplaMicrocodeToString(p.microcodes)
 
 	return p.microcodes;
 }

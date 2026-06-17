@@ -61,17 +61,15 @@ var exprStartTokens = map[lexer.TabelaPalavras]bool{
 
 type TypeTable int
 
-const(
-
-	Type_int	 TypeTable = iota	
-	Type_float   	
-    Type_string  	
-	Type_bool   	 
-	Type_char   
-	 	
+const (
+	Type_int TypeTable = iota
+	Type_float
+	Type_string
+	Type_bool
+	Type_char
 )
 
-// conversao para mensagem de erro 
+// conversao para mensagem de erro
 func (t TypeTable) String() string {
 	switch t {
 	case Type_int:
@@ -88,7 +86,7 @@ func (t TypeTable) String() string {
 		return "unknown"
 	}
 }
-	
+
 type Parser struct {
 	tokens []lexer.TuplaLex
 	pos    int
@@ -104,19 +102,19 @@ type Parser struct {
 	labelCaseIfT  int
 	labelCaseIfF  int
 	labelEndCase  int
-	symbolTable    map[string]TypeTable
+	symbolTable   map[string]TypeTable
 
 	breakStack    Stack
 	continueStack Stack
 }
 
-func  verifyTypeCompatibility(type1 TypeTable, type2 TypeTable, line int, column int) {
+func verifyTypeCompatibility(type1 TypeTable, type2 TypeTable, line int, column int) {
 
 	if type1 != type2 && !(type1 == Type_float && type2 == Type_int) && !(type1 == Type_int && type2 == Type_float) {
 		utils.ThrowParserException(fmt.Sprintf("Type mismatch: cannot operate between %v and %v", type1, type2), line, column)
-	} 
+	}
 
-}	
+}
 
 func (p *Parser) toType(t *lexer.TuplaLex) TypeTable {
 
@@ -131,7 +129,7 @@ func (p *Parser) toType(t *lexer.TuplaLex) TypeTable {
 		return Type_bool
 	case lexer.Type_char, lexer.Literal_char:
 		return Type_char
-	
+
 	case lexer.Identifier:
 		value, ok := p.symbolTable[t.Lexema]
 		if !ok {
@@ -202,8 +200,8 @@ func (p *Parser) inferType(op lexer.TabelaPalavras, t1, t2 TypeTable, linha, col
 
 func NewParser(tokens []lexer.TuplaLex) *Parser {
 	return &Parser{
-		tokens: tokens,
-		pos:    0,
+		tokens:      tokens,
+		pos:         0,
 		symbolTable: make(map[string]TypeTable),
 	}
 }
@@ -274,7 +272,7 @@ func (p *Parser) consume(expected lexer.TabelaPalavras) *lexer.TuplaLex {
 
 // Funções de parsing
 
-func (p *Parser) ParserFunction() []TuplaMicrocode{
+func (p *Parser) ParserFunction() []TuplaMicrocode {
 
 	p.consume(lexer.Func_decl)
 	p.consume(lexer.Main_function)
@@ -288,7 +286,7 @@ func (p *Parser) ParserFunction() []TuplaMicrocode{
 
 	ListTuplaMicrocodeToString(p.microcodes)
 
-	return p.microcodes;
+	return p.microcodes
 }
 
 func (p *Parser) parseBloco() {
@@ -557,6 +555,13 @@ func (p *Parser) parseForStmt() {
 	}
 
 	p.microcodes = append(p.microcodes, TuplaMicrocode{
+		Operation: Jump,
+		Res:       labelLoopInit,
+		Op1:       nil,
+		Op2:       nil,
+	})
+
+	p.microcodes = append(p.microcodes, TuplaMicrocode{
 		Operation: Label,
 		Res:       labelEndLoop,
 		Op1:       nil,
@@ -588,10 +593,10 @@ func (p *Parser) parseDeclarationList(typeToken lexer.TabelaPalavras) []TuplaMic
 	value, ok := p.symbolTable[currentToken.Lexema]
 
 	if ok {
-		 utils.ThrowParserException(fmt.Sprintf("Variable '%s' already declared with type %v", currentToken.Lexema, value), currentToken.Linha, currentToken.Coluna)
+		utils.ThrowParserException(fmt.Sprintf("Variable '%s' already declared with type %v", currentToken.Lexema, value), currentToken.Linha, currentToken.Coluna)
 	}
 
-	p.symbolTable[currentToken.Lexema] = currentType 
+	p.symbolTable[currentToken.Lexema] = currentType
 
 	commandList = append(commandList, TuplaMicrocode{
 		Operation: Att,
@@ -599,7 +604,6 @@ func (p *Parser) parseDeclarationList(typeToken lexer.TabelaPalavras) []TuplaMic
 		Op1:       getDefaultValue(typeToken),
 		Op2:       nil,
 	})
-
 
 	for p.current().Token == lexer.Comma {
 		p.advance()
@@ -995,7 +999,7 @@ func (p *Parser) parseAdd() (*lexer.TuplaLex, []TuplaMicrocode) {
 		right, rightCommands := p.parseMul()
 
 		commandList = append(commandList, rightCommands...)
-		
+
 		typeLeft := p.toType(left)
 		typeRight := p.toType(right)
 		resType := p.inferType(operator, typeLeft, typeRight, left.Linha, left.Coluna)
@@ -1126,14 +1130,14 @@ func (p *Parser) parseFatorZin() (*lexer.TuplaLex, []TuplaMicrocode) {
 	t := p.current()
 
 	if fatorTokens[t.Token] {
-		
+
 		if t.Token == lexer.Identifier {
 			_, ok := p.symbolTable[t.Lexema]
 			if !ok {
 				utils.ThrowParserException(fmt.Sprintf("Variable '%s' not declared", t.Lexema), t.Linha, t.Coluna)
 			}
 		}
-		
+
 		p.advance()
 
 		return &t, []TuplaMicrocode{}

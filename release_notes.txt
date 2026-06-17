@@ -4,6 +4,8 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 4 - Correção - Mudança de type para literal no executor - 17/06/2026 - Everybody
+Parte 3 - Correção - Jump dentro do for - 17/06/2026 - Everybody
 Parte 4 - Correção - Arrumando operação de scan - 14/06/2026 - Luan Santos
 Parte 4 - Evolução - Finalizando os métodos para cobrir as operações do interpreter - 14/06/2026 - Luan Santos
 Parte 4 - Evolução - Adicionando métodos para cobrir as operações do interpreter - 13/06/2026 - Luan Santos

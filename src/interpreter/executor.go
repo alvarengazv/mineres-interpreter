@@ -88,9 +88,8 @@ func (i *Interpreter) operationAdd(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 			op2, _ := i.memory[t2.Lexema]
 			switch v := op2.(type) {
 			case string: // Op1 é string e Op2 é string
+						 // Op1 é string e Op2 é char
 				return op1 + v
-			case rune: // Op1 é string e Op2 é char
-				return op1 + string(v)
 			}
 		}
 	case lexer.Literal_char: // Op1 é char
@@ -106,9 +105,8 @@ func (i *Interpreter) operationAdd(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 			op2, _ := i.memory[t2.Lexema]
 			switch v := op2.(type) {
 			case string: // Op1 é char e Op2 é string
+						 // Op1 é char e Op2 é char
 				return op1 + v
-			case rune: // Op1 é char e Op2 é char
-				return op1 + string(v)
 			}
 		}
 	case lexer.Identifier: // Op1 esta em memoria
@@ -160,27 +158,9 @@ func (i *Interpreter) operationAdd(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 			case lexer.Identifier: // Op1 é string e Op2 está em memória
 				op2, _ := i.memory[t2.Lexema]
 				switch v2 := op2.(type) {
-				case rune: // Op1 é string e Op2 é char
-					return v + string(v2)
-				case string: // Op1 é string e Op2 é string
-					return v + v2
-				}
-			}
-		case rune: // Op1 é char
-			switch t2.Token {
-			case lexer.Literal_char: // Op1 é char e Op2 é char
-				op2 := string(t2.Lexema)
-				return string(v) + op2
-			case lexer.Literal_string: // Op1 é char e Op2 é string
-				op2 := t2.Lexema
-				return string(v) + op2
-			case lexer.Identifier: // Op1 é char e Op2 está em memória
-				op2, _ := i.memory[t2.Lexema]
-				switch v2 := op2.(type) {
-				case rune: // Op1 é char e Op2 é char
-					return string(v) + string(v2)
-				case string: // Op1 é char e Op2 é string
-					return string(v) + v2
+					case string: // Op1 é string e Op2 é string
+								// Op1 é string e Op2 é char
+						return v + v2
 				}
 			}
 		}
@@ -684,18 +664,16 @@ func (i *Interpreter) operationEq(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool {
 			}
 		}
 	case lexer.Literal_char: // Op1 é char
-		op1 := []rune(t1.Lexema)[0]
+		op1 := t1.Lexema
 		switch t2.Token {
 		case lexer.Literal_char: // Op1 é char e Op2 é char
-			op2 := []rune(t2.Lexema)[0]
+			op2 := t2.Lexema
 			return op1 == op2
 		case lexer.Identifier: //Op1 é char e Op2 está em memória
 			op2, _ := i.memory[t2.Lexema]
 			switch v := op2.(type) {
-			case rune:
-				return op1 == v
-			case string:
-				return op1 == []rune(v)[0]
+				case string:
+					return op1 == v
 			}
 		}
 	case lexer.Identifier: // Op1 esta em memoria
@@ -780,20 +758,6 @@ func (i *Interpreter) operationEq(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool {
 				switch v := op2.(type) { // Op1 é string e Op2 é string
 				case string:
 					return op1 == v
-				}
-			}
-		case rune: // Op1 é char
-			switch t2.Token {
-			case lexer.Literal_char: // Op1 é char e Op2 é char
-				op2 := []rune(t2.Lexema)[0]
-				return op1 == op2
-			case lexer.Identifier: //Op1 é char e Op2 está em memória
-				op2, _ := i.memory[t2.Lexema]
-				switch v := op2.(type) {
-				case rune:
-					return op1 == v
-				case string:
-					return op1 == []rune(v)[0]
 				}
 			}
 		}
@@ -887,19 +851,17 @@ func (i *Interpreter) operationNeq(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool 
 			}
 		}
 	case lexer.Literal_char: // Op1 é char
-		op1 := []rune(t1.Lexema)[0]
+		op1 := t1.Lexema
 		switch t2.Token {
-		case lexer.Literal_char: // Op1 é char e Op2 é char
-			op2 := []rune(t2.Lexema)[0]
-			return op1 != op2
-		case lexer.Identifier: //Op1 é char e Op2 está em memória
-			op2, _ := i.memory[t2.Lexema]
-			switch v := op2.(type) {
-			case rune:
-				return op1 != v
-			case string:
-				return op1 != []rune(v)[0]
-			}
+			case lexer.Literal_char: // Op1 é char e Op2 é char
+				op2 := t2.Lexema
+				return op1 != op2
+			case lexer.Identifier: //Op1 é char e Op2 está em memória
+				op2, _ := i.memory[t2.Lexema]
+				switch v := op2.(type) {
+					case string:
+						return op1 != v
+				}
 		}
 	case lexer.Identifier: // Op1 esta em memoria
 		op1, _ := i.memory[t1.Lexema]
@@ -983,20 +945,6 @@ func (i *Interpreter) operationNeq(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool 
 				switch v := op2.(type) { // Op1 é string e Op2 é string
 				case string:
 					return op1 != v
-				}
-			}
-		case rune: // Op1 é char
-			switch t2.Token {
-			case lexer.Literal_char: // Op1 é char e Op2 é char
-				op2 := []rune(t2.Lexema)[0]
-				return op1 != op2
-			case lexer.Identifier: //Op1 é char e Op2 está em memória
-				op2, _ := i.memory[t2.Lexema]
-				switch v := op2.(type) {
-				case rune:
-					return op1 != v
-				case string:
-					return op1 != []rune(v)[0]
 				}
 			}
 		}
@@ -1588,78 +1536,78 @@ func (i *Interpreter) operationAtt(nome string, operation *lexer.TuplaLex) {
 
 func (interpreter *Interpreter) execute(instrucao parser.TuplaMicrocode) {
 
-	fmt.Printf("\n\nPonteiro executando operação: %d => ", interpreter.ip)
+	// fmt.Printf("\n\nPonteiro executando operação: %d => ", interpreter.ip)
 
 	switch instrucao.Operation {
 	case parser.Add:
-		fmt.Printf("Add\n")
+		// fmt.Printf("Add\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationAdd(instrucao.Op1, instrucao.Op2)
 	case parser.Sub:
-		fmt.Printf("Sub\n")
+		// fmt.Printf("Sub\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationSub(instrucao.Op1, instrucao.Op2)
 	case parser.Mul:
-		fmt.Printf("Mul\n")
+		// fmt.Printf("Mul\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationMul(instrucao.Op1, instrucao.Op2)
 	case parser.Div:
-		fmt.Printf("Div")
+		// fmt.Printf("Div")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationDiv(instrucao.Op1, instrucao.Op2)
 	case parser.Mod:
-		fmt.Printf("Mod\n")
+		// fmt.Printf("Mod\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationMod(instrucao.Op1, instrucao.Op2)
 	case parser.DivI:
-		fmt.Printf("DivI")
+		// fmt.Printf("DivI")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationDivI(instrucao.Op1, instrucao.Op2)
 	case parser.Eq:
-		fmt.Printf("Eq\n")
+		// fmt.Printf("Eq\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationEq(instrucao.Op1, instrucao.Op2)
 	case parser.Neq:
-		fmt.Printf("Neq\n")
+		// fmt.Printf("Neq\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationNeq(instrucao.Op1, instrucao.Op2)
 	case parser.Lt:
-		fmt.Printf("Lt\n")
+		// fmt.Printf("Lt\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationLt(instrucao.Op1, instrucao.Op2)
 	case parser.Gt:
-		fmt.Printf("Gt\n")
+		// fmt.Printf("Gt\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationGt(instrucao.Op1, instrucao.Op2)
 	case parser.Lte:
-		fmt.Printf("Lte\n")
+		// fmt.Printf("Lte\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationLte(instrucao.Op1, instrucao.Op2)
 	case parser.Gte:
-		fmt.Printf("Gte\n")
+		// fmt.Printf("Gte\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationGte(instrucao.Op1, instrucao.Op2)
 	case parser.And:
-		fmt.Printf("And\n")
+		// fmt.Printf("And\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationAnd(instrucao.Op1, instrucao.Op2)
 	case parser.Or:
-		fmt.Printf("Or\n")
+		// fmt.Printf("Or\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationOr(instrucao.Op1, instrucao.Op2)
 	case parser.Not:
-		fmt.Printf("Not\n")
+		// fmt.Printf("Not\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationNot(instrucao.Op1)
 	case parser.Xor:
-		fmt.Printf("Xor\n")
+		// fmt.Printf("Xor\n")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationXor(instrucao.Op1, instrucao.Op2)
 	case parser.Call:
-		fmt.Printf("Call\n")
+		// fmt.Printf("Call\n")
 		interpreter.operationCall(instrucao.Res, instrucao.Op1, instrucao.Op2)
 	case parser.Jump:
-		fmt.Printf("Jump\n")
+		// fmt.Printf("Jump\n")
 		interpreter.operationJump(instrucao.Res.Lexema)
 	case parser.Label:
-		fmt.Printf("Label\n")
+		// fmt.Printf("Label\n")
 	case parser.If_eq:
-		fmt.Printf("If_eq")
+		// fmt.Printf("If_eq")
 		interpreter.operationIf_eq(instrucao.Res.Lexema, instrucao.Op1.Lexema, instrucao.Op2.Lexema)
 	case parser.Uno:
-		fmt.Printf("Uno")
+		// fmt.Printf("Uno")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationUno(instrucao.Op1)
 	case parser.Att:
-		fmt.Printf("Att\n")
+		// fmt.Printf("Att\n")
 		interpreter.operationAtt(instrucao.Res.Lexema, instrucao.Op1)
 	}
 
-	fmt.Printf("\n\n")
-	for nome, valor := range interpreter.memory {
-		fmt.Printf("%s -> %v, %T\n", nome, valor, valor)
-	}
+	// fmt.Printf("\n\n")
+	// for nome, valor := range interpreter.memory {
+	// 	// fmt.Printf("%s -> %v, %T\n", nome, valor, valor)
+	// }
 }

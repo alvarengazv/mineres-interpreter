@@ -5,6 +5,7 @@ Data: dd/mm/yyyy
 Desenvolvedor string
 
 Parte 4 - Correção - Corrindo erro na operation Call para ler entradas até a fim da linha - 18/06/2026 - Luan Santos 
+Parte 4 - Evolução - Adicionando tratativa de divisão por zero - 18/06/2026 - Joaquim Cruz
 Parte 4 - Correção - Corrigindo erro durante a declaração de um tipo "trosso" - 18/06/2026 - Luan Santos
 Parte 4 - Correção - Mudança de type para literal no executor - 17/06/2026 - Everybody
 Parte 3 - Correção - Jump dentro do for - 17/06/2026 - Everybody

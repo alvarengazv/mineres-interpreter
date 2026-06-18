@@ -37,6 +37,16 @@ func (interpreter *Interpreter) setMemory(nome string, t *lexer.TuplaLex) {
 	}
 }
 
+func (i *Interpreter) checkDivisionByZero(t *lexer.TuplaLex) {
+	if(t.Lexema == "0" || t.Lexema == "0.0") {
+		utils.ThrowInterpreterException(
+			"division by zero is not allowed",
+			t.Linha,
+			t.Coluna,
+		)
+	}
+}
+
 func (i *Interpreter) operationAdd(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 	fmt.Println(t1.Token)
 	fmt.Println(t2)
@@ -337,6 +347,7 @@ func (i *Interpreter) operationMul(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 }
 
 func (i *Interpreter) operationDiv(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
+	i.checkDivisionByZero(t2)
 	switch t1.Token {
 	case lexer.Literal_int: // Op1 é int
 		op1, _ := strconv.Atoi(t1.Lexema)
@@ -419,6 +430,7 @@ func (i *Interpreter) operationDiv(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 }
 
 func (i *Interpreter) operationMod(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
+	i.checkDivisionByZero(t2)
 	switch t1.Token {
 	case lexer.Literal_int: // Op1 é int
 		op1, _ := strconv.Atoi(t1.Lexema)
@@ -501,6 +513,7 @@ func (i *Interpreter) operationMod(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 }
 
 func (i *Interpreter) operationDivI(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
+	i.checkDivisionByZero(t2)
 	switch t1.Token {
 	case lexer.Literal_int: // Op1 é int
 		op1, _ := strconv.Atoi(t1.Lexema)

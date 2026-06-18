@@ -1,10 +1,12 @@
 package interpreter
 
 import (
+	"bufio"
 	"fmt"
 	"mineres-interpreter/src/lexer"
 	"mineres-interpreter/src/parser"
 	"mineres-interpreter/src/utils"
+	"os"
 	"strconv"
 )
 
@@ -1469,8 +1471,7 @@ func (i *Interpreter) operationXor(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool 
 func (i *Interpreter) operationCall(res *lexer.TuplaLex, t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) {
 	switch res.Lexema {
 	case "read":
-		var entrada string
-		fmt.Scanln(&entrada)
+		entrada, _ := bufio.NewReader(os.Stdin).ReadString('\n')
 		switch res.Token {
 		case lexer.Literal_int:
 			v, _ := strconv.Atoi(entrada)

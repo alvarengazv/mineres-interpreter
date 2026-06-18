@@ -9,7 +9,6 @@ simbora
     trem_cum_virgula altura uai
     trem_discrita nome uai
     trem_discolhe ativo uai
-    trosso letra uai
 
     oia_proce_ve("=============================\n") uai
     oia_proce_ve("TESTE DE ENTRADA E SAIDA\n") uai
@@ -24,11 +23,7 @@ simbora
     oia_proce_ve("Digite seu nome: ") uai
     xove(trem_discrita, nome) uai
 
-    oia_proce_ve("Digite um valor booleano (eh ou num_eh): ") uai
-    xove(trem_discolhe, ativo) uai
-
-    oia_proce_ve("Digite uma letra: ") uai
-    xove(trosso, letra) uai
+    ativo fica_assim_entao idade >= 18 uai
 
     oia_proce_ve("\n") uai
     oia_proce_ve("===== RESULTADOS =====\n") uai
@@ -45,12 +40,8 @@ simbora
     oia_proce_ve(altura) uai
     oia_proce_ve("\n") uai
 
-    oia_proce_ve("Ativo: ") uai
+    oia_proce_ve("Maior de idade: ") uai
     oia_proce_ve(ativo) uai
-    oia_proce_ve("\n") uai
-
-    oia_proce_ve("Letra: ") uai
-    oia_proce_ve(letra) uai
     oia_proce_ve("\n") uai
 
     oia_proce_ve("\n===== TESTE DE LITERAIS =====\n") uai

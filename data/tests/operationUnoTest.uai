@@ -1,0 +1,88 @@
+causo
+Teste operationUno completo
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== LITERAL INT =====\n") uai
+
+    trem_di_numeru res1 uai
+
+    oia_proce_ve("-(10) = ") uai
+    res1 fica_assim_entao -10 uai
+    oia_proce_ve(res1) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("-(0) = ") uai
+    res1 fica_assim_entao -0 uai
+    oia_proce_ve(res1) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("-(5) = ") uai
+    res1 fica_assim_entao -5 uai
+    oia_proce_ve(res1) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== LITERAL FLOAT =====\n") uai
+
+    trem_cum_virgula res2 uai
+
+    oia_proce_ve("-(10.5) = ") uai
+    res2 fica_assim_entao -10.5 uai
+    oia_proce_ve(res2) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("-(0.0) = ") uai
+    res2 fica_assim_entao -0.0 uai
+    oia_proce_ve(res2) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("-(5.25) = ") uai
+    res2 fica_assim_entao -5.25 uai
+    oia_proce_ve(res2) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== VARIAVEL INT =====\n") uai
+
+    trem_di_numeru numero1, res3 uai
+
+    numero1 fica_assim_entao 10 uai
+
+    oia_proce_ve("-numero1(10) = ") uai
+    res3 fica_assim_entao -numero1 uai
+    oia_proce_ve(res3) uai
+    oia_proce_ve("\n") uai
+
+    numero1 fica_assim_entao -20 uai
+
+    oia_proce_ve("-numero1(-20) = ") uai
+    res3 fica_assim_entao -numero1 uai
+    oia_proce_ve(res3) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== VARIAVEL FLOAT =====\n") uai
+
+    trem_cum_virgula numero2, res4 uai
+
+    numero2 fica_assim_entao 10.5 uai
+
+    oia_proce_ve("-numero2(10.5) = ") uai
+    res4 fica_assim_entao -numero2 uai
+    oia_proce_ve(res4) uai
+    oia_proce_ve("\n") uai
+
+    numero2 fica_assim_entao -8.75 uai
+
+    oia_proce_ve("-numero2(-8.75) = ") uai
+    res4 fica_assim_entao -numero2 uai
+    oia_proce_ve(res4) uai
+    oia_proce_ve("\n") uai
+
+cabo

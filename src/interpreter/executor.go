@@ -1592,7 +1592,14 @@ func (i *Interpreter) operationCall(res *lexer.TuplaLex, t1 *lexer.TuplaLex, t2 
 			return
 		}
 		if t2 != nil {
-			fmt.Print(t2.Lexema)
+			switch t2.Token {
+				case lexer.Literal_true:
+				fmt.Print(true)
+				case lexer.Literal_false:
+					fmt.Print(false)
+				default:
+					fmt.Print(t2.Lexema)
+			}
 			return
 		}
 	}

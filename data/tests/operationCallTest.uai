@@ -1,0 +1,70 @@
+causo
+Teste operationCall - read int
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("\n\n========== PRINT ==========\n\n") uai
+
+    oia_proce_ve(25) uai
+    oia_proce_ve("\n\n") uai
+
+    oia_proce_ve(1234.56) uai
+    oia_proce_ve("\n\n") uai
+
+    oia_proce_ve(eh) uai
+    oia_proce_ve("\n\n") uai
+
+    oia_proce_ve('A') uai
+    oia_proce_ve("\n\n") uai
+
+    oia_proce_ve("Opa") uai
+
+    oia_proce_ve("\n\n========== SCAN ==========\n\n") uai
+
+    trem_di_numeru idade uai
+
+    oia_proce_ve("Digite 25: ") uai
+    xove(trem_di_numeru, idade) uai
+
+    oia_proce_ve("idade = ") uai
+    oia_proce_ve(idade) uai
+    oia_proce_ve("\n\n") uai
+
+    trem_cum_virgula salario uai
+
+    oia_proce_ve("Digite 1234.56: ") uai
+    xove(trem_cum_virgula, salario) uai
+
+    oia_proce_ve("salario = ") uai
+    oia_proce_ve(salario) uai
+    oia_proce_ve("\n\n") uai
+
+    trem_discolhe aprovado uai
+
+    oia_proce_ve("Digite eh: ") uai
+    xove(trem_discolhe, aprovado) uai
+
+    oia_proce_ve("aprovado = ") uai
+    oia_proce_ve(aprovado) uai
+    oia_proce_ve("\n\n") uai
+
+    trosso letra uai
+
+    oia_proce_ve("Digite A: ") uai
+    xove(trosso, letra) uai
+
+    oia_proce_ve("letra = ") uai
+    oia_proce_ve(letra) uai
+    oia_proce_ve("\n\n") uai
+
+    trem_discrita nome uai
+
+    oia_proce_ve("Digite Joao: ") uai
+    xove(trem_discrita, nome) uai
+
+    oia_proce_ve("nome = ") uai
+    oia_proce_ve(nome) uai
+    oia_proce_ve("\n\n") uai
+cabo

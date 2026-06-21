@@ -1,0 +1,19 @@
+causo
+Teste operationIf_eq completo
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    trem_di_numeru a, b, c uai
+
+    a fica_assim_entao 10 uai
+    b fica_assim_entao 20 uai
+    c fica_assim_entao 10 uai
+
+    uai_se (a >= b quarque_um c mema_coisa 10)
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+cabo

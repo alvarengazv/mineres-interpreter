@@ -8,6 +8,7 @@ import (
 	"mineres-interpreter/src/utils"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func (interpreter *Interpreter) setMemory(nome string, t *lexer.TuplaLex) {
@@ -1482,15 +1483,107 @@ func (i *Interpreter) operationCall(res *lexer.TuplaLex, t1 *lexer.TuplaLex, t2 
 	switch res.Lexema {
 	case "read":
 		entrada, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-		switch res.Token {
-		case lexer.Literal_int:
-			v, _ := strconv.Atoi(entrada)
+		entrada = strings.TrimSpace(entrada)
+
+		// Verificar se a variável foi devidamente declarada na memória
+		valAnterior, declarada := i.memory[t1.Lexema]
+		if !declarada {
+			utils.ThrowInterpreterException(
+				fmt.Sprintf("Variable '%s' not declared", t1.Lexema),
+				t1.Linha,
+				t1.Coluna,
+			)
+		}
+
+		// Verificar compatibilidade do tipo no scan (t2.Token) com o tipo da variável declarada
+		switch valAnterior.(type) {
+		case int:
+			if t2.Token != lexer.Type_int {
+				utils.ThrowInterpreterException(
+					fmt.Sprintf("Type mismatch: cannot scan type '%s' into variable '%s' of type 'trem_di_numeru'", t2.Lexema, t1.Lexema),
+					t1.Linha,
+					t1.Coluna,
+				)
+			}
+		case float64:
+			if t2.Token != lexer.Type_float {
+				utils.ThrowInterpreterException(
+					fmt.Sprintf("Type mismatch: cannot scan type '%s' into variable '%s' of type 'trem_cum_virgula'", t2.Lexema, t1.Lexema),
+					t1.Linha,
+					t1.Coluna,
+				)
+			}
+		case bool:
+			if t2.Token != lexer.Type_bool {
+				utils.ThrowInterpreterException(
+					fmt.Sprintf("Type mismatch: cannot scan type '%s' into variable '%s' of type 'trem_discolhe'", t2.Lexema, t1.Lexema),
+					t1.Linha,
+					t1.Coluna,
+				)
+			}
+		case string:
+			if t2.Token != lexer.Type_string && t2.Token != lexer.Type_char {
+				utils.ThrowInterpreterException(
+					fmt.Sprintf("Type mismatch: cannot scan type '%s' into variable '%s' of type 'trem_discrita'/'trosso'", t2.Lexema, t1.Lexema),
+					t1.Linha,
+					t1.Coluna,
+				)
+			}
+		}
+
+		// Fazer o parser do valor inserido pelo usuário de acordo com o tipo do scan
+		switch t2.Token {
+		case lexer.Type_int:
+			v, err := strconv.Atoi(entrada)
+			if err != nil {
+				utils.ThrowInterpreterException(
+					fmt.Sprintf("Invalid input for type '%s': '%s'", t2.Lexema, entrada),
+					t1.Linha,
+					t1.Coluna,
+				)
+			}
 			i.memory[t1.Lexema] = v
-		case lexer.Literal_float:
-			v, _ := strconv.ParseFloat(entrada, 64)
+		case lexer.Type_float:
+			v, err := strconv.ParseFloat(entrada, 64)
+			if err != nil {
+				utils.ThrowInterpreterException(
+					fmt.Sprintf("Invalid input for type '%s': '%s'", t2.Lexema, entrada),
+					t1.Linha,
+					t1.Coluna,
+				)
+			}
 			i.memory[t1.Lexema] = v
-		default:
+		case lexer.Type_bool:
+			switch entrada {
+			case "eh":
+				i.memory[t1.Lexema] = true
+			case "num_eh":
+				i.memory[t1.Lexema] = false
+			default:
+				utils.ThrowInterpreterException(
+					fmt.Sprintf("Invalid input for type '%s' (expected 'eh' or 'num_eh'): '%s'", t2.Lexema, entrada),
+					t1.Linha,
+					t1.Coluna,
+				)
+			}
+		case lexer.Type_char:
+			runes := []rune(entrada)
+			if len(runes) != 1 {
+				utils.ThrowInterpreterException(
+					fmt.Sprintf("Invalid input for type '%s' (expected a single character): '%s'", t2.Lexema, entrada),
+					t1.Linha,
+					t1.Coluna,
+				)
+			}
+			i.memory[t1.Lexema] = string(runes[0])
+		case lexer.Type_string:
 			i.memory[t1.Lexema] = entrada
+		default:
+			utils.ThrowInterpreterException(
+				fmt.Sprintf("Unsupported scan type: '%s'", t2.Lexema),
+				t1.Linha,
+				t1.Coluna,
+			)
 		}
 	default:
 		if t1 != nil && t1.Token == lexer.Identifier {

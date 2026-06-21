@@ -719,6 +719,7 @@ func (p *Parser) parseCaseStmt() {
 	p.consume(lexer.Close_paren)
 	p.consume(lexer.Block_open)
 	labelEndCase := p.newLabelEndCase()
+	p.breakStack.Push(labelEndCase.Lexema)
 
 	for p.current().Token == lexer.Conditional_case {
 
@@ -730,6 +731,7 @@ func (p *Parser) parseCaseStmt() {
 		p.parseStmt()
 	}
 	p.consume(lexer.Block_close)
+	p.breakStack.Pop()
 
 	p.microcodes = append(p.microcodes, TuplaMicrocode{
 		Operation: Label,
@@ -1175,7 +1177,7 @@ func (p *Parser) parseFatorZin() (*lexer.TuplaLex, []TuplaMicrocode) {
 
 func (p *Parser) parseBreak() {
 	if p.breakStack.IsEmpty() {
-		utils.ThrowParserException("break statement outside of loop", p.current().Linha, p.current().Coluna)
+		utils.ThrowParserException("break statement outside of loop or switch", p.current().Linha, p.current().Coluna)
 	}
 
 	labelEnd := p.breakStack.Top()

@@ -1,0 +1,85 @@
+causo
+Teste completo da operationMod (apenas inteiros)
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== MOD (RESTO DA DIVISAO) =====\n") uai
+
+
+
+    oia_proce_ve("----- literal % literal -----\n") uai
+    trem_di_numeru r1 uai
+    r1 fica_assim_entao 10 % 3 uai
+    oia_proce_ve("10 % 3 = ") uai
+    oia_proce_ve(r1) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("----- variavel % literal -----\n") uai
+    trem_di_numeru a, r2 uai
+    a fica_assim_entao 20 uai
+    r2 fica_assim_entao a % 6 uai
+    oia_proce_ve("20 % 6 = ") uai
+    oia_proce_ve(r2) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("----- literal % variavel -----\n") uai
+    trem_di_numeru b, r3 uai
+    b fica_assim_entao 7 uai
+    r3 fica_assim_entao 25 % b uai
+    oia_proce_ve("25 % 7 = ") uai
+    oia_proce_ve(r3) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("----- variavel % variavel -----\n") uai
+    trem_di_numeru x, y, r4 uai
+    x fica_assim_entao 50 uai
+    y fica_assim_entao 9 uai
+    r4 fica_assim_entao x % y uai
+    oia_proce_ve("50 % 9 = ") uai
+    oia_proce_ve(r4) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== MOD COM MEMORIA =====\n") uai
+
+    trem_di_numeru m1, m2, r5 uai
+    m1 fica_assim_entao 100 uai
+    m2 fica_assim_entao 6 uai
+    r5 fica_assim_entao m1 % m2 uai
+    oia_proce_ve("100 % 6 = ") uai
+    oia_proce_ve(r5) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("----- cadeia de operacoes -----\n") uai
+    trem_di_numeru c1, c2, c3 uai
+    c1 fica_assim_entao 30 uai
+    c2 fica_assim_entao 7 uai
+    c3 fica_assim_entao c1 % c2 uai
+    oia_proce_ve("30 % 7 = ") uai
+    oia_proce_ve(c3) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== TESTE DE CONSISTENCIA =====\n") uai
+
+    trem_di_numeru final uai
+    final fica_assim_entao 17 % 5 uai
+    oia_proce_ve("17 % 5 = ") uai
+    oia_proce_ve(final) uai
+    oia_proce_ve("\n") uai
+
+
+
+cabo

@@ -1,0 +1,130 @@
+causo
+Teste operationEq completo com debug de comparações
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== INT =====\n") uai
+
+    trem_di_numeru a, b uai
+    trem_discolhe res1, res2 uai
+
+    a fica_assim_entao 10 uai
+    b fica_assim_entao 10 uai
+
+    oia_proce_ve("a (10) com b (10) = ") uai
+    res1 fica_assim_entao a mema_coisa b uai
+    oia_proce_ve(res1) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10 com 10 = ") uai
+    res2 fica_assim_entao 10 mema_coisa 10 uai
+    oia_proce_ve(res2) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== FLOAT =====\n") uai
+
+    trem_cum_virgula f1, f2 uai
+    trem_discolhe res3, res4 uai
+
+    f1 fica_assim_entao 10.5 uai
+    f2 fica_assim_entao 10.5 uai
+
+    oia_proce_ve("f1 (10.5) com f2 (10.5) = ") uai
+    res3 fica_assim_entao f1 mema_coisa f2 uai
+    oia_proce_ve(res3) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10.5 com 10.5 = ") uai
+    res4 fica_assim_entao 10.5 mema_coisa 10.5 uai
+    oia_proce_ve(res4) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== INT vs FLOAT =====\n") uai
+
+    trem_di_numeru i1 uai
+    trem_cum_virgula f3 uai
+    trem_discolhe res5, res6 uai
+
+    i1 fica_assim_entao 10 uai
+    f3 fica_assim_entao 10.0 uai
+
+    oia_proce_ve("i1 (10) com f3 (10.0) = ") uai
+    res5 fica_assim_entao i1 mema_coisa f3 uai
+    oia_proce_ve(res5) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("f3 (10.0) com i1 (10) = ") uai
+    res6 fica_assim_entao f3 mema_coisa i1 uai
+    oia_proce_ve(res6) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== STRING =====\n") uai
+
+    trem_discrita s1, s2 uai
+    trem_discolhe res7, res8 uai
+
+    s1 fica_assim_entao "ua" uai
+    s2 fica_assim_entao "uai" uai
+
+    oia_proce_ve("s1 (ua) com s2 (uai) = ") uai
+    res7 fica_assim_entao s1 mema_coisa s2 uai
+    oia_proce_ve(res7) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("\"uai\" com \"uai\" = ") uai
+    res8 fica_assim_entao "uai" mema_coisa "uai" uai
+    oia_proce_ve(res8) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== CHAR =====\n") uai
+
+    trosso c1, c2 uai
+    trem_discolhe c3 uai
+
+    c1 fica_assim_entao 'U' uai
+    c2 fica_assim_entao 'U' uai
+
+    oia_proce_ve("c1 ('U') com c2 ('U') = ") uai
+    c3 fica_assim_entao c1 mema_coisa c2 uai
+    oia_proce_ve(c3) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== BOOL =====\n") uai
+
+    trem_discolhe b1, b2, b3, b4 uai
+
+    b1 fica_assim_entao eh uai
+    b2 fica_assim_entao eh uai
+
+    oia_proce_ve("eh com eh = ") uai
+    b3 fica_assim_entao b1 mema_coisa b2 uai
+    oia_proce_ve(b3) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("eh com num_eh = ") uai
+    b4 fica_assim_entao eh mema_coisa num_eh uai
+    oia_proce_ve(b4) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== MIX MEMORIA =====\n") uai
+
+    trem_di_numeru x, y uai
+    trem_discolhe res10 uai
+
+    x fica_assim_entao 20 uai
+    y fica_assim_entao 20 uai
+
+    oia_proce_ve("x (20) com y (20) = ") uai
+    res10 fica_assim_entao x mema_coisa y uai
+    oia_proce_ve(res10) uai
+    oia_proce_ve("\n") uai
+
+cabo

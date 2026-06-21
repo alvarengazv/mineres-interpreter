@@ -1,0 +1,158 @@
+causo
+Teste operationGte completo
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== INT =====\n") uai
+
+    trem_di_numeru a, b uai
+    trem_discolhe res1, res2, res3 uai
+
+    a fica_assim_entao 20 uai
+    b fica_assim_entao 10 uai
+
+    res1 fica_assim_entao a >= b uai
+    oia_proce_ve("Comparando a(20) >= b(10) = ") uai
+    oia_proce_ve(res1) uai
+    oia_proce_ve("\n") uai
+
+    res2 fica_assim_entao a >= 20 uai
+    oia_proce_ve("Comparando a(20) >= 20 = ") uai
+    oia_proce_ve(res2) uai
+    oia_proce_ve("\n") uai
+
+    res3 fica_assim_entao b >= a uai
+    oia_proce_ve("Comparando b(10) >= a(20) = ") uai
+    oia_proce_ve(res3) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== FLOAT =====\n") uai
+
+    trem_cum_virgula f1, f2 uai
+    trem_discolhe res4, res5, res6 uai
+
+    f1 fica_assim_entao 20.5 uai
+    f2 fica_assim_entao 10.5 uai
+
+    res4 fica_assim_entao f1 >= f2 uai
+    oia_proce_ve("Comparando f1(20.5) >= f2(10.5) = ") uai
+    oia_proce_ve(res4) uai
+    oia_proce_ve("\n") uai
+
+    res5 fica_assim_entao f1 >= 20.5 uai
+    oia_proce_ve("Comparando f1(20.5) >= 20.5 = ") uai
+    oia_proce_ve(res5) uai
+    oia_proce_ve("\n") uai
+
+    res6 fica_assim_entao f2 >= f1 uai
+    oia_proce_ve("Comparando f2(10.5) >= f1(20.5) = ") uai
+    oia_proce_ve(res6) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== INT >= FLOAT =====\n") uai
+
+    trem_di_numeru i1 uai
+    trem_cum_virgula f3 uai
+
+    trem_discolhe res7, res8, res9 uai
+
+    i1 fica_assim_entao 15 uai
+    f3 fica_assim_entao 10.5 uai
+
+    res7 fica_assim_entao i1 >= f3 uai
+    oia_proce_ve("Comparando i1(15) >= f3(10.5) = ") uai
+    oia_proce_ve(res7) uai
+    oia_proce_ve("\n") uai
+
+    res8 fica_assim_entao 10 >= 10.0 uai
+    oia_proce_ve("Comparando 10 >= 10.0 = ") uai
+    oia_proce_ve(res8) uai
+    oia_proce_ve("\n") uai
+
+    res9 fica_assim_entao 5 >= 10.5 uai
+    oia_proce_ve("Comparando 5 >= 10.5 = ") uai
+    oia_proce_ve(res9) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== FLOAT >= INT =====\n") uai
+
+    trem_cum_virgula f4 uai
+    trem_di_numeru i2 uai
+
+    trem_discolhe res10, res11, res12 uai
+
+    f4 fica_assim_entao 15.5 uai
+    i2 fica_assim_entao 10 uai
+
+    res10 fica_assim_entao f4 >= i2 uai
+    oia_proce_ve("Comparando f4(15.5) >= i2(10) = ") uai
+    oia_proce_ve(res10) uai
+    oia_proce_ve("\n") uai
+
+    res11 fica_assim_entao 10.0 >= 10 uai
+    oia_proce_ve("Comparando 10.0 >= 10 = ") uai
+    oia_proce_ve(res11) uai
+    oia_proce_ve("\n") uai
+
+    res12 fica_assim_entao 5.5 >= 10 uai
+    oia_proce_ve("Comparando 5.5 >= 10 = ") uai
+    oia_proce_ve(res12) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== MEMORIA X LITERAL =====\n") uai
+
+    trem_di_numeru numero1 uai
+    numero1 fica_assim_entao 30 uai
+
+    trem_discolhe res13, res14, res15 uai
+
+    res13 fica_assim_entao numero1 >= 20 uai
+    oia_proce_ve("Comparando numero1(30) >= 20 = ") uai
+    oia_proce_ve(res13) uai
+    oia_proce_ve("\n") uai
+
+    res14 fica_assim_entao numero1 >= 30 uai
+    oia_proce_ve("Comparando numero1(30) >= 30 = ") uai
+    oia_proce_ve(res14) uai
+    oia_proce_ve("\n") uai
+
+    res15 fica_assim_entao numero1 >= 40 uai
+    oia_proce_ve("Comparando numero1(30) >= 40 = ") uai
+    oia_proce_ve(res15) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== MEMORIA X MEMORIA =====\n") uai
+
+    trem_di_numeru x, y uai
+    trem_discolhe res16, res17, res18 uai
+
+    x fica_assim_entao 60 uai
+    y fica_assim_entao 50 uai
+
+    res16 fica_assim_entao x >= y uai
+    oia_proce_ve("Comparando x(60) >= y(50) = ") uai
+    oia_proce_ve(res16) uai
+    oia_proce_ve("\n") uai
+
+    y fica_assim_entao 60 uai
+
+    res17 fica_assim_entao x >= y uai
+    oia_proce_ve("Comparando x(60) >= y(60) = ") uai
+    oia_proce_ve(res17) uai
+    oia_proce_ve("\n") uai
+
+    y fica_assim_entao 70 uai
+
+    res18 fica_assim_entao x >= y uai
+    oia_proce_ve("Comparando x(60) >= y(70) = ") uai
+    oia_proce_ve(res18) uai
+    oia_proce_ve("\n") uai
+
+cabo

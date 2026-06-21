@@ -1,0 +1,136 @@
+causo
+Teste completo da operationSub (com debug de expressões)
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== LITERAL - LITERAL =====\n") uai
+
+    oia_proce_ve("10 - 3 = ") uai
+    trem_di_numeru r1 uai
+    r1 fica_assim_entao 10 - 3 uai
+    oia_proce_ve(r1) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10 - 2.5 = ") uai
+    trem_cum_virgula r2 uai
+    r2 fica_assim_entao 10 - 2.5 uai
+    oia_proce_ve(r2) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10.5 - 3 = ") uai
+    trem_cum_virgula r3 uai
+    r3 fica_assim_entao 10.5 - 3 uai
+    oia_proce_ve(r3) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10.5 - 2.5 = ") uai
+    trem_cum_virgula r4 uai
+    r4 fica_assim_entao 10.5 - 2.5 uai
+    oia_proce_ve(r4) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== LITERAL - VARIAVEL =====\n") uai
+
+    trem_di_numeru vi1 uai
+    trem_cum_virgula vf1 uai
+
+    vi1 fica_assim_entao 3 uai
+    vf1 fica_assim_entao 2.5 uai
+
+    oia_proce_ve("10 - vi1(3) = ") uai
+    trem_di_numeru r5 uai
+    r5 fica_assim_entao 10 - vi1 uai
+    oia_proce_ve(r5) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10 - vf1(2.5) = ") uai
+    trem_cum_virgula r6 uai
+    r6 fica_assim_entao 10 - vf1 uai
+    oia_proce_ve(r6) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10.5 - vi1(3) = ") uai
+    trem_cum_virgula r7 uai
+    r7 fica_assim_entao 10.5 - vi1 uai
+    oia_proce_ve(r7) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10.5 - vf1(2.5) = ") uai
+    trem_cum_virgula r8 uai
+    r8 fica_assim_entao 10.5 - vf1 uai
+    oia_proce_ve(r8) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== VARIAVEL - LITERAL =====\n") uai
+
+    trem_di_numeru vi2 uai
+    trem_cum_virgula vf2 uai
+
+    vi2 fica_assim_entao 10 uai
+    vf2 fica_assim_entao 10.5 uai
+
+    oia_proce_ve("vi2(10) - 3 = ") uai
+    trem_di_numeru r9 uai
+    r9 fica_assim_entao vi2 - 3 uai
+    oia_proce_ve(r9) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("vi2(10) - 2.5 = ") uai
+    trem_cum_virgula r10 uai
+    r10 fica_assim_entao vi2 - 2.5 uai
+    oia_proce_ve(r10) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("vf2(10.5) - 3 = ") uai
+    trem_cum_virgula r11 uai
+    r11 fica_assim_entao vf2 - 3 uai
+    oia_proce_ve(r11) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("vf2(10.5) - 2.5 = ") uai
+    trem_cum_virgula r12 uai
+    r12 fica_assim_entao vf2 - 2.5 uai
+    oia_proce_ve(r12) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== VARIAVEL - VARIAVEL =====\n") uai
+
+    trem_di_numeru vi3, vi4 uai
+    trem_cum_virgula vf3, vf4 uai
+
+    vi3 fica_assim_entao 10 uai
+    vi4 fica_assim_entao 3 uai
+
+    vf3 fica_assim_entao 10.5 uai
+    vf4 fica_assim_entao 2.5 uai
+
+    oia_proce_ve("vi3(10) - vi4(3) = ") uai
+    trem_di_numeru r13 uai
+    r13 fica_assim_entao vi3 - vi4 uai
+    oia_proce_ve(r13) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("vi3(10) - vf4(2.5) = ") uai
+    trem_cum_virgula r14 uai
+    r14 fica_assim_entao vi3 - vf4 uai
+    oia_proce_ve(r14) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("vf3(10.5) - vi4(3) = ") uai
+    trem_cum_virgula r15 uai
+    r15 fica_assim_entao vf3 - vi4 uai
+    oia_proce_ve(r15) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("vf3(10.5) - vf4(2.5) = ") uai
+    trem_cum_virgula r16 uai
+    r16 fica_assim_entao vf3 - vf4 uai
+    oia_proce_ve(r16) uai
+    oia_proce_ve("\n") uai
+
+cabo

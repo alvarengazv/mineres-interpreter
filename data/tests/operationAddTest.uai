@@ -1,0 +1,163 @@
+causo
+Teste completo da operationAdd
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("\n\n===== INT =====\n") uai
+
+    trem_di_numeru resultado1 uai
+    resultado1 fica_assim_entao 3 + 7 uai
+    oia_proce_ve(resultado1) uai
+    oia_proce_ve("\n") uai
+
+    trem_di_numeru numero1, resultado2 uai
+    numero1 fica_assim_entao 3 uai
+    resultado2 fica_assim_entao numero1 + 7 uai
+    oia_proce_ve(resultado2) uai
+    oia_proce_ve("\n") uai
+
+    trem_di_numeru numero2, numero3, resultado3 uai
+    numero2 fica_assim_entao 3 uai
+    numero3 fica_assim_entao 7 uai
+    resultado3 fica_assim_entao numero2 + numero3 uai
+    oia_proce_ve(resultado3) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== FLOAT =====\n") uai
+
+    trem_cum_virgula resultadoFloat1 uai
+    resultadoFloat1 fica_assim_entao 3.5 + 7.2 uai
+    oia_proce_ve(resultadoFloat1) uai
+    oia_proce_ve("\n") uai
+
+    trem_cum_virgula numeroFloat1, resultadoFloat2 uai
+    numeroFloat1 fica_assim_entao 3.5 uai
+    resultadoFloat2 fica_assim_entao numeroFloat1 + 7.2 uai
+    oia_proce_ve(resultadoFloat2) uai
+    oia_proce_ve("\n") uai
+
+    trem_cum_virgula numeroFloat2, numeroFloat3, resultadoFloat3 uai
+    numeroFloat2 fica_assim_entao 3.5 uai
+    numeroFloat3 fica_assim_entao 7.2 uai
+    resultadoFloat3 fica_assim_entao numeroFloat2 + numeroFloat3 uai
+    oia_proce_ve(resultadoFloat3) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== INT + FLOAT =====\n") uai
+
+    trem_cum_virgula resultadoMisto1 uai
+    resultadoMisto1 fica_assim_entao 3 + 7.5 uai
+    oia_proce_ve(resultadoMisto1) uai
+    oia_proce_ve("\n") uai
+
+    trem_cum_virgula resultadoMisto2 uai
+    resultadoMisto2 fica_assim_entao 3.5 + 7 uai
+    oia_proce_ve(resultadoMisto2) uai
+    oia_proce_ve("\n") uai
+
+    trem_di_numeru inteiro1 uai
+    trem_cum_virgula real1, resultadoMisto3 uai
+
+    inteiro1 fica_assim_entao 3 uai
+    real1 fica_assim_entao 7.5 uai
+
+    resultadoMisto3 fica_assim_entao inteiro1 + real1 uai
+    oia_proce_ve(resultadoMisto3) uai
+    oia_proce_ve("\n") uai
+
+    trem_cum_virgula real2, resultadoMisto4 uai
+    trem_di_numeru inteiro2 uai
+
+    real2 fica_assim_entao 3.5 uai
+    inteiro2 fica_assim_entao 7 uai
+
+    resultadoMisto4 fica_assim_entao real2 + inteiro2 uai
+    oia_proce_ve(resultadoMisto4) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== STRING =====\n") uai
+
+    trem_discrita texto1 uai
+    texto1 fica_assim_entao "Uai " + "sô!" uai
+    oia_proce_ve(texto1) uai
+    oia_proce_ve("\n") uai
+
+    trem_discrita texto2, texto3 uai
+    texto2 fica_assim_entao "Uai " uai
+    texto3 fica_assim_entao texto2 + "sô!" uai
+    oia_proce_ve(texto3) uai
+    oia_proce_ve("\n") uai
+
+    trem_discrita texto4, texto5, texto6 uai
+    texto4 fica_assim_entao "Uai " uai
+    texto5 fica_assim_entao "sô!" uai
+    texto6 fica_assim_entao texto4 + texto5 uai
+    oia_proce_ve(texto6) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== STRING + CHAR =====\n") uai
+
+    trem_discrita texto7 uai
+    texto7 fica_assim_entao "Uai" + '!' uai
+    oia_proce_ve(texto7) uai
+    oia_proce_ve("\n") uai
+
+    trosso letra1 uai
+    trem_discrita texto8 uai
+
+    letra1 fica_assim_entao '!' uai
+    texto8 fica_assim_entao "Uai" + letra1 uai
+
+    oia_proce_ve(texto8) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== CHAR + STRING =====\n") uai
+
+    trem_discrita texto9 uai
+    texto9 fica_assim_entao 'M' + "inas" uai
+    oia_proce_ve(texto9) uai
+    oia_proce_ve("\n") uai
+
+    trosso letra2 uai
+    trem_discrita texto10 uai
+
+    letra2 fica_assim_entao 'M' uai
+    texto10 fica_assim_entao letra2 + "inas" uai
+
+    oia_proce_ve(texto10) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== CHAR + CHAR =====\n") uai
+
+    trem_discrita palavra1 uai
+    palavra1 fica_assim_entao 'U' + 'A' uai
+    oia_proce_ve(palavra1) uai
+    oia_proce_ve("\n") uai
+
+    trosso letra3 uai
+    trem_discrita palavra2 uai
+
+    letra3 fica_assim_entao 'U' uai
+    palavra2 fica_assim_entao letra3 + 'A' uai
+    oia_proce_ve(palavra2) uai
+    oia_proce_ve("\n") uai
+
+    trosso letra4, letra5 uai
+    trem_discrita palavra3 uai
+
+    letra4 fica_assim_entao 'U' uai
+    letra5 fica_assim_entao 'A' uai
+
+    palavra3 fica_assim_entao letra4 + letra5 uai
+    oia_proce_ve(palavra3) uai
+    oia_proce_ve("\n") uai
+
+cabo

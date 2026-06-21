@@ -1,0 +1,96 @@
+causo
+Teste completo da operationDiv (tipos e coerção)
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== DIV INT sob INT =====\n") uai
+
+    trem_di_numeru resultado1 uai
+    resultado1 fica_assim_entao 10 sob 2 uai
+    oia_proce_ve("10 sob 2 = ") uai
+    oia_proce_ve(resultado1) uai
+    oia_proce_ve("\n") uai
+
+
+    trem_di_numeru a, resultado2 uai
+    a fica_assim_entao 20 uai
+    resultado2 fica_assim_entao a sob 4 uai
+    oia_proce_ve("20 sob 4 = ") uai
+    oia_proce_ve(resultado2) uai
+    oia_proce_ve("\n") uai
+
+
+    trem_di_numeru x, y, resultado3 uai
+    x fica_assim_entao 50 uai
+    y fica_assim_entao 5 uai
+    resultado3 fica_assim_entao x sob y uai
+    oia_proce_ve("50 sob 5 = ") uai
+    oia_proce_ve(resultado3) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== DIV INT sob FLOAT =====\n") uai
+
+    trem_cum_virgula resultado4 uai
+    resultado4 fica_assim_entao 10 sob 4.0 uai
+    oia_proce_ve("10 sob 4.0 = ") uai
+    oia_proce_ve(resultado4) uai
+    oia_proce_ve("\n") uai
+
+
+    trem_cum_virgula b, resultado5 uai
+    b fica_assim_entao 3 uai
+    resultado5 fica_assim_entao b sob 2.0 uai
+    oia_proce_ve("3 sob 2.0 = ") uai
+    oia_proce_ve(resultado5) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("===== DIV FLOAT sob INT =====\n") uai
+
+    trem_cum_virgula c, resultado6 uai
+    c fica_assim_entao 9.0 uai
+    resultado6 fica_assim_entao c sob 3 uai
+    oia_proce_ve("9.0 sob 3 = ") uai
+    oia_proce_ve(resultado6) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("===== DIV FLOAT sob FLOAT =====\n") uai
+
+    trem_cum_virgula resultado7 uai
+    resultado7 fica_assim_entao 7.5 sob 2.5 uai
+    oia_proce_ve("7.5 sob 2.5 = ") uai
+    oia_proce_ve(resultado7) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== DIV COM VARIAVEIS EM MEMORIA =====\n") uai
+
+    trem_di_numeru i, j, resultado8 uai
+    i fica_assim_entao 100 uai
+    j fica_assim_entao 5 uai
+    resultado8 fica_assim_entao i sob j uai
+    oia_proce_ve("100 sob 5 = ") uai
+    oia_proce_ve(resultado8) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("===== MISTO (MEMORIA + LITERAL) =====\n") uai
+
+    trem_cum_virgula k, resultado9 uai
+    k fica_assim_entao 8 uai
+    resultado9 fica_assim_entao k sob 2.0 uai
+    oia_proce_ve("8 sob 2.0 = ") uai
+    oia_proce_ve(resultado9) uai
+    oia_proce_ve("\n") uai
+
+
+cabo

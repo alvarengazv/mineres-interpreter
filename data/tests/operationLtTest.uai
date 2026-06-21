@@ -1,0 +1,124 @@
+causo
+Teste operationLt completo
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== INT =====\n") uai
+
+    trem_di_numeru a, b uai
+    trem_discolhe r1, r2, r3 uai
+
+    a fica_assim_entao 5 uai
+    b fica_assim_entao 10 uai
+
+    oia_proce_ve("a (5) < b (10) = ") uai
+    r1 fica_assim_entao a < b uai
+    oia_proce_ve(r1) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10 < 5 = ") uai
+    r2 fica_assim_entao 10 < 5 uai
+    oia_proce_ve(r2) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("5 < 5 = ") uai
+    r3 fica_assim_entao 5 < 5 uai
+    oia_proce_ve(r3) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== FLOAT =====\n") uai
+
+    trem_cum_virgula f1, f2 uai
+    trem_discolhe r4, r5 uai
+
+    f1 fica_assim_entao 5.5 uai
+    f2 fica_assim_entao 10.1 uai
+
+    oia_proce_ve("f1 (5.5) < f2 (10.1) = ") uai
+    r4 fica_assim_entao f1 < f2 uai
+    oia_proce_ve(r4) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10.1 < 5.5 = ") uai
+    r5 fica_assim_entao 10.1 < 5.5 uai
+    oia_proce_ve(r5) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== INT vs FLOAT =====\n") uai
+
+    trem_di_numeru i1 uai
+    trem_cum_virgula f3 uai
+    trem_discolhe r6, r7, r8, r9 uai
+
+    i1 fica_assim_entao 10 uai
+    f3 fica_assim_entao 10.5 uai
+
+    oia_proce_ve("i1 (10) < f3 (10.5) = ") uai
+    r6 fica_assim_entao i1 < f3 uai
+    oia_proce_ve(r6) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("f3 (10.5) < i1 (10) = ") uai
+    r7 fica_assim_entao f3 < i1 uai
+    oia_proce_ve(r7) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10 < 10.5 = ") uai
+    r8 fica_assim_entao 10 < 10.5 uai
+    oia_proce_ve(r8) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("10.5 < 10 = ") uai
+    r9 fica_assim_entao 10.5 < 10 uai
+    oia_proce_ve(r9) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== MEMORIA =====\n") uai
+
+    trem_di_numeru x, y uai
+    trem_discolhe r10, r11, r12 uai
+
+    x fica_assim_entao 3 uai
+    y fica_assim_entao 7 uai
+
+    oia_proce_ve("x (3) < y (7) = ") uai
+    r10 fica_assim_entao x < y uai
+    oia_proce_ve(r10) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("y (7) < x (3) = ") uai
+    r11 fica_assim_entao y < x uai
+    oia_proce_ve(r11) uai
+    oia_proce_ve("\n") uai
+
+    oia_proce_ve("x (3) < 7 = ") uai
+    r12 fica_assim_entao x < 7 uai
+    oia_proce_ve(r12) uai
+    oia_proce_ve("\n") uai
+
+    x fica_assim_entao 35 uai
+    oia_proce_ve("25 < x (35) = ") uai
+    r12 fica_assim_entao 25 < x uai
+    oia_proce_ve(r12) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== EDGE CASE (IGUAIS) =====\n") uai
+
+    trem_di_numeru eq1 uai
+    trem_discolhe r13 uai
+
+    eq1 fica_assim_entao 10 uai
+
+    oia_proce_ve("10 < 10 = ") uai
+    r13 fica_assim_entao 10 < 10 uai
+    oia_proce_ve(r13) uai
+    oia_proce_ve("\n") uai
+
+cabo

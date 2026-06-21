@@ -1,0 +1,74 @@
+causo
+Teste completo da operationDivI (somente inteiros)
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== DIVISAO INTEIRA (DIVI) =====\n") uai
+
+
+
+    oia_proce_ve("----- literal / literal -----\n") uai
+    trem_di_numeru r1 uai
+    r1 fica_assim_entao 10 / 3 uai
+    oia_proce_ve("10 / 3 = ") uai
+    oia_proce_ve(r1) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("----- variavel / literal -----\n") uai
+    trem_di_numeru a, r2 uai
+    a fica_assim_entao 20 uai
+    r2 fica_assim_entao a / 6 uai
+    oia_proce_ve("20 / 6 = ") uai
+    oia_proce_ve(r2) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("----- variavel / variavel -----\n") uai
+    trem_di_numeru x, y, r3 uai
+    x fica_assim_entao 50 uai
+    y fica_assim_entao 7 uai
+    r3 fica_assim_entao x / y uai
+    oia_proce_ve("50 / 7 = ") uai
+    oia_proce_ve(r3) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("----- memoria + memoria -----\n") uai
+    trem_di_numeru m1, m2, r4 uai
+    m1 fica_assim_entao 100 uai
+    m2 fica_assim_entao 9 uai
+    r4 fica_assim_entao m1 / m2 uai
+    oia_proce_ve("100 / 9 = ") uai
+    oia_proce_ve(r4) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== TESTE DE TIPAGEM FORTE =====\n") uai
+
+    oia_proce_ve("int / int deve funcionar\n") uai
+    trem_di_numeru ok uai
+    ok fica_assim_entao 9 / 2 uai
+    oia_proce_ve(ok) uai
+    oia_proce_ve("\n") uai
+
+
+
+    oia_proce_ve("----- cadeia de operacoes -----\n") uai
+    trem_di_numeru c1, c2, c3 uai
+    c1 fica_assim_entao 100 uai
+    c2 fica_assim_entao 3 uai
+    c3 fica_assim_entao c1 / c2 uai
+    oia_proce_ve("100 / 3 = ") uai
+    oia_proce_ve(c3) uai
+    oia_proce_ve("\n") uai
+
+
+
+cabo

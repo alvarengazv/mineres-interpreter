@@ -635,7 +635,7 @@ func (p *Parser) parseIoStmt() []TuplaMicrocode {
 	if p.current().Token == lexer.Io_scan {
 		p.advance()
 		p.consume(lexer.Open_paren)
-		p.parseType()
+		typeToken := p.parseType()
 		p.consume(lexer.Comma)
 		ident := p.consume(lexer.Identifier)
 		p.consume(lexer.Close_paren)
@@ -646,7 +646,10 @@ func (p *Parser) parseIoStmt() []TuplaMicrocode {
 				Lexema: "read",
 			},
 			Op1: ident,
-			Op2: nil,
+			Op2: &lexer.TuplaLex{
+				Token:  typeToken,
+				Lexema: typeToken.String(),
+			},
 		})
 	} else {
 		p.consume(lexer.Io_print)

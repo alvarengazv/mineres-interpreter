@@ -1,0 +1,39 @@
+bora_cumpade main()
+simbora
+
+    
+    trem_di_numeru idade uai
+    trem_cum_virgula altura uai
+    trem_discolhe ativo uai
+    trosso letra uai
+
+    
+    //oia_proce_ve("Digite sua idade (digite 'abc' para testar o erro): ") uai
+    //xove(trem_di_numeru, idade) uai
+
+
+    
+    oia_proce_ve("Digite sua altura (digite '1,5' ou 'abc' para testar o erro): ") uai
+    xove(trem_cum_virgula, altura) uai
+
+
+    
+    oia_proce_ve("Digite se esta ativo (digite 'sim' ou 'true' para testar o erro): ") uai
+    xove(trem_discolhe, ativo) uai
+
+
+    
+    // oia_proce_ve("Digite uma letra (digite 'ab' para testar o erro): ") uai
+    // xove(trosso, letra) uai
+
+
+    
+    // oia_proce_ve("Testando incompatibilidade int <- bool\n") uai
+    // xove(trem_discolhe, idade) uai
+
+
+    
+    // oia_proce_ve("Testando incompatibilidade float <- char\n") uai
+    // xove(trosso, altura) uai
+
+cabo

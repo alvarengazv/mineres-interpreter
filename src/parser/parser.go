@@ -192,6 +192,12 @@ func (p *Parser) inferType(op lexer.TabelaPalavras, t1, t2 TypeTable, linha, col
 			return Type_bool
 		}
 		utils.ThrowParserException(fmt.Sprintf("Relational operation not allowed between %v and %v", t1, t2), linha, coluna)
+
+	case lexer.Op_and, lexer.Op_or, lexer.Op_xor:
+		if t1 == Type_bool && t2 == Type_bool {
+			return Type_bool
+		}
+		utils.ThrowParserException(fmt.Sprintf("Logical operation not allowed between %v and %v", t1, t2), linha, coluna)
 	}
 
 	utils.ThrowParserException("Operação com tipos incompatíveis", linha, coluna)
@@ -859,7 +865,10 @@ func (p *Parser) parseOR() (*lexer.TuplaLex, []TuplaMicrocode) {
 			utils.ThrowParserException("Can not perform 'quarque_um' operation on non-boolean values", left.Linha, left.Coluna)
 		}
 		commandList = append(commandList, rightCommands...)
-		temp := p.newTemp(Type_bool)
+		typeLeft := p.toType(left)
+		typeRight := p.toType(right)
+		resType := p.inferType(lexer.Op_or, typeLeft, typeRight, left.Linha, left.Coluna)
+		temp := p.newTemp(resType)
 		commandList = append(commandList, TuplaMicrocode{
 			Operation: Or,
 			Res:       temp,
@@ -881,7 +890,10 @@ func (p *Parser) parseXor() (*lexer.TuplaLex, []TuplaMicrocode) {
 			utils.ThrowParserException("Can not perform 'um_o_oto' operation on non-boolean values", left.Linha, left.Coluna)
 		}
 		commandList = append(commandList, rightCommands...)
-		temp := p.newTemp(Type_bool)
+		typeLeft := p.toType(left)
+		typeRight := p.toType(right)
+		resType := p.inferType(lexer.Op_xor, typeLeft, typeRight, left.Linha, left.Coluna)
+		temp := p.newTemp(resType)
 		commandList = append(commandList, TuplaMicrocode{
 			Operation: Xor,
 			Res:       temp,

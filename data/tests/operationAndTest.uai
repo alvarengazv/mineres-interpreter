@@ -31,8 +31,6 @@ simbora
     oia_proce_ve(res4) uai
     oia_proce_ve("\n\n") uai
 
-
-
     oia_proce_ve("===== VARIAVEL x LITERAL =====\n") uai
 
     trem_discolhe b1, b2 uai
@@ -63,8 +61,6 @@ simbora
     res8 fica_assim_entao b2 tamem num_eh uai
     oia_proce_ve(res8) uai
     oia_proce_ve("\n\n") uai
-
-
 
     oia_proce_ve("===== LITERAL x VARIAVEL =====\n") uai
 

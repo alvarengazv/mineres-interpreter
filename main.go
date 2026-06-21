@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-    conteudo := utils.LerArquivo("data/tests/operationOrTest.uai")
+    conteudo := utils.LerArquivo("data/oficialCodes/switchCase.uai")
     listTupla := lexer.AnalisarArquivo(conteudo)
 
     parser := parser.NewParser(listTupla)

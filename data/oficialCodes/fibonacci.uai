@@ -1,6 +1,8 @@
 // Q15: Sequência de Fibonacci
 bora_cumpade main()
 simbora
+    oia_proce_ve("\n") uai
+
     trem_di_numeru n, a, b, prox, i uai
     
     oia_proce_ve("Digite N: ") uai
@@ -14,8 +16,13 @@ simbora
         prox fica_assim_entao a + b uai
         a fica_assim_entao b uai
         b fica_assim_entao prox uai
+
+        oia_proce_ve("\n") uai
+        oia_proce_ve(i) uai
+        oia_proce_ve("º número de fibonacci = ") uai
+        oia_proce_ve(a) uai
     cabo
     
-    oia_proce_ve("Enésimo termo: ") uai
+    oia_proce_ve("\n\nEnésimo termo: ") uai
     oia_proce_ve(a) uai
 cabo

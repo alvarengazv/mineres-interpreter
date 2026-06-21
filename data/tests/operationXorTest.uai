@@ -1,0 +1,130 @@
+causo
+Teste operationXor completo
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== XOR LITERAL x LITERAL =====\n") uai
+
+    trem_discolhe res1 uai
+    oia_proce_ve("eh um_o_oto eh = ") uai
+    res1 fica_assim_entao eh um_o_oto eh uai
+    oia_proce_ve(res1) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res2 uai
+    oia_proce_ve("eh um_o_oto num_eh = ") uai
+    res2 fica_assim_entao eh um_o_oto num_eh uai
+    oia_proce_ve(res2) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res3 uai
+    oia_proce_ve("num_eh um_o_oto eh = ") uai
+    res3 fica_assim_entao num_eh um_o_oto eh uai
+    oia_proce_ve(res3) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res4 uai
+    oia_proce_ve("num_eh um_o_oto num_eh = ") uai
+    res4 fica_assim_entao num_eh um_o_oto num_eh uai
+    oia_proce_ve(res4) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== XOR VARIAVEL x LITERAL =====\n") uai
+
+    trem_discolhe b1, b2 uai
+
+    b1 fica_assim_entao eh uai
+    b2 fica_assim_entao num_eh uai
+
+    trem_discolhe res5 uai
+    oia_proce_ve("b1(eh) um_o_oto eh = ") uai
+    res5 fica_assim_entao b1 um_o_oto eh uai
+    oia_proce_ve(res5) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res6 uai
+    oia_proce_ve("b1(eh) um_o_oto num_eh = ") uai
+    res6 fica_assim_entao b1 um_o_oto num_eh uai
+    oia_proce_ve(res6) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res7 uai
+    oia_proce_ve("b2(num_eh) um_o_oto eh = ") uai
+    res7 fica_assim_entao b2 um_o_oto eh uai
+    oia_proce_ve(res7) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res8 uai
+    oia_proce_ve("b2(num_eh) um_o_oto num_eh = ") uai
+    res8 fica_assim_entao b2 um_o_oto num_eh uai
+    oia_proce_ve(res8) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== XOR LITERAL x VARIAVEL =====\n") uai
+
+    trem_discolhe res9 uai
+    oia_proce_ve("eh um_o_oto b1(eh) = ") uai
+    res9 fica_assim_entao eh um_o_oto b1 uai
+    oia_proce_ve(res9) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res10 uai
+    oia_proce_ve("eh um_o_oto b2(num_eh) = ") uai
+    res10 fica_assim_entao eh um_o_oto b2 uai
+    oia_proce_ve(res10) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res11 uai
+    oia_proce_ve("num_eh um_o_oto b1(eh) = ") uai
+    res11 fica_assim_entao num_eh um_o_oto b1 uai
+    oia_proce_ve(res11) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res12 uai
+    oia_proce_ve("num_eh um_o_oto b2(num_eh) = ") uai
+    res12 fica_assim_entao num_eh um_o_oto b2 uai
+    oia_proce_ve(res12) uai
+    oia_proce_ve("\n\n") uai
+
+
+
+    oia_proce_ve("===== XOR VARIAVEL x VARIAVEL =====\n") uai
+
+    trem_discolhe v1, v2, v3, v4 uai
+
+    v1 fica_assim_entao eh uai
+    v2 fica_assim_entao eh uai
+    v3 fica_assim_entao num_eh uai
+    v4 fica_assim_entao num_eh uai
+
+    trem_discolhe res13 uai
+    oia_proce_ve("v1(eh) um_o_oto v2(eh) = ") uai
+    res13 fica_assim_entao v1 um_o_oto v2 uai
+    oia_proce_ve(res13) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res14 uai
+    oia_proce_ve("v1(eh) um_o_oto v3(num_eh) = ") uai
+    res14 fica_assim_entao v1 um_o_oto v3 uai
+    oia_proce_ve(res14) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res15 uai
+    oia_proce_ve("v3(num_eh) um_o_oto v1(eh) = ") uai
+    res15 fica_assim_entao v3 um_o_oto v1 uai
+    oia_proce_ve(res15) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res16 uai
+    oia_proce_ve("v3(num_eh) um_o_oto v4(num_eh) = ") uai
+    res16 fica_assim_entao v3 um_o_oto v4 uai
+    oia_proce_ve(res16) uai
+    oia_proce_ve("\n") uai
+
+cabo

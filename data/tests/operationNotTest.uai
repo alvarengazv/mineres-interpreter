@@ -1,0 +1,88 @@
+causo
+Teste operationNot completo
+fim_do_causo
+
+bora_cumpade main()
+simbora
+
+    oia_proce_ve("===== LITERAL NOT =====\n") uai
+
+    trem_discolhe res1 uai
+    oia_proce_ve("vam_marca eh = ") uai
+    res1 fica_assim_entao vam_marca eh uai
+    oia_proce_ve(res1) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res2 uai
+    oia_proce_ve("vam_marca num_eh = ") uai
+    res2 fica_assim_entao vam_marca num_eh uai
+    oia_proce_ve(res2) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== VARIAVEL NOT =====\n") uai
+
+    trem_discolhe b1, b2 uai
+
+    b1 fica_assim_entao eh uai
+    b2 fica_assim_entao num_eh uai
+
+    trem_discolhe res3 uai
+    oia_proce_ve("vam_marca b1(eh) = ") uai
+    res3 fica_assim_entao vam_marca b1 uai
+    oia_proce_ve(res3) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res4 uai
+    oia_proce_ve("vam_marca b2(num_eh) = ") uai
+    res4 fica_assim_entao vam_marca b2 uai
+    oia_proce_ve(res4) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== REDEFINIÇÃO E TESTE =====\n") uai
+
+    b1 fica_assim_entao num_eh uai
+    b2 fica_assim_entao eh uai
+
+    trem_discolhe res5 uai
+    oia_proce_ve("vam_marca b1(num_eh) = ") uai
+    res5 fica_assim_entao vam_marca b1 uai
+    oia_proce_ve(res5) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res6 uai
+    oia_proce_ve("vam_marca b2(eh) = ") uai
+    res6 fica_assim_entao vam_marca b2 uai
+    oia_proce_ve(res6) uai
+    oia_proce_ve("\n\n") uai
+
+
+    oia_proce_ve("===== CASOS DIRETOS NO IF =====\n") uai
+
+    uai_se (vam_marca eh)
+        oia_proce_ve("NOT eh => ENTROU IF (ERRADO)\n") uai
+    uai_senao
+        oia_proce_ve("NOT eh => ENTROU ELSE (CORRETO)\n") uai
+
+    uai_se (vam_marca num_eh)
+        oia_proce_ve("NOT num_eh => ENTROU IF (CORRETO)\n") uai
+    uai_senao
+        oia_proce_ve("NOT num_eh => ENTROU ELSE (ERRADO)\n") uai
+
+
+    oia_proce_ve("===== NOT COM VARIAVEL EM EXPRESSAO =====\n") uai
+
+    trem_discolhe res7 uai
+    res7 fica_assim_entao vam_marca b1 uai
+    oia_proce_ve("vam_marca b1 = ") uai
+    oia_proce_ve(res7) uai
+    oia_proce_ve("\n") uai
+
+    trem_discolhe res8 uai
+    res8 fica_assim_entao vam_marca b2 uai
+    oia_proce_ve("vam_marca b2 = ") uai
+    oia_proce_ve(res8) uai
+    oia_proce_ve("\n") uai
+
+cabo

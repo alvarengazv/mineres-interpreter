@@ -1,0 +1,36 @@
+causo
+Programa Par ou Impar com validacao de positivo
+fim_do_causo
+
+bora_cumpade main()
+simbora
+    oia_proce_ve("\n") uai
+
+    trem_di_numeru num uai
+    trem_discolhe valido uai
+
+    valido fica_assim_entao num_eh uai
+
+    enquanto_tiver_trem (vam_marca valido)
+    simbora
+
+        oia_proce_ve("Digite um numero positivo: ") uai
+        xove(trem_di_numeru, num) uai
+
+        uai_se (num < 0)
+        simbora
+
+            oia_proce_ve("\nError... Numero invalido! tem que ser positivo ...Error \n\n") uai
+            valido fica_assim_entao num_eh uai
+        cabo
+        uai_senao
+            valido fica_assim_entao eh uai
+
+    cabo
+
+    uai_se (num % 2 mema_coisa 0)
+        oia_proce_ve("\nO numero é PAR\n") uai
+    uai_senao
+        oia_proce_ve("\nO numero é IMPAR\n") uai
+
+cabo

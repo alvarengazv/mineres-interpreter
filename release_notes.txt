@@ -4,6 +4,7 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 4 - Evolução - Finalizando o interpreter - 21/06/2026 - Luan Santos 
 Parte 4 - Evolução - Tratando erros do scan - 21/06/2026 - Joaquim Cruz
 Parte 4 - Correção - Criando arquivos de teste para cada operação do interpreter e executando-os - 21/06/2026 - Luan Santos 
 Parte 4 - Correção - Criando arquivos de teste para cada operação do interpreter e executando-os - 20/06/2026 - Luan Santos 

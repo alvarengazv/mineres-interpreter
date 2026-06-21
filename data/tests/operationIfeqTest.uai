@@ -6,14 +6,138 @@ bora_cumpade main()
 simbora
 
     trem_di_numeru a, b, c uai
+    trem_discolhe x, y uai
 
     a fica_assim_entao 10 uai
     b fica_assim_entao 20 uai
     c fica_assim_entao 10 uai
 
-    uai_se (a >= b tamem c mema_coisa 10)
+    x fica_assim_entao eh uai
+    y fica_assim_entao num_eh uai
+
+    oia_proce_ve("================================\n") uai
+    oia_proce_ve("IF 1 - TRUE simples\n") uai
+    oia_proce_ve("10 < 20\n") uai
+
+    uai_se (10 < 20)
         oia_proce_ve("ENTROU IF\n") uai
     uai_senao
         oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 2 - FALSE simples\n") uai
+    oia_proce_ve("20 < 10\n") uai
+
+    uai_se (20 < 10)
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 3 - variavel < variavel\n") uai
+    oia_proce_ve("a(10) < b(20)\n") uai
+
+    uai_se (a < b)
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 4 - igualdade\n") uai
+    oia_proce_ve("a(10) mema_coisa c(10)\n") uai
+
+    uai_se (a mema_coisa c)
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 5 - AND verdadeiro\n") uai
+    oia_proce_ve("(a < b) tamem (c mema_coisa 10)\n") uai
+
+    uai_se ((a < b) tamem (c mema_coisa 10))
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 6 - AND falso\n") uai
+    oia_proce_ve("(a > b) tamem (c mema_coisa 10)\n") uai
+
+    uai_se ((a > b) tamem (c mema_coisa 10))
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 7 - OR verdadeiro\n") uai
+    oia_proce_ve("(a > b) quarque_um (c mema_coisa 10)\n") uai
+
+    uai_se ((a > b) quarque_um (c mema_coisa 10))
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 8 - OR falso\n") uai
+    oia_proce_ve("(a > b) quarque_um (c > b)\n") uai
+
+    uai_se ((a > b) quarque_um (c > b))
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 9 - NOT\n") uai
+    oia_proce_ve("vam_marca(x)\n") uai
+
+    uai_se (vam_marca x)
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 10 - bool AND\n") uai
+    oia_proce_ve("x tamem y\n") uai
+
+    uai_se (x tamem y)
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 11 - bool OR\n") uai
+    oia_proce_ve("x quarque_um y\n") uai
+
+    uai_se (x quarque_um y)
+        oia_proce_ve("ENTROU IF\n") uai
+    uai_senao
+        oia_proce_ve("ENTROU ELSE\n") uai
+
+    oia_proce_ve("\n================================\n") uai
+
+    oia_proce_ve("IF 12 - IF aninhado\n") uai
+
+    uai_se (a < b)
+        simbora
+            oia_proce_ve("IF EXTERNO\n") uai
+
+            uai_se (c mema_coisa 10)
+                oia_proce_ve("IF INTERNO\n") uai
+            uai_senao
+                oia_proce_ve("ELSE INTERNO\n") uai
+        cabo
+    uai_senao
+        oia_proce_ve("ELSE EXTERNO\n") uai
 
 cabo

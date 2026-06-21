@@ -11,7 +11,7 @@ simbora
     b fica_assim_entao 20 uai
     c fica_assim_entao 10 uai
 
-    uai_se (a >= b quarque_um c mema_coisa 10)
+    uai_se (a >= b tamem c mema_coisa 10)
         oia_proce_ve("ENTROU IF\n") uai
     uai_senao
         oia_proce_ve("ENTROU ELSE\n") uai

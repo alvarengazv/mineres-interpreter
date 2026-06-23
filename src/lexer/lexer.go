@@ -367,7 +367,7 @@ func AnalisarArquivo(conteudo string) []TuplaLex {
 		} else if _, existe := simbolos[char]; existe {
 			e.processarBuffer()
 			e.acumularBuffer(char)
-			if e.runes[i+1] == '=' {
+			if i+1 < len(e.runes) && e.runes[i+1] == '=' {
 				e.acumularBuffer(e.runes[i+1])
 				i++
 			}

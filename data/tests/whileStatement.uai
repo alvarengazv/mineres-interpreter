@@ -1,0 +1,15 @@
+bora_cumpade main() simbora
+    trem_di_numeru j uai
+    trem_cum_virgula i uai
+    enquanto_tiver_trem (j < 3) simbora
+        
+        j fica_assim_entao j + 1 uai
+    cabo
+    j fica_assim_entao 077 uai
+    i fica_assim_entao 0xFF uai
+    i fica_assim_entao j veiz 3 uai
+
+    j fica_assim_entao j + i uai
+    oia_proce_ve(j, "\n") uai
+    oia_proce_ve(i) uai
+cabo 

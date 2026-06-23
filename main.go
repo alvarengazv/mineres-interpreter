@@ -8,11 +8,11 @@ import (
 )
 
 func main() {
-    conteudo := utils.LerArquivo("data/tests/randomTests.uai")
-    listTupla := lexer.AnalisarArquivo(conteudo)
+	conteudo := utils.LerArquivo("data/tests/whileStatement.uai")
+	listTupla := lexer.AnalisarArquivo(conteudo)
 
-    parser := parser.NewParser(listTupla)
-    codigoIntermediario := parser.ParserFunction()
+	parser := parser.NewParser(listTupla)
+	codigoIntermediario := parser.ParserFunction()
 
 	interpreter := interpreter.NewInterpreter(codigoIntermediario)
 	interpreter.Run()

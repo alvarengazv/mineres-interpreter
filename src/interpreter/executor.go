@@ -13,17 +13,23 @@ import (
 )
 
 func RoundHalfDown(x float64) float64 {
-    frac := x - math.Floor(x)
+	frac := x - math.Floor(x)
 
-    if frac <= 0.5 {
-        return math.Floor(x)
-    }
+	if frac <= 0.5 {
+		return math.Floor(x)
+	}
 
-    return math.Ceil(x)
+	return math.Ceil(x)
 }
 
 func (interpreter *Interpreter) setMemory(nome string, t *lexer.TuplaLex) {
 	switch t.Token {
+	case lexer.Literal_oct:
+		v, _ := strconv.ParseInt(t.Lexema[1:], 8, 64)
+		interpreter.memory[nome] = int(v)
+	case lexer.Literal_hex:
+		v, _ := strconv.ParseInt(t.Lexema[2:], 16, 64)
+		interpreter.memory[nome] = int(v)
 	case lexer.Literal_int:
 		v, _ := strconv.Atoi(t.Lexema)
 		interpreter.memory[nome] = v
@@ -41,14 +47,14 @@ func (interpreter *Interpreter) setMemory(nome string, t *lexer.TuplaLex) {
 	case lexer.Identifier:
 
 		variavel, _ := interpreter.memory[nome]
-		switch variavel.(type){
-			case int:
-				switch v := interpreter.memory[t.Lexema].(type){
-					case float64:
-						interpreter.memory[nome] = RoundHalfDown(v)
-						return
-				}
-				
+		switch variavel.(type) {
+		case int:
+			switch v := interpreter.memory[t.Lexema].(type) {
+			case float64:
+				interpreter.memory[nome] = RoundHalfDown(v)
+				return
+			}
+
 		}
 
 		interpreter.memory[nome] = interpreter.memory[t.Lexema]
@@ -62,7 +68,28 @@ func (interpreter *Interpreter) setMemory(nome string, t *lexer.TuplaLex) {
 }
 
 func (i *Interpreter) checkDivisionByZero(t *lexer.TuplaLex) {
-	if(t.Lexema == "0" || t.Lexema == "0.0") {
+
+	if t.Token == lexer.Identifier {
+		switch v := i.memory[t.Lexema].(type) {
+		case int:
+			if v == 0 {
+				utils.ThrowInterpreterException(
+					"division by zero is not allowed",
+					t.Linha,
+					t.Coluna,
+				)
+			}
+		case float64:
+			if v == 0.0 {
+				utils.ThrowInterpreterException(
+					"division by zero is not allowed",
+					t.Linha,
+					t.Coluna,
+				)
+			}
+		}
+		return
+	} else if t.Lexema == "0" || t.Lexema == "0.0" {
 		utils.ThrowInterpreterException(
 			"division by zero is not allowed",
 			t.Linha,
@@ -122,7 +149,7 @@ func (i *Interpreter) operationAdd(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 			op2, _ := i.memory[t2.Lexema]
 			switch v := op2.(type) {
 			case string: // Op1 é string e Op2 é string
-						 // Op1 é string e Op2 é char
+				// Op1 é string e Op2 é char
 				return op1 + v
 			}
 		}
@@ -139,7 +166,7 @@ func (i *Interpreter) operationAdd(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 			op2, _ := i.memory[t2.Lexema]
 			switch v := op2.(type) {
 			case string: // Op1 é char e Op2 é string
-						 // Op1 é char e Op2 é char
+				// Op1 é char e Op2 é char
 				return op1 + v
 			}
 		}
@@ -192,9 +219,9 @@ func (i *Interpreter) operationAdd(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 			case lexer.Identifier: // Op1 é string e Op2 está em memória
 				op2, _ := i.memory[t2.Lexema]
 				switch v2 := op2.(type) {
-					case string: // Op1 é string e Op2 é string
-								// Op1 é string e Op2 é char
-						return v + v2
+				case string: // Op1 é string e Op2 é string
+					// Op1 é string e Op2 é char
+					return v + v2
 				}
 			}
 		}
@@ -468,8 +495,8 @@ func (i *Interpreter) operationMod(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 			switch v := op2.(type) {
 			case int: // Op1 é int e Op2 é int
 				return op1 % v
-			// case float64: // Op1 é int e Op2 é float
-			// 	return op1 % int(v)
+				// case float64: // Op1 é int e Op2 é float
+				// 	return op1 % int(v)
 			}
 		}
 	// case lexer.Literal_float: // Op1 é float
@@ -506,27 +533,27 @@ func (i *Interpreter) operationMod(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any {
 				switch v2 := op2.(type) {
 				case int: // Op1 é int e Op2 é int
 					return v % v2
-				// case float64: // Op1 é int e Op2 é float
-				// 	return v % int(v2)
+					// case float64: // Op1 é int e Op2 é float
+					// 	return v % int(v2)
 				}
 			}
-		// case float64: // Op1 é float
-		// 	switch t2.Token {
-		// 	case lexer.Literal_int: // Op1 é float e Op2 é int
-		// 		op2, _ := strconv.Atoi(t2.Lexema)
-		// 		return int(v) % op2
-		// 	case lexer.Literal_float: // Op1 é float e Op2 é float
-		// 		op2, _ := strconv.ParseFloat(t2.Lexema, 64)
-		// 		return int(v) % int(op2)
-		// 	case lexer.Identifier: // Op1 é float e Op2 está em memória
-		// 		op2, _ := i.memory[t2.Lexema]
-		// 		switch v2 := op2.(type) {
-		// 		case int: // Op1 é float e Op2 é int
-		// 			return int(v) % v2
-		// 		case float64: // Op1 é float e Op2 é float
-		// 			return int(v) % int(v2)
-		// 		}
-		// 	}
+			// case float64: // Op1 é float
+			// 	switch t2.Token {
+			// 	case lexer.Literal_int: // Op1 é float e Op2 é int
+			// 		op2, _ := strconv.Atoi(t2.Lexema)
+			// 		return int(v) % op2
+			// 	case lexer.Literal_float: // Op1 é float e Op2 é float
+			// 		op2, _ := strconv.ParseFloat(t2.Lexema, 64)
+			// 		return int(v) % int(op2)
+			// 	case lexer.Identifier: // Op1 é float e Op2 está em memória
+			// 		op2, _ := i.memory[t2.Lexema]
+			// 		switch v2 := op2.(type) {
+			// 		case int: // Op1 é float e Op2 é int
+			// 			return int(v) % v2
+			// 		case float64: // Op1 é float e Op2 é float
+			// 			return int(v) % int(v2)
+			// 		}
+			// 	}
 		}
 	default:
 		utils.ThrowException("executor.go", "operationMod", "invalid type for operationMod")
@@ -551,8 +578,8 @@ func (i *Interpreter) operationDivI(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any 
 			switch v := op2.(type) {
 			case int: // Op1 é int e Op2 é int
 				return op1 / v
-			// case float64: // Op1 é int e Op2 é float
-			// 	return op1 / int(v)
+				// case float64: // Op1 é int e Op2 é float
+				// 	return op1 / int(v)
 			}
 		}
 	// case lexer.Literal_float: // Op1 é float
@@ -589,27 +616,27 @@ func (i *Interpreter) operationDivI(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) any 
 				switch v2 := op2.(type) {
 				case int: // Op1 é int e Op2 é int
 					return v / v2
-				// case float64: // Op1 é int e Op2 é float
-				// 	return v / int(v2)
+					// case float64: // Op1 é int e Op2 é float
+					// 	return v / int(v2)
 				}
 			}
-		// case float64: // Op1 é float
-		// 	switch t2.Token {
-		// 	case lexer.Literal_int: // Op1 é float e Op2 é int
-		// 		op2, _ := strconv.Atoi(t2.Lexema)
-		// 		return int(v) / op2
-		// 	case lexer.Literal_float: // Op1 é float e Op2 é float
-		// 		op2, _ := strconv.ParseFloat(t2.Lexema, 64)
-		// 		return int(v) / int(op2)
-		// 	case lexer.Identifier: // Op1 é float e Op2 está em memória
-		// 		op2, _ := i.memory[t2.Lexema]
-		// 		switch v2 := op2.(type) {
-		// 		case int: // Op1 é float e Op2 é int
-		// 			return int(v) / v2
-		// 		case float64: // Op1 é float e Op2 é float
-		// 			return int(v) / int(v2)
-		// 		}
-		// 	}
+			// case float64: // Op1 é float
+			// 	switch t2.Token {
+			// 	case lexer.Literal_int: // Op1 é float e Op2 é int
+			// 		op2, _ := strconv.Atoi(t2.Lexema)
+			// 		return int(v) / op2
+			// 	case lexer.Literal_float: // Op1 é float e Op2 é float
+			// 		op2, _ := strconv.ParseFloat(t2.Lexema, 64)
+			// 		return int(v) / int(op2)
+			// 	case lexer.Identifier: // Op1 é float e Op2 está em memória
+			// 		op2, _ := i.memory[t2.Lexema]
+			// 		switch v2 := op2.(type) {
+			// 		case int: // Op1 é float e Op2 é int
+			// 			return int(v) / v2
+			// 		case float64: // Op1 é float e Op2 é float
+			// 			return int(v) / int(v2)
+			// 		}
+			// 	}
 		}
 	default:
 		utils.ThrowException("executor.go", "operationDivI", "invalid type for operationDivI")
@@ -709,8 +736,8 @@ func (i *Interpreter) operationEq(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool {
 		case lexer.Identifier: //Op1 é char e Op2 está em memória
 			op2, _ := i.memory[t2.Lexema]
 			switch v := op2.(type) {
-				case string:
-					return op1 == v
+			case string:
+				return op1 == v
 			}
 		}
 	case lexer.Identifier: // Op1 esta em memoria
@@ -752,37 +779,37 @@ func (i *Interpreter) operationEq(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool {
 			}
 		case bool: //Op1 é bool
 			switch op1 {
-				case false: // Op1 é false
-					switch t2.Token {
-						case lexer.Literal_true:
-							return false // Op1 é false e Op2 é true
-						case lexer.Literal_false:
-							return true // Op1 é false e Op2 é false
-						case lexer.Identifier: // Opt 1 é false e Op2 está em memória
-							op2, _ := i.memory[t2.Lexema]
-							switch op2 {
-							case true:
-								return false //Op1 é false e Op2 é true
-							case false:
-								return true //Op1 é false e Op2 é false
-							}
+			case false: // Op1 é false
+				switch t2.Token {
+				case lexer.Literal_true:
+					return false // Op1 é false e Op2 é true
+				case lexer.Literal_false:
+					return true // Op1 é false e Op2 é false
+				case lexer.Identifier: // Opt 1 é false e Op2 está em memória
+					op2, _ := i.memory[t2.Lexema]
+					switch op2 {
+					case true:
+						return false //Op1 é false e Op2 é true
+					case false:
+						return true //Op1 é false e Op2 é false
 					}
-				case true: // Op1 é true
-					switch t2.Token {
-					case lexer.Literal_true:
-						return true // Op1 é true e Op2 é true
-					case lexer.Literal_false:
-						return false // Op1 é true e Op2 é false
-					case lexer.Identifier: // Opt 1 é true e Op2 está em memória
-						op2, _ := i.memory[t2.Lexema]
-						switch op2 {
-						case true:
-							return true //Op1 é true e Op2 é true
-						case false:
-							return false //Op1 é true e Op2 é false
-						}
+				}
+			case true: // Op1 é true
+				switch t2.Token {
+				case lexer.Literal_true:
+					return true // Op1 é true e Op2 é true
+				case lexer.Literal_false:
+					return false // Op1 é true e Op2 é false
+				case lexer.Identifier: // Opt 1 é true e Op2 está em memória
+					op2, _ := i.memory[t2.Lexema]
+					switch op2 {
+					case true:
+						return true //Op1 é true e Op2 é true
+					case false:
+						return false //Op1 é true e Op2 é false
+					}
 
-					}
+				}
 			}
 		case string: // Op1 é string
 			switch t2.Token {
@@ -874,7 +901,7 @@ func (i *Interpreter) operationNeq(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool 
 
 		}
 	case lexer.Literal_string: // Op1 é string
-		op1 := t2.Lexema
+		op1 := t1.Lexema
 		switch t2.Token {
 		case lexer.Literal_string: // Op1 é string e Op2 é string
 			op2 := t2.Lexema
@@ -889,15 +916,15 @@ func (i *Interpreter) operationNeq(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool 
 	case lexer.Literal_char: // Op1 é char
 		op1 := t1.Lexema
 		switch t2.Token {
-			case lexer.Literal_char: // Op1 é char e Op2 é char
-				op2 := t2.Lexema
-				return op1 != op2
-			case lexer.Identifier: //Op1 é char e Op2 está em memória
-				op2, _ := i.memory[t2.Lexema]
-				switch v := op2.(type) {
-					case string:
-						return op1 != v
-				}
+		case lexer.Literal_char: // Op1 é char e Op2 é char
+			op2 := t2.Lexema
+			return op1 != op2
+		case lexer.Identifier: //Op1 é char e Op2 está em memória
+			op2, _ := i.memory[t2.Lexema]
+			switch v := op2.(type) {
+			case string:
+				return op1 != v
+			}
 		}
 	case lexer.Identifier: // Op1 esta em memoria
 		op1, _ := i.memory[t1.Lexema]
@@ -938,38 +965,38 @@ func (i *Interpreter) operationNeq(t1 *lexer.TuplaLex, t2 *lexer.TuplaLex) bool 
 			}
 		case bool: //Op1 é bool
 			switch op1 {
-				case false: // Op1 é false
-					switch t2.Token {
-					case lexer.Literal_true:
-						return true // Op1 é false e Op2 é true
-					case lexer.Literal_false:
-						return false // Op1 é false e Op2 é false
-					case lexer.Identifier: // Opt 1 é false e Op2 está em memória
-						op2, _ := i.memory[t2.Lexema]
-						switch op2 {
-						case true:
-							return true //Op1 é false e Op2 é true
-						case false:
-							return false //Op1 é false e Op2 é false
-						}
-
+			case false: // Op1 é false
+				switch t2.Token {
+				case lexer.Literal_true:
+					return true // Op1 é false e Op2 é true
+				case lexer.Literal_false:
+					return false // Op1 é false e Op2 é false
+				case lexer.Identifier: // Opt 1 é false e Op2 está em memória
+					op2, _ := i.memory[t2.Lexema]
+					switch op2 {
+					case true:
+						return true //Op1 é false e Op2 é true
+					case false:
+						return false //Op1 é false e Op2 é false
 					}
-				case true: // Op1 é true
-					switch t2.Token {
-					case lexer.Literal_true:
-						return false // Op1 é true e Op2 é true
-					case lexer.Literal_false:
-						return true // Op1 é true e Op2 é false
-					case lexer.Identifier: // Opt 1 é true e Op2 está em memória
-						op2, _ := i.memory[t2.Lexema]
-						switch op2 {
-						case true:
-							return false //Op1 é true e Op2 é true
-						case false:
-							return true //Op1 é true e Op2 é false
-						}
 
+				}
+			case true: // Op1 é true
+				switch t2.Token {
+				case lexer.Literal_true:
+					return false // Op1 é true e Op2 é true
+				case lexer.Literal_false:
+					return true // Op1 é true e Op2 é false
+				case lexer.Identifier: // Opt 1 é true e Op2 está em memória
+					op2, _ := i.memory[t2.Lexema]
+					switch op2 {
+					case true:
+						return false //Op1 é true e Op2 é true
+					case false:
+						return true //Op1 é true e Op2 é false
 					}
+
+				}
 			}
 		case string: // Op1 é string
 			switch t2.Token {
@@ -1616,12 +1643,12 @@ func (i *Interpreter) operationCall(res *lexer.TuplaLex, t1 *lexer.TuplaLex, t2 
 		}
 		if t2 != nil {
 			switch t2.Token {
-				case lexer.Literal_true:
+			case lexer.Literal_true:
 				fmt.Print(true)
-				case lexer.Literal_false:
-					fmt.Print(false)
-				default:
-					fmt.Print(t2.Lexema)
+			case lexer.Literal_false:
+				fmt.Print(false)
+			default:
+				fmt.Print(t2.Lexema)
 			}
 			return
 		}
@@ -1736,7 +1763,7 @@ func (interpreter *Interpreter) execute(instrucao parser.TuplaMicrocode) {
 		// fmt.Printf("Uno")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationUno(instrucao.Op1)
 	case parser.Att:
-		 // fmt.Printf("Att\n")
+		// fmt.Printf("Att\n")
 		interpreter.operationAtt(instrucao.Res.Lexema, instrucao.Op1)
 	}
 

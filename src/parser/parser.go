@@ -215,12 +215,12 @@ func NewParser(tokens []lexer.TuplaLex) *Parser {
 func (p *Parser) newTemp(typeVal TypeTable) *lexer.TuplaLex {
 
 	p.tempCount++
-	nomeTemp := fmt.Sprintf("t%d", p.tempCount)
+	nomeTemp := fmt.Sprintf("$t%d", p.tempCount)
 	p.symbolTable[nomeTemp] = typeVal
 
 	return &lexer.TuplaLex{
 		Token:  lexer.Identifier,
-		Lexema: fmt.Sprintf("t%d", p.tempCount),
+		Lexema: fmt.Sprintf("$t%d", p.tempCount),
 		Linha:  0,
 		Coluna: 0,
 	}

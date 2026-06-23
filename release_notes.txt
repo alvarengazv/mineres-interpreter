@@ -4,6 +4,8 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 4 - Evolução - Diminuindo o tamanho e otimizando o executor - 23/06/2026 - Guilherme Alvarenga
+Parte 3 - Evolução - Diminuindo o tamanho e otimizando os geradores de labels/vars - 23/06/2026 - Guilherme Alvarenga
 Parte 4 - Evolução - Organização e códigos automatizados - 23/06/2026 - Guilherme Alvarenga
 Parte 4 - Correção - Arrumando leituras e operações - 23/06/2026 - Guilherme Alvarenga
 Parte 4 - Correção - Arrumando tipagem quando tenta colocar tipo float dentro de um int - 22/06/2026 - Luan Santos 

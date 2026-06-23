@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"mineres-interpreter/src/lexer"
 	"mineres-interpreter/src/utils"
+	"strconv"
 )
 
 // Conjuntos de tokens para lookups O(1), substituindo cadeias de if
@@ -93,15 +94,7 @@ type Parser struct {
 
 	microcodes    []TuplaMicrocode
 	tempCount     int
-	labelTrue     int
-	labelFalse    int
-	labelEndIf    int
-	labelLoopInit int
-	labelForInc   int
-	labelLoopEnd  int
-	labelCaseIfT  int
-	labelCaseIfF  int
-	labelEndCase  int
+	labelCount    int
 	symbolTable   map[string]TypeTable
 
 	breakStack    Stack
@@ -215,15 +208,17 @@ func NewParser(tokens []lexer.TuplaLex) *Parser {
 func (p *Parser) newTemp(typeVal TypeTable) *lexer.TuplaLex {
 
 	p.tempCount++
-	nomeTemp := fmt.Sprintf("$t%d", p.tempCount)
+
+	nomeTemp := "$t" + strconv.Itoa(p.tempCount)
+
+	t := &lexer.TuplaLex{
+		Token:  lexer.Identifier,
+		Lexema: nomeTemp,
+	}
+
 	p.symbolTable[nomeTemp] = typeVal
 
-	return &lexer.TuplaLex{
-		Token:  lexer.Identifier,
-		Lexema: fmt.Sprintf("$t%d", p.tempCount),
-		Linha:  0,
-		Coluna: 0,
-	}
+	return t
 }
 
 // Funções auxiliares para o manuseio do ponteiro do buffer

@@ -5,6 +5,17 @@ import (
 	"os"
 )
 
+// ExitOnError controla o comportamento em caso de erro.
+// Em produção (true): imprime o erro e chama os.Exit(1).
+// Em testes (false): faz panic com CompilerError para que o teste possa usar recover().
+var ExitOnError = true
+
+// CompilerError é o tipo usado para panic em modo de teste,
+// permitindo que os testes capturem e inspecionem erros do compilador.
+type CompilerError struct {
+	Message string
+}
+
 /**
  * ThrowInterpreterException(Resumo = "Criar e mostrar erros do interpreter",
  *		Parâmetros = {
@@ -135,7 +146,11 @@ Parser error on (%d::%d) => %s
   */
 func executeException(err error) {
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(1)
+		msg := err.Error()
+		fmt.Fprintln(os.Stderr, msg)
+		if ExitOnError {
+			os.Exit(1)
+		}
+		panic(CompilerError{Message: msg})
 	}
 }

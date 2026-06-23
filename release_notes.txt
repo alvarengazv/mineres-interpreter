@@ -4,6 +4,7 @@ Mensagem: string
 Data: dd/mm/yyyy
 Desenvolvedor string
 
+Parte 4 - Evolução - Organização e códigos automatizados - 23/06/2026 - Guilherme Alvarenga
 Parte 4 - Correção - Arrumando leituras e operações - 23/06/2026 - Guilherme Alvarenga
 Parte 4 - Correção - Arrumando tipagem quando tenta colocar tipo float dentro de um int - 22/06/2026 - Luan Santos 
 Parte 4 - Evolução - Adicionando pilha de break a função de switch case (parser) - 21/06/2026 - Joaquim Cruz 

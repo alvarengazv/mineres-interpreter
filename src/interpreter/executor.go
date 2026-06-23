@@ -3,6 +3,7 @@ package interpreter
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"mineres-interpreter/src/lexer"
 	"mineres-interpreter/src/parser"
 	"mineres-interpreter/src/utils"
@@ -10,6 +11,16 @@ import (
 	"strconv"
 	"strings"
 )
+
+func RoundHalfDown(x float64) float64 {
+    frac := x - math.Floor(x)
+
+    if frac <= 0.5 {
+        return math.Floor(x)
+    }
+
+    return math.Ceil(x)
+}
 
 func (interpreter *Interpreter) setMemory(nome string, t *lexer.TuplaLex) {
 	switch t.Token {
@@ -28,6 +39,18 @@ func (interpreter *Interpreter) setMemory(nome string, t *lexer.TuplaLex) {
 	case lexer.Literal_char:
 		interpreter.memory[nome] = t.Lexema
 	case lexer.Identifier:
+
+		variavel, _ := interpreter.memory[nome]
+		switch variavel.(type){
+			case int:
+				switch v := interpreter.memory[t.Lexema].(type){
+					case float64:
+						interpreter.memory[nome] = RoundHalfDown(v)
+						return
+				}
+				
+		}
+
 		interpreter.memory[nome] = interpreter.memory[t.Lexema]
 	default:
 		utils.ThrowInterpreterException(
@@ -1713,7 +1736,7 @@ func (interpreter *Interpreter) execute(instrucao parser.TuplaMicrocode) {
 		// fmt.Printf("Uno")
 		interpreter.memory[instrucao.Res.Lexema] = interpreter.operationUno(instrucao.Op1)
 	case parser.Att:
-		// fmt.Printf("Att\n")
+		 // fmt.Printf("Att\n")
 		interpreter.operationAtt(instrucao.Res.Lexema, instrucao.Op1)
 	}
 

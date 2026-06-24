@@ -429,6 +429,9 @@ func (p *Parser) parseWhileStmt() {
 	p.consume(lexer.Loop_while)
 	p.consume(lexer.Open_paren)
 	resExpr, codeExpr := p.parseExpr()
+	if p.toType(resExpr) != Type_bool {
+		utils.ThrowParserException("While condition must be a boolean expression", resExpr.Linha, resExpr.Coluna)
+	}
 
 	labelLoopInit := p.newLabelLoopInit()
 	labelTrue := p.newLabelTrue()
@@ -641,6 +644,15 @@ func (p *Parser) parseIoStmt() []TuplaMicrocode {
 		ident := p.consume(lexer.Identifier)
 		p.consume(lexer.Close_paren)
 
+		typeIdent := p.toType(ident)
+		typeExpected := p.toType(&lexer.TuplaLex{Token: typeToken})
+		if typeIdent != typeExpected {
+			utils.ThrowParserException(
+				fmt.Sprintf("Type mismatch: cannot scan type '%s' into variable '%s' of type '%s'", typeToken.String(), ident.Lexema, typeIdent.String()),
+				ident.Linha, ident.Coluna,
+			)
+		}
+
 		commandList = append(commandList, TuplaMicrocode{
 			Operation: Call,
 			Res: &lexer.TuplaLex{
@@ -716,9 +728,13 @@ func (p *Parser) parseCaseStmt() {
 	labelEndCase := p.newLabelEndCase()
 	p.breakStack.Push(labelEndCase.Lexema)
 
+	caseCount := 0
 	for p.current().Token == lexer.Conditional_case {
-
 		p.parseDoCaso(ident, labelEndCase)
+		caseCount++
+	}
+	if caseCount == 0 {
+		utils.ThrowParserException("Switch/case statement must contain at least one 'du_casu' case", p.current().Linha, p.current().Coluna)
 	}
 	if p.current().Token == lexer.Conditional_default {
 		p.consume(lexer.Conditional_default)
@@ -745,6 +761,10 @@ func (p *Parser) parseDoCaso(ident *lexer.TuplaLex, labelEndCase *lexer.TuplaLex
 	labelFalse := p.newLabelCaseIfF()
 
 	valueCase, _ := p.parseFatorZin()
+
+	typeIdent := p.toType(ident)
+	typeValue := p.toType(valueCase)
+	p.inferType(lexer.Op_eq, typeIdent, typeValue, valueCase.Linha, valueCase.Coluna)
 
 	temp := p.newTemp(Type_bool)
 
